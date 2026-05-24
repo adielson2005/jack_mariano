@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Painel Admin – Jack Mariano Confeitaria</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <style>
+    :root { --sidebar-w: 240px; }
+    body { background: #f3f4f6; font-family: 'Segoe UI', system-ui, sans-serif; }
+
+    /* ── Sidebar ─────────────────────────────────── */
+    .sidebar {
+      width: var(--sidebar-w); height: 100vh; position: fixed; top: 0; left: 0;
+      background: #1e1e2e; color: #cdd6f4; display: flex; flex-direction: column;
+      z-index: 100;
+    }
+    .sidebar .brand {
+      padding: 22px 20px 16px; font-size: 1rem; font-weight: 700;
+      border-bottom: 1px solid #313244; color: #cba6f7; line-height: 1.3;
+    }
+    .sidebar .brand small { display: block; font-size: .7rem; font-weight: 400; color: #6c7086; margin-top: 3px; }
+    .sidebar nav { padding: 14px 12px; flex: 1; overflow-y: auto; }
+    .sidebar nav a {
+      display: flex; align-items: center; gap: 10px; padding: 10px 14px;
+      border-radius: 10px; color: #a6adc8; text-decoration: none; font-size: .875rem;
+      margin-bottom: 2px; transition: all .15s;
+    }
+    .sidebar nav a:hover  { background: #313244; color: #cdd6f4; }
+    .sidebar nav a.active { background: #cba6f7; color: #1e1e2e; font-weight: 600; }
+    .sidebar nav .nav-section {
+      font-size: .67rem; color: #585b70; text-transform: uppercase;
+      letter-spacing: .09em; padding: 14px 14px 4px;
+    }
+    .sidebar footer { padding: 16px 20px; border-top: 1px solid #313244; }
+    .sidebar footer a { color: #6c7086; font-size: .8rem; text-decoration: none; }
+    .sidebar footer a:hover { color: #cdd6f4; }
+
+    /* ── Main ────────────────────────────────────── */
+    .main { margin-left: var(--sidebar-w); min-height: 100vh; }
+    .topbar {
+      background: #fff; border-bottom: 1px solid #e5e7eb;
+      padding: 14px 28px; display: flex; align-items: center;
+      justify-content: space-between; position: sticky; top: 0; z-index: 50;
+    }
+    .topbar h5 { margin: 0; font-weight: 700; color: #111; }
+    .content { padding: 28px; }
+
+    /* ── Stat cards ──────────────────────────────── */
+    .stat-card { background: #fff; border-radius: 14px; padding: 20px 22px; border: 1px solid #e5e7eb; }
+    .stat-card .stat-val { font-size: 2rem; font-weight: 700; line-height: 1; }
+    .stat-card .stat-lbl { font-size: .78rem; color: #6b7280; margin-top: 4px; }
+    .stat-card .stat-icon { font-size: 1.8rem; }
+
+    /* ── Table card ──────────────────────────────── */
+    .table-card { background: #fff; border-radius: 14px; border: 1px solid #e5e7eb; overflow: hidden; }
+    .table-card .table { margin: 0; }
+    .table-card .table thead th {
+      background: #f9fafb; font-size: .75rem; text-transform: uppercase;
+      letter-spacing: .06em; color: #6b7280; border-bottom: 1px solid #e5e7eb;
+      padding: 12px 16px; font-weight: 600;
+    }
+    .table-card .table tbody td { padding: 13px 16px; vertical-align: middle; font-size: .875rem; border-color: #f3f4f6; }
+    .table-card .table tbody tr { cursor: pointer; transition: background .1s; }
+    .table-card .table tbody tr:hover { background: #f9fafb; }
+
+    /* ── Status pills ────────────────────────────── */
+    .s-pending     { background: #fef9c3; color: #854d0e; }
+    .s-confirmed   { background: #dbeafe; color: #1e40af; }
+    .s-in_progress { background: #e0f2fe; color: #075985; }
+    .s-ready       { background: #dcfce7; color: #166534; }
+    .s-cancelled   { background: #fee2e2; color: #991b1b; }
+    .status-pill { padding: 3px 10px; border-radius: 20px; font-size: .73rem; font-weight: 600; white-space: nowrap; }
+
+    /* ── Filter bar ──────────────────────────────── */
+    .filter-bar {
+      background: #fff; border-radius: 12px; padding: 14px 20px;
+      border: 1px solid #e5e7eb; display: flex; align-items: center;
+      gap: 12px; flex-wrap: wrap;
+    }
+
+    /* ── Detail panel (slide-in) ─────────────────── */
+    .detail-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.32); z-index: 200; display: none; }
+    .detail-overlay.open { display: block; }
+    .detail-panel {
+      position: fixed; top: 0; right: -540px; width: 520px; height: 100vh;
+      background: #fff; z-index: 201; overflow-y: auto;
+      box-shadow: -4px 0 28px rgba(0,0,0,.14);
+      transition: right .28s ease;
+      display: flex; flex-direction: column;
+    }
+    .detail-panel.open { right: 0; }
+
+    .detail-header {
+      padding: 20px 24px; border-bottom: 1px solid #e5e7eb;
+      display: flex; align-items: center; justify-content: space-between;
+      flex-shrink: 0;
+    }
+    .detail-body   { padding: 24px; flex: 1; }
+    .detail-footer { padding: 16px 24px; border-top: 1px solid #e5e7eb; background: #f9fafb; flex-shrink: 0; }
+
+    .info-row { display: flex; gap: 6px; margin-bottom: 8px; font-size: .875rem; }
+    .info-row .lbl { color: #6b7280; min-width: 110px; flex-shrink: 0; }
+
+    .item-card { background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 10px; padding: 12px 14px; margin-bottom: 10px; }
+    .item-card .ic-title { font-weight: 600; font-size: .875rem; }
+    .tag { background: #ede9fe; color: #5b21b6; font-size: .72rem; padding: 2px 8px; border-radius: 20px; margin-right: 4px; margin-top: 4px; display: inline-block; }
+
+    @media (max-width: 768px) {
+      .detail-panel { width: 100%; right: -100%; }
+      .main { margin-left: 0; }
+      .sidebar { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══ Sidebar ══════════════════════════════════════════════════════════════ -->
+<aside class="sidebar">
+  <div class="brand">
+    🧁 Jack Mariano Confeitaria
+    <small>Painel Administrativo</small>
+  </div>
+  <nav>
+    <div class="nav-section">Gestão</div>
+    <a href="#" class="active" onclick="showSection('pedidos',this)">
+      <i class="bi bi-receipt"></i> Pedidos
+    </a>
+    <a href="#" onclick="showSection('stats',this)">
+      <i class="bi bi-bar-chart-line"></i> Estatísticas
+    </a>
+    <div class="nav-section">Filtrar por status</div>
+    <a href="#" onclick="quickFilter('pending',this)">
+      <i class="bi bi-hourglass-split"></i> Aguardando
+    </a>
+    <a href="#" onclick="quickFilter('confirmed',this)">
+      <i class="bi bi-check-circle"></i> Confirmados
+    </a>
+    <a href="#" onclick="quickFilter('in_progress',this)">
+      <i class="bi bi-hammer"></i> Em produção
+    </a>
+    <a href="#" onclick="quickFilter('ready',this)">
+      <i class="bi bi-gift"></i> Prontos
+    </a>
+    <a href="#" onclick="quickFilter('cancelled',this)">
+      <i class="bi bi-x-circle"></i> Cancelados
+    </a>
+  </nav>
+  <footer>
+    <a href="/" target="_blank">
+      <i class="bi bi-box-arrow-up-left me-1"></i>Ver site do cliente
+    </a>
+  </footer>
+</aside>
+
+<!-- ══ Main ════════════════════════════════════════════════════════════════ -->
+<div class="main">
+  <div class="topbar">
+    <h5 id="topbar-title"><i class="bi bi-receipt me-2"></i>Pedidos</h5>
+    <button class="btn btn-sm btn-outline-secondary" onclick="refresh()">
+      <i class="bi bi-arrow-clockwise me-1"></i>Atualizar
+    </button>
+  </div>
+
+  <div class="content">
+
+    <!-- SEÇÃO PEDIDOS -->
+    <div id="sec-pedidos">
+      <div class="filter-bar mb-3">
+        <span class="text-muted small fw-semibold">Filtrar:</span>
+        <select id="status-filter" class="form-select form-select-sm"
+                style="width:210px" onchange="loadOrders()">
+          <option value="">Todos os pedidos</option>
+          <option value="pending">Aguardando confirmação</option>
+          <option value="confirmed">Confirmado</option>
+          <option value="in_progress">Em produção</option>
+          <option value="ready">Pronto para retirada</option>
+          <option value="cancelled">Cancelado</option>
+        </select>
+        <span id="orders-count" class="text-muted small ms-auto"></span>
+      </div>
+      <div class="table-card">
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Cliente</th>
+              <th>Retirada</th>
+              <th>Criado em</th>
+              <th>Status</th>
+              <th><i class="bi bi-whatsapp text-success"></i></th>
+            </tr>
+          </thead>
+          <tbody id="orders-tbody">
+            <tr><td colspan="6" class="text-center text-muted py-4">Carregando...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div><!-- /sec-pedidos -->
+
+    <!-- SEÇÃO STATS -->
+    <div id="sec-stats" class="d-none">
+      <div class="row g-3 mb-4" id="stat-cards">
+        <div class="col-12 text-center text-muted py-4">Carregando...</div>
+      </div>
+      <div class="row g-3">
+        <div class="col-md-6">
+          <div class="table-card">
+            <div class="p-3 border-bottom text-muted fw-bold"
+                 style="font-size:.75rem;text-transform:uppercase;letter-spacing:.06em">
+              Por Status
+            </div>
+            <table class="table mb-0"><tbody id="stat-status-rows"></tbody></table>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="table-card">
+            <div class="p-3 border-bottom text-muted fw-bold"
+                 style="font-size:.75rem;text-transform:uppercase;letter-spacing:.06em">
+              Por Categoria
+            </div>
+            <table class="table mb-0"><tbody id="stat-cat-rows"></tbody></table>
+          </div>
+        </div>
+      </div>
+    </div><!-- /sec-stats -->
+
+  </div><!-- /content -->
+</div><!-- /main -->
+
+<!-- ══ Overlay + Detail panel ═══════════════════════════════════════════════ -->
+<div class="detail-overlay" id="overlay" onclick="closePanel()"></div>
+<div class="detail-panel"  id="detail-panel">
+  <div class="detail-header">
+    <div>
+      <div class="fw-bold fs-6" id="dp-title">Pedido</div>
+      <div id="dp-status-wrap" class="mt-1"></div>
+    </div>
+    <div class="d-flex align-items-center gap-2">
+      <a id="dp-wa-btn" href="#" target="_blank"
+         class="btn btn-sm fw-semibold"
+         style="background:#25d366;color:#fff;border-radius:8px;font-size:.8rem">
+        <i class="bi bi-whatsapp me-1"></i>WhatsApp
+      </a>
+      <button class="btn-close" onclick="closePanel()"></button>
+    </div>
+  </div>
+
+  <div class="detail-body" id="dp-body"></div>
+
+  <div class="detail-footer">
+    <div class="row g-2 align-items-end">
+      <div class="col-7">
+        <label class="form-label fw-semibold mb-1" style="font-size:.8rem">Alterar status</label>
+        <select id="dp-status-sel" class="form-select form-select-sm">
+          <option value="pending">Aguardando confirmação</option>
+          <option value="confirmed">Confirmado</option>
+          <option value="in_progress">Em produção</option>
+          <option value="ready">Pronto para retirada</option>
+          <option value="cancelled">Cancelado</option>
+        </select>
+      </div>
+      <div class="col-5 d-flex gap-2">
+        <button class="btn btn-success btn-sm flex-grow-1" onclick="saveStatus()">
+          <i class="bi bi-check2 me-1"></i>Salvar
+        </button>
+        <button class="btn btn-outline-danger btn-sm" onclick="confirmDelete()"
+                title="Excluir pedido"><i class="bi bi-trash"></i>
+        </button>
+      </div>
+      <div class="col-12">
+        <label class="form-label mb-1" style="font-size:.8rem">Nota interna</label>
+        <input type="text" id="dp-admin-notes" class="form-control form-control-sm"
+               placeholder="Anotação para a equipe...">
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+const API = '';
+const STATUS = {
+  pending:     { label: 'Aguardando confirmação', cls: 's-pending' },
+  confirmed:   { label: 'Confirmado',             cls: 's-confirmed' },
+  in_progress: { label: 'Em produção',            cls: 's-in_progress' },
+  ready:       { label: 'Pronto para retirada',   cls: 's-ready' },
+  cancelled:   { label: 'Cancelado',              cls: 's-cancelled' },
+};
+let currentOrderId = null;
+
+/* ── Sections ───────────────────────────────────────────────────────────── */
+function showSection(name, el) {
+  document.querySelectorAll('.sidebar nav a').forEach(a => a.classList.remove('active'));
+  el?.classList.add('active');
+  document.getElementById('sec-pedidos').classList.toggle('d-none', name !== 'pedidos');
+  document.getElementById('sec-stats').classList.toggle('d-none', name !== 'stats');
+  document.getElementById('topbar-title').innerHTML =
+    name === 'pedidos'
+      ? '<i class="bi bi-receipt me-2"></i>Pedidos'
+      : '<i class="bi bi-bar-chart-line me-2"></i>Estatísticas';
+  if (name === 'stats') loadStats();
+}
+
+function quickFilter(status, el) {
+  document.querySelectorAll('.sidebar nav a').forEach(a => a.classList.remove('active'));
+  el?.classList.add('active');
+  document.getElementById('sec-pedidos').classList.remove('d-none');
+  document.getElementById('sec-stats').classList.add('d-none');
+  document.getElementById('topbar-title').innerHTML = '<i class="bi bi-receipt me-2"></i>Pedidos';
+  document.getElementById('status-filter').value = status;
+  loadOrders();
+}
+
+function refresh() {
+  const statsHidden = document.getElementById('sec-stats').classList.contains('d-none');
+  statsHidden ? loadOrders() : loadStats();
+}
+
+/* ── Orders ─────────────────────────────────────────────────────────────── */
+async function loadOrders() {
+  const status = document.getElementById('status-filter').value;
+  const url    = `${API}/admin/orders` + (status ? `?status=${status}` : '');
+  const tbody  = document.getElementById('orders-tbody');
+  tbody.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-muted">
+    <div class="spinner-border spinner-border-sm me-2"></div>Carregando...</td></tr>`;
+  const res = await fetch(url);
+  const d   = await res.json();
+  document.getElementById('orders-count').textContent = `${d.total} pedido(s)`;
+  if (!d.orders.length) {
+    tbody.innerHTML = '<tr><td colspan="6" class="text-center py-5 text-muted">Nenhum pedido.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = d.orders.map(o => `
+    <tr onclick="openPanel(${o.id})">
+      <td class="fw-bold text-muted">#${o.id}</td>
+      <td class="fw-semibold">${o.customer_name}</td>
+      <td>${fmtDate(o.pickup_date)} <span class="text-muted">${o.pickup_time}</span></td>
+      <td class="text-muted" style="font-size:.82rem">${o.created_at}</td>
+      <td><span class="status-pill ${(STATUS[o.status]||{cls:''}).cls}">
+        ${(STATUS[o.status]||{label:o.status}).label}
+      </span></td>
+      <td onclick="event.stopPropagation()">
+        <a href="#" data-id="${o.id}" onclick="openWA(this)" target="_blank"
+           class="btn btn-sm p-1" style="color:#25d366;font-size:1.1rem"
+           title="Contatar cliente via WhatsApp">
+          <i class="bi bi-whatsapp"></i>
+        </a>
+      </td>
+    </tr>`).join('');
+}
+
+/* ── Detail panel ───────────────────────────────────────────────────────── */
+async function openPanel(id) {
+  currentOrderId = id;
+  const res = await fetch(`${API}/admin/orders/${id}`);
+  const o   = await res.json();
+  const s   = STATUS[o.status] || { label: o.status, cls: '' };
+
+  document.getElementById('dp-title').textContent = `Pedido #${o.id} — ${o.customer_name}`;
+  document.getElementById('dp-status-wrap').innerHTML =
+    `<span class="status-pill ${s.cls}">${s.label}</span>`;
+  document.getElementById('dp-status-sel').value    = o.status;
+  document.getElementById('dp-admin-notes').value   = o.admin_notes || '';
+  document.getElementById('dp-wa-btn').href         = '#';
+
+  document.getElementById('dp-body').innerHTML = `
+    <div class="mb-4">
+      <div class="text-muted fw-bold mb-2"
+           style="font-size:.7rem;text-transform:uppercase;letter-spacing:.08em">
+        Dados do cliente
+      </div>
+      <div class="info-row"><span class="lbl">Nome</span><span>${o.customer_name}</span></div>
+      <div class="info-row">
+        <span class="lbl">WhatsApp</span>
+        <a href="https://wa.me/55${o.customer_whatsapp.replace(/\D/g,'')}"
+           target="_blank">${o.customer_whatsapp}</a>
+      </div>
+      ${o.customer_birthdate
+        ? `<div class="info-row"><span class="lbl">Nascimento</span><span>${fmtDate(o.customer_birthdate)}</span></div>`
+        : ''}
+      <div class="info-row">
+        <span class="lbl">Retirada</span>
+        <strong>${fmtDate(o.pickup_date)} às ${o.pickup_time}</strong>
+      </div>
+      ${o.allergies
+        ? `<div class="info-row"><span class="lbl">Alergias</span><span class="text-danger">${o.allergies}</span></div>`
+        : ''}
+      ${o.notes
+        ? `<div class="info-row"><span class="lbl">Obs.</span><span>${o.notes}</span></div>`
+        : ''}
+      ${o.admin_notes
+        ? `<div class="info-row"><span class="lbl">Nota interna</span><em class="text-muted">${o.admin_notes}</em></div>`
+        : ''}
+    </div>
+    <div class="text-muted fw-bold mb-2"
+         style="font-size:.7rem;text-transform:uppercase;letter-spacing:.08em">
+      Itens do pedido
+    </div>
+    ${o.items.map(item => `
+      <div class="item-card">
+        <div class="ic-title">
+          ${item.category_name}
+          <span class="text-muted fw-normal">× ${item.quantity}</span>
+        </div>
+        <div class="mt-2">
+          ${Object.entries(item.selections).map(([k,v]) =>
+            `<span class="tag">${k}: ${v}</span>`).join('')}
+        </div>
+        ${item.item_notes
+          ? `<div class="text-muted mt-1" style="font-size:.78rem">📝 ${item.item_notes}</div>`
+          : ''}
+      </div>`).join('')}`;
+
+  // Busca link WhatsApp via API
+  fetch(`${API}/api/whatsapp/${id}`)
+    .then(r => r.json())
+    .then(d => { document.getElementById('dp-wa-btn').href = d.admin_link; })
+    .catch(() => {});
+
+  document.getElementById('detail-panel').classList.add('open');
+  document.getElementById('overlay').classList.add('open');
+}
+
+function closePanel() {
+  document.getElementById('detail-panel').classList.remove('open');
+  document.getElementById('overlay').classList.remove('open');
+  currentOrderId = null;
+}
+
+/* ── WhatsApp ────────────────────────────────────────────────────────────── */
+async function openWA(el) {
+  const res = await fetch(`${API}/api/whatsapp/${el.dataset.id}`);
+  const d   = await res.json();
+  window.open(d.admin_link, '_blank');
+}
+
+/* ── Update status ──────────────────────────────────────────────────────── */
+async function saveStatus() {
+  if (!currentOrderId) return;
+  const res = await fetch(`${API}/admin/orders/${currentOrderId}/status`, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      status:      document.getElementById('dp-status-sel').value,
+      admin_notes: document.getElementById('dp-admin-notes').value,
+    })
+  });
+  if (res.ok) { closePanel(); loadOrders(); toast('Status atualizado!', 'success'); }
+  else toast('Erro ao salvar.', 'danger');
+}
+
+/* ── Delete ─────────────────────────────────────────────────────────────── */
+function confirmDelete() {
+  if (!confirm(`Excluir pedido #${currentOrderId}? Essa ação não pode ser desfeita.`)) return;
+  fetch(`${API}/admin/orders/${currentOrderId}`, { method: 'DELETE' })
+    .then(() => { closePanel(); loadOrders(); toast('Pedido excluído.', 'warning'); });
+}
+
+/* ── Stats ──────────────────────────────────────────────────────────────── */
+async function loadStats() {
+  const res = await fetch(`${API}/admin/stats`);
+  const d   = await res.json();
+
+  const defs = [
+    { val: d.total_orders,                                   lbl: 'Total de pedidos',   icon: '📋', color: '#6366f1' },
+    { val: d.by_status['Aguardando confirmação'] || 0,       lbl: 'Aguardando',         icon: '⏳', color: '#f59e0b' },
+    { val: d.by_status['Em produção'] || 0,                  lbl: 'Em produção',        icon: '🔨', color: '#0ea5e9' },
+    { val: d.by_status['Pronto para retirada'] || 0,         lbl: 'Prontos',            icon: '🎁', color: '#22c55e' },
+  ];
+  document.getElementById('stat-cards').innerHTML = defs.map(s => `
+    <div class="col-sm-6 col-lg-3">
+      <div class="stat-card d-flex align-items-center gap-3">
+        <div class="stat-icon">${s.icon}</div>
+        <div>
+          <div class="stat-val" style="color:${s.color}">${s.val}</div>
+          <div class="stat-lbl">${s.lbl}</div>
+        </div>
+      </div>
+    </div>`).join('');
+
+  document.getElementById('stat-status-rows').innerHTML =
+    Object.entries(d.by_status).map(([k,v]) =>
+      `<tr><td>${k}</td><td class="text-end fw-bold">${v}</td></tr>`).join('');
+
+  document.getElementById('stat-cat-rows').innerHTML =
+    Object.entries(d.by_category).map(([k,v]) =>
+      `<tr><td>${k}</td><td class="text-end fw-bold">${v}</td></tr>`).join('');
+}
+
+/* ── Helpers ─────────────────────────────────────────────────────────────── */
+function fmtDate(d) {
+  if (!d) return '';
+  const [y, m, day] = d.split('-');
+  return `${day}/${m}/${y}`;
+}
+
+function toast(msg, type = 'info') {
+  const div = document.createElement('div');
+  div.className = `alert alert-${type} shadow position-fixed bottom-0 end-0 m-3 py-2 px-3`;
+  div.style.cssText = 'z-index:9999;font-size:.85rem;max-width:280px;border-radius:10px';
+  div.textContent = msg;
+  document.body.appendChild(div);
+  setTimeout(() => div.remove(), 2800);
+}
+
+/* ── Init ───────────────────────────────────────────────────────────────── */
+loadOrders();
+</script>
+</body>
+</html>

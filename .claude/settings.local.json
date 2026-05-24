@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(taskkill /F /IM python.exe)",
+      "Bash(del /F \"C:\\\\Users\\\\USER\\\\Desktop\\\\jack_mariano\\\\doceria\\\\instance\\\\doceria.db\")",
+      "PowerShell(Get-Process python -ErrorAction SilentlyContinue)",
+      "PowerShell(Stop-Process -Force)",
+      "Bash(python run.py)"
+    ]
+  }
+}
