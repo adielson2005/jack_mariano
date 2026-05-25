@@ -37,13 +37,13 @@ def _seed_data():
             "name": "Bolos",
             "description": "Bolos personalizados com massa, recheio e decoração à sua escolha.",
             "icon": "🎂",
-            "price_from": "a partir de R$90,00/kg",
+            "price_from": None,
             "options": {
                 "Massa": [
                     "Branca (Baunilha)",
                     "Chocolate",
                 ],
-                "Recheio Tradicional|R$90,00/kg": [
+                "Recheio Tradicional": [
                     "4 Leites",
                     "Leite Ninho Trufado",
                     "Creme com Abacaxi",
@@ -67,7 +67,7 @@ def _seed_data():
                     "Ganache de Café",
                     "Alpino",
                 ],
-                "Recheio Especial|R$100,00/kg": [
+                "Recheio Especial": [
                     "Creme com Nozes",
                     "Creme com Ameixa",
                     "Creme com Morango Fruta",
@@ -80,26 +80,26 @@ def _seed_data():
                     "Ouro Branco",
                     "Creme com Pêssego",
                 ],
-                "Recheio Super Especial|R$110,00/kg": [
+                "Recheio Super Especial": [
                     "Pistache",
                     "Pistache com Geléia de Morango",
                     "Creme com Castanha do Pará",
                 ],
-                "Decoração|a partir de R$15,00": [
+                "Decoração": [
                     "Sem decoração",
-                    "Morangos (R$15,00)",
-                    "Brigadeiro Festa (R$1,80/un)",
-                    "Macarrons (R$7,50/un)",
-                    "Arte a Mão (a partir de R$20,00)",
+                    "Morangos",
+                    "Brigadeiro Festa",
+                    "Macarrons",
+                    "Arte a Mão",
                 ],
-                "Topo de Bolo|a partir de R$15,00": [
+                "Topo de Bolo": [
                     "Sem topo",
-                    "Papel de Arroz (a partir de R$15,00)",
-                    "Impresso Simples (a partir de R$25,00)",
-                    "Impresso Detalhado (a partir de R$30,00)",
-                    "3D em Camadas (a partir de R$45,00)",
-                    "Flores Artificiais (a partir de R$70,00)",
-                    "Bolo de Andar (R$30,00/andar)",
+                    "Papel de Arroz",
+                    "Impresso Simples",
+                    "Impresso Detalhado",
+                    "3D em Camadas",
+                    "Flores Artificiais",
+                    "Bolo de Andar",
                 ],
             },
         },
@@ -108,18 +108,18 @@ def _seed_data():
             "name": "Doces",
             "description": "Doces finos artesanais, brigadeiros gourmet, trufas e muito mais.",
             "icon": "🍬",
-            "price_from": "a partir de R$2,90/un",
+            "price_from": None,
             "options": {
-                "Tipo e Preço|preços variam": [
-                    "Brigadeiro Gourmet — R$180,00/cento",
-                    "Brigadeiro Gourmet Especial — R$250,00/cento",
-                    "Copinho de Chocolate (Branco ou ao Leite) — R$4,90/un",
+                "Tipo": [
+                    "Brigadeiro Gourmet",
+                    "Brigadeiro Gourmet Especial",
+                    "Copinho de Chocolate (Branco ou ao Leite)",
                     "Copinho de Acrílico 30ml",
-                    "Mini Brownie — R$3,90/un",
-                    "Mini Trufa — R$2,90/un",
-                    "Doce Fino (preços variados)",
-                    "Pipoca Gourmet — R$6,90/gr",
-                    "Coloridos ou Carimbados — R$220,00/cento",
+                    "Mini Brownie",
+                    "Mini Trufa",
+                    "Doce Fino",
+                    "Pipoca Gourmet",
+                    "Coloridos ou Carimbados",
                 ],
                 "Sabor": [
                     "Brigadeiro Tradicional",
@@ -169,13 +169,13 @@ def _seed_data():
             "name": "Salgados",
             "description": "Salgados artesanais fritos ou assados, empadinhas e mini pastéis.",
             "icon": "🥟",
-            "price_from": "a partir de R$85,00/cento",
+            "price_from": None,
             "options": {
-                "Tipo e Preço|preços variam": [
-                    "Salgados Fritos — R$85,00/cento",
-                    "Salgados Assados — R$105,00/cento",
-                    "Empadinhas — R$130,00/cento",
-                    "Mini Pastel de Vento — R$95,00/cento",
+                "Tipo": [
+                    "Salgados Fritos",
+                    "Salgados Assados",
+                    "Empadinhas",
+                    "Mini Pastel de Vento",
                 ],
                 "Sabor dos Fritos": [
                     "Coxinha de Frango",
@@ -217,12 +217,12 @@ def _seed_data():
             "name": "Combos Especiais",
             "description": "Combos prontos para celebrar com praticidade e sabor.",
             "icon": "🎁",
-            "price_from": "a partir de R$64,90",
+            "price_from": None,
             "options": {
-                "Escolha o Combo|preços já inclusos": [
-                    "Combo Surpresinha — R$64,90 (Mini naked cake + 4 docinhos + 10 salgadinhos + coca lata + caixa presenteável)",
-                    "Combo Só um Bolinho — R$103,90 (Caseirinho + 30 salgadinhos + 12 brigadeiros + guaraná 1L)",
-                    "Combo Surpresa — R$112,00 (Naked cake 500g + 12 docinhos + 30 salgados + refrigerante 1L + vela foguetinho)",
+                "Escolha o Combo": [
+                    "Combo Surpresinha (Mini naked cake + 4 docinhos + 10 salgadinhos + coca lata + caixa presenteável)",
+                    "Combo Só um Bolinho (Caseirinho + 30 salgadinhos + 12 brigadeiros + guaraná 1L)",
+                    "Combo Surpresa (Naked cake 500g + 12 docinhos + 30 salgados + refrigerante 1L + vela foguetinho)",
                 ],
             },
         },
@@ -231,13 +231,13 @@ def _seed_data():
             "name": "Kits Festa",
             "description": "Kit completo: bolo + doces + salgados + bebida para sua festa.",
             "icon": "🎊",
-            "price_from": "a partir de R$115,00",
+            "price_from": None,
             "options": {
-                "Escolha o Kit|preços já inclusos": [
-                    "Kit PP — R$115,00 (3 pessoas: bolo 500g + 15 docinhos + 30 salgados fritos + refri 600ml)",
-                    "Kit P — R$209,00 (10 pessoas: bolo 1kg + 25 docinhos + 50 salgados fritos + refri 2L)",
-                    "Kit M — R$299,00 (15 pessoas: bolo 1,5kg + 30 docinhos + 100 salgados fritos + refri 2L)",
-                    "Kit G — R$395,00 (20 pessoas: bolo 2kg + 50 docinhos + 100 salgados fritos + 2 refris 2L)",
+                "Escolha o Kit": [
+                    "Kit PP (3 pessoas: bolo 500g + 15 docinhos + 30 salgados fritos + refri 600ml)",
+                    "Kit P (10 pessoas: bolo 1kg + 25 docinhos + 50 salgados fritos + refri 2L)",
+                    "Kit M (15 pessoas: bolo 1,5kg + 30 docinhos + 100 salgados fritos + refri 2L)",
+                    "Kit G (20 pessoas: bolo 2kg + 50 docinhos + 100 salgados fritos + 2 refris 2L)",
                 ],
                 "Acréscimos (opcional)": [
                     "Sem acréscimos",
