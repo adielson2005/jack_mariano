@@ -6,433 +6,453 @@
   <title>Encomendas – Jack Mariano Confeitaria</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
   <style>
-    /* ── Tokens ─────────────────────────────────────── */
+    /* ── Tokens ─────────────────────────────────────────── */
     :root {
-      --pk:       #d63384;
-      --pk-light: #fff0f6;
-      --pk-dark:  #a3255f;
-      --cream:    #fef9f5;
+      --pk:      #e5196b;
+      --pk-soft: #fdf0f6;
+      --pk-dark: #b8105a;
+      --bg:      #f7f4fb;
+      --surface: #ffffff;
+      --border:  #ede8f5;
+      --text:    #1c1c2e;
+      --muted:   #8a87a0;
 
-      /* Per-category accent colors */
-      --c-bolo:      #e91e8c;
-      --c-doces:     #8b5cf6;
-      --c-salgados:  #f97316;
-      --c-combos:    #0891b2;
+      --c-bolo:      #e5196b;
+      --c-doces:     #7c3aed;
+      --c-salgados:  #ea580c;
+      --c-combos:    #0284c7;
       --c-kit-festa: #16a34a;
     }
 
-    *, *::before, *::after { box-sizing: border-box; }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
-      background: var(--cream);
-      font-family: 'Nunito', system-ui, sans-serif;
-      font-weight: 600;
-      margin: 0;
-      color: #2d2d2d;
+      background: var(--bg);
+      font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+      color: var(--text);
     }
 
-    /* ── Navbar ──────────────────────────────────────── */
-    .navbar {
-      background: #fff;
-      border-bottom: 2px solid #fce4f0;
-      position: sticky; top: 0; z-index: 900;
-      padding: 10px 20px;
-      display: flex; align-items: center; justify-content: space-between;
-    }
-    .navbar-brand {
-      font-size: 1.1rem; font-weight: 800;
-      color: #2d2d2d; text-decoration: none;
-    }
-    .navbar-brand span { color: var(--pk); }
+    /* ── Scrollbar ───────────────────────────────────────── */
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #ddd; border-radius: 10px; }
 
-    /* ── Hero ────────────────────────────────────────── */
-    .hero {
-      background: linear-gradient(135deg, #fce4f0 0%, #f3e8ff 50%, #fef9f5 100%);
-      padding: 44px 16px 36px;
-      text-align: center;
-    }
-    .hero h1 {
-      font-weight: 800;
-      color: #1a1a1a;
-      font-size: clamp(1.65rem, 5vw, 2.4rem);
-      margin-bottom: 10px;
-      line-height: 1.25;
-    }
-    .hero h1 .highlight { color: var(--pk); }
-    .hero p {
-      color: #666;
-      max-width: 480px;
-      margin: 0 auto 28px;
-      font-size: .97rem;
-      line-height: 1.55;
-      font-weight: 600;
-    }
-
-    /* ── Step indicator ──────────────────────────────── */
-    .step-wrap {
-      display: flex; align-items: flex-start; justify-content: center;
-      max-width: 340px; margin: 0 auto;
-    }
-    .step-col  { text-align: center; flex-shrink: 0; }
-    .step-num  {
-      width: 38px; height: 38px; border-radius: 50%;
-      margin: 0 auto;
+    /* ── Header ──────────────────────────────────────────── */
+    .site-header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 0 20px;
+      height: 60px;
       display: flex; align-items: center; justify-content: center;
-      font-weight: 800; font-size: .9rem;
-      transition: all .3s;
+      position: sticky; top: 0; z-index: 900;
     }
-    .step-num.active  { background: var(--pk); color: #fff; box-shadow: 0 0 0 5px #fce4f0; }
-    .step-num.done    { background: #16a34a; color: #fff; }
-    .step-num.pending { background: #e9ecef; color: #adb5bd; }
-    .step-label { font-size: .75rem; color: #aaa; margin-top: 5px; white-space: nowrap; font-weight: 700; }
-    .step-line  {
-      flex: 1; height: 2px; background: #e9ecef;
-      margin: 0 8px; position: relative; top: 19px;
-      transition: background .3s;
+    .brand {
+      font-weight: 800; font-size: 1rem; color: var(--text);
+      display: flex; align-items: center; gap: 8px;
+      text-decoration: none;
     }
-    .step-line.done { background: #16a34a; }
-
-    /* ── Page wrapper ────────────────────────────────── */
-    .page-wrap { max-width: 700px; margin: 0 auto; padding: 36px 16px; }
-
-    /* ── Section label ───────────────────────────────── */
-    .sec-label {
-      font-size: .72rem; font-weight: 800; color: #bbb;
-      text-transform: uppercase; letter-spacing: .14em;
-      text-align: center; margin-bottom: 18px;
+    .brand-dot {
+      width: 28px; height: 28px; border-radius: 8px;
+      background: linear-gradient(135deg, var(--pk) 0%, #ff6eb0 100%);
+      display: flex; align-items: center; justify-content: center;
+      font-size: .9rem;
     }
 
-    /* ── Category grid ───────────────────────────────── */
-    .cat-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 16px;
-      max-width: 560px;
-      margin: 0 auto 36px;
+    /* ── Step bar ────────────────────────────────────────── */
+    .step-bar {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 12px 20px;
+      display: flex; align-items: center; justify-content: center; gap: 6px;
+    }
+    .step-pill {
+      display: flex; align-items: center; gap: 7px;
+      padding: 6px 14px; border-radius: 999px;
+      font-size: .78rem; font-weight: 700;
+      background: transparent; color: var(--muted);
+      border: 1.5px solid transparent;
+      transition: all .25s;
+    }
+    .step-pill .sp-num {
+      width: 20px; height: 20px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: .7rem; font-weight: 800;
+      background: #e9e6f4; color: var(--muted);
+      transition: all .25s;
+    }
+    .step-pill.active {
+      background: var(--pk-soft);
+      color: var(--pk);
+      border-color: #f5c0d9;
+    }
+    .step-pill.active .sp-num { background: var(--pk); color: #fff; }
+    .step-pill.done { color: #16a34a; }
+    .step-pill.done .sp-num { background: #16a34a; color: #fff; }
+    .step-sep { width: 28px; height: 1.5px; background: var(--border); border-radius: 2px; }
+
+    /* ── Page wrap ───────────────────────────────────────── */
+    .page { max-width: 640px; margin: 0 auto; padding: 28px 16px 60px; }
+
+    /* ── Section heading ─────────────────────────────────── */
+    .s-head {
+      font-size: .7rem; font-weight: 700; color: var(--muted);
+      text-transform: uppercase; letter-spacing: .16em;
+      margin-bottom: 14px;
     }
 
-    .cat-card {
-      cursor: pointer;
-      border: 2px solid #eee;
-      border-top: 5px solid #eee;
-      border-radius: 16px;
-      padding: 24px 16px 20px;
+    /* ── Hero strip ──────────────────────────────────────── */
+    .hero-strip {
       text-align: center;
-      background: #fff;
-      transition: all .22s;
+      padding: 36px 20px 28px;
+      max-width: 640px; margin: 0 auto;
+    }
+    .hero-strip h1 {
+      font-size: clamp(1.55rem, 5vw, 2.2rem);
+      font-weight: 800; line-height: 1.2;
+      color: var(--text);
+    }
+    .hero-strip h1 em { font-style: normal; color: var(--pk); }
+    .hero-strip p {
+      font-size: .9rem; color: var(--muted); font-weight: 500;
+      max-width: 380px; margin: 10px auto 0; line-height: 1.6;
+    }
+
+    /* ── Category list ───────────────────────────────────── */
+    .cat-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 32px; }
+
+    .cat-row {
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: 16px;
+      padding: 16px 18px;
+      display: flex; align-items: center; gap: 16px;
+      cursor: pointer;
+      transition: border-color .2s, box-shadow .2s, transform .15s;
       user-select: none;
       position: relative;
-    }
-    .cat-card:hover {
-      transform: translateY(-4px);
-    }
-    .cat-card.active {
-      border-left: 4px solid var(--accent, #d63384);
-      background: #fafafa;
-    }
-
-    /* Accent colors per slug */
-    .cat-card[data-slug="bolo"]      { --accent: var(--c-bolo); }
-    .cat-card[data-slug="doces"]     { --accent: var(--c-doces); }
-    .cat-card[data-slug="salgados"]  { --accent: var(--c-salgados); }
-    .cat-card[data-slug="combos"]    { --accent: var(--c-combos); }
-    .cat-card[data-slug="kit-festa"] { --accent: var(--c-kit-festa); }
-
-    .cat-card { border-top-color: var(--accent, #eee); }
-    .cat-card:hover { box-shadow: 0 8px 28px color-mix(in srgb, var(--accent, #d63384) 22%, transparent); }
-
-    .cat-card .icon { font-size: 3rem; line-height: 1; display: block; }
-    .cat-card .name { font-weight: 800; font-size: .95rem; margin-top: 12px; color: #1a1a1a; }
-    .cat-card .desc { font-size: .73rem; color: #999; margin-top: 5px; line-height: 1.4; font-weight: 600; }
-    .cat-card .price-badge {
-      display: inline-block;
-      margin-top: 10px;
-      padding: 3px 10px;
-      border-radius: 20px;
-      font-size: .68rem; font-weight: 800;
-      background: color-mix(in srgb, var(--accent, #d63384) 12%, white);
-      color: var(--accent, #d63384);
-    }
-
-    /* ── Options panel ───────────────────────────────── */
-    .options-box {
-      background: #fff;
-      border-radius: 20px;
-      box-shadow: 0 4px 24px rgba(0,0,0,.07);
-      max-width: 640px;
-      margin: 0 auto;
       overflow: hidden;
     }
-    .opt-header {
-      background: linear-gradient(135deg, #d63384 0%, #c2185b 100%);
-      padding: 20px 24px;
-      display: flex; align-items: center; gap: 14px;
+    .cat-row::before {
+      content: '';
+      position: absolute; left: 0; top: 0; bottom: 0;
+      width: 4px;
+      background: var(--accent, #eee);
+      border-radius: 4px 0 0 4px;
+      opacity: 0;
+      transition: opacity .2s;
     }
-    .opt-header .opt-icon { font-size: 2.2rem; }
-    .opt-header .opt-title { font-weight: 800; font-size: 1.2rem; color: #fff; }
-    .opt-header .opt-price { font-size: .8rem; color: rgba(255,255,255,.8); font-weight: 600; margin-top: 2px; }
+    .cat-row:hover { box-shadow: 0 4px 20px rgba(0,0,0,.07); transform: translateY(-1px); }
+    .cat-row.active {
+      border-color: var(--accent, var(--pk));
+      box-shadow: 0 4px 20px color-mix(in srgb, var(--accent, var(--pk)) 18%, transparent);
+    }
+    .cat-row.active::before { opacity: 1; }
 
-    .opt-body { padding: 22px 24px; }
+    .cat-row[data-slug="bolo"]      { --accent: var(--c-bolo); }
+    .cat-row[data-slug="doces"]     { --accent: var(--c-doces); }
+    .cat-row[data-slug="salgados"]  { --accent: var(--c-salgados); }
+    .cat-row[data-slug="combos"]    { --accent: var(--c-combos); }
+    .cat-row[data-slug="kit-festa"] { --accent: var(--c-kit-festa); }
 
-    .opt-group { margin-bottom: 20px; }
-    .opt-group-label {
-      font-size: .7rem; font-weight: 800;
-      color: #888; text-transform: uppercase; letter-spacing: .13em;
-      margin-bottom: 8px;
-      display: flex; align-items: center; gap: 8px;
+    .cat-icon-wrap {
+      width: 52px; height: 52px; border-radius: 14px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.7rem;
+      background: color-mix(in srgb, var(--accent, var(--pk)) 10%, white);
+      transition: background .2s;
     }
-    .opt-price-badge {
-      background: #fff0f6; color: var(--pk);
-      font-size: .65rem; font-weight: 800;
-      padding: 2px 8px; border-radius: 20px;
-      text-transform: none; letter-spacing: 0;
+    .cat-row.active .cat-icon-wrap {
+      background: color-mix(in srgb, var(--accent, var(--pk)) 18%, white);
     }
-    .opt-select {
-      width: 100%;
-      border: 1.5px solid #e5e5e5;
-      border-radius: 10px;
-      padding: 10px 14px;
-      font-family: 'Nunito', sans-serif;
-      font-weight: 600;
-      font-size: .9rem;
-      color: #2d2d2d;
-      background: #fff;
-      appearance: none;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23999' stroke-width='1.8' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
-      background-repeat: no-repeat;
-      background-position: right 14px center;
-      cursor: pointer;
+    .cat-text { flex: 1; min-width: 0; }
+    .cat-name { font-weight: 800; font-size: .95rem; color: var(--text); }
+    .cat-desc { font-size: .78rem; color: var(--muted); margin-top: 2px; font-weight: 500; line-height: 1.4; }
+    .cat-arrow {
+      color: var(--muted); font-size: 1rem; flex-shrink: 0;
+      transition: transform .2s, color .2s;
+    }
+    .cat-row.active .cat-arrow { transform: rotate(90deg); color: var(--accent, var(--pk)); }
+
+    /* ── Options slide-down ──────────────────────────────── */
+    .opts-wrap {
+      max-height: 0; overflow: hidden;
+      transition: max-height .35s cubic-bezier(.4,0,.2,1);
+    }
+    .opts-wrap.open { max-height: 1200px; }
+
+    .opts-inner {
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-top: none;
+      border-radius: 0 0 16px 16px;
+      padding: 20px 20px 24px;
+      margin-top: -10px;
+      margin-bottom: 10px;
+    }
+
+    .opt-group { margin-bottom: 16px; }
+    .opt-label {
+      font-size: .68rem; font-weight: 700; color: var(--muted);
+      text-transform: uppercase; letter-spacing: .14em;
+      margin-bottom: 6px; display: block;
+    }
+    .opt-sel {
+      width: 100%; padding: 10px 38px 10px 14px;
+      border: 1.5px solid var(--border); border-radius: 10px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: .875rem; font-weight: 500; color: var(--text);
+      background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238a87a0' stroke-width='1.8' fill='none' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat right 14px center;
+      appearance: none; cursor: pointer;
       transition: border-color .2s, box-shadow .2s;
     }
-    .opt-select:focus {
-      outline: none;
-      border-color: var(--pk);
-      box-shadow: 0 0 0 3px rgba(214,51,132,.1);
+    .opt-sel:focus {
+      outline: none; border-color: var(--pk);
+      box-shadow: 0 0 0 3px rgba(229,25,107,.1);
     }
-    .opt-select.is-invalid { border-color: #dc3545; }
+    .opt-sel.is-invalid { border-color: #dc3545; }
 
-    .opt-qty-row { display: flex; gap: 16px; align-items: flex-end; margin-bottom: 20px; }
-    .opt-qty-row .qty-wrap { flex: 0 0 100px; }
-    .opt-qty-row .note-wrap { flex: 1; }
-    .opt-qty-row label { font-size: .75rem; font-weight: 800; color: #888; text-transform: uppercase; letter-spacing: .1em; display: block; margin-bottom: 6px; }
-    .opt-qty-row input {
-      width: 100%;
-      border: 1.5px solid #e5e5e5;
-      border-radius: 10px;
-      padding: 10px 14px;
-      font-family: 'Nunito', sans-serif;
-      font-weight: 600;
-      font-size: .9rem;
-      color: #2d2d2d;
+    .qty-note-row { display: flex; gap: 12px; margin-bottom: 16px; }
+    .qty-note-row > div { display: flex; flex-direction: column; }
+    .qty-note-row .qty-col { flex: 0 0 90px; }
+    .qty-note-row .note-col { flex: 1; }
+    .qty-note-row label {
+      font-size: .68rem; font-weight: 700; color: var(--muted);
+      text-transform: uppercase; letter-spacing: .12em; margin-bottom: 6px;
+    }
+    .qty-note-row input {
+      padding: 10px 14px; border: 1.5px solid var(--border); border-radius: 10px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: .875rem; font-weight: 500; color: var(--text);
       transition: border-color .2s;
     }
-    .opt-qty-row input:focus { outline: none; border-color: var(--pk); box-shadow: 0 0 0 3px rgba(214,51,132,.1); }
+    .qty-note-row input:focus {
+      outline: none; border-color: var(--pk);
+      box-shadow: 0 0 0 3px rgba(229,25,107,.1);
+    }
 
     .btn-add {
-      display: block;
-      width: 100%;
-      max-width: 340px;
-      margin: 4px auto 0;
-      padding: 14px 0;
-      background: linear-gradient(135deg, #d63384 0%, #c2185b 100%);
-      color: #fff;
-      border: none;
-      border-radius: 14px;
-      font-family: 'Nunito', sans-serif;
-      font-weight: 800;
-      font-size: 1rem;
-      cursor: pointer;
-      transition: opacity .2s, transform .15s;
-      box-shadow: 0 4px 18px rgba(214,51,132,.35);
+      width: 100%; padding: 13px;
+      background: linear-gradient(135deg, var(--pk) 0%, #c0134f 100%);
+      color: #fff; border: none; border-radius: 12px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: .95rem; font-weight: 700;
+      cursor: pointer; letter-spacing: .02em;
+      box-shadow: 0 4px 16px rgba(229,25,107,.3);
+      transition: opacity .18s, transform .14s, box-shadow .18s;
     }
-    .btn-add:hover { opacity: .92; transform: translateY(-1px); }
+    .btn-add:hover  { opacity: .92; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(229,25,107,.38); }
     .btn-add:active { transform: translateY(0); opacity: 1; }
 
-    /* ── Form box ────────────────────────────────────── */
-    .form-box {
-      background: #fff; border-radius: 20px;
-      padding: 28px 24px;
-      box-shadow: 0 4px 24px rgba(0,0,0,.06);
-      max-width: 600px; margin: 0 auto;
+    /* ── Form ────────────────────────────────────────────── */
+    .form-card {
+      background: var(--surface); border: 1.5px solid var(--border);
+      border-radius: 20px; padding: 28px 24px;
     }
-    .form-label { font-weight: 700; font-size: .82rem; color: #555; }
+    .form-label { font-size: .78rem; font-weight: 700; color: #555; margin-bottom: 5px; }
+    .form-control, .form-select {
+      border: 1.5px solid var(--border); border-radius: 10px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: .875rem; font-weight: 500;
+    }
     .form-control:focus, .form-select:focus {
       border-color: var(--pk);
-      box-shadow: 0 0 0 3px rgba(214,51,132,.1);
+      box-shadow: 0 0 0 3px rgba(229,25,107,.1);
     }
 
-    /* ── Buttons ─────────────────────────────────────── */
-    .btn-pk { background: var(--pk); color: #fff; border: none; font-weight: 800; }
-    .btn-pk:hover, .btn-pk:active { background: var(--pk-dark); color: #fff; }
-    .btn-pk-outline { border: 2px solid var(--pk); color: var(--pk); background: transparent; font-weight: 700; }
-    .btn-pk-outline:hover { background: var(--pk-light); color: var(--pk); border-color: var(--pk); }
+    .btn-pk {
+      background: linear-gradient(135deg, var(--pk) 0%, #c0134f 100%);
+      color: #fff; border: none; font-weight: 700; border-radius: 12px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      box-shadow: 0 4px 14px rgba(229,25,107,.3);
+    }
+    .btn-pk:hover { opacity: .9; color: #fff; }
+    .btn-pk-outline {
+      border: 2px solid var(--border); color: var(--muted);
+      background: transparent; font-weight: 600; border-radius: 12px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    .btn-pk-outline:hover { border-color: var(--pk); color: var(--pk); background: var(--pk-soft); }
 
-    /* ── Success box ─────────────────────────────────── */
-    .success-box {
-      background: #fff; border-radius: 24px;
-      padding: 52px 32px; text-align: center;
-      max-width: 460px; margin: 0 auto;
-      border: 2px solid #bbf7d0;
-      position: relative; overflow: hidden;
+    /* ── Summary ─────────────────────────────────────────── */
+    .sum-card {
+      background: var(--surface); border: 1.5px solid var(--border);
+      border-radius: 16px; padding: 18px 20px; margin-bottom: 24px;
     }
-    /* CSS-only confetti dots */
-    .success-box::before, .success-box::after {
-      content: '';
-      position: absolute;
-      width: 160px; height: 160px;
-      border-radius: 50%;
-      pointer-events: none;
+    .sum-item {
+      display: flex; align-items: flex-start; gap: 12px;
+      padding: 10px 0; border-bottom: 1px solid var(--border);
     }
-    .success-box::before {
-      background: radial-gradient(circle, #fce4f0 0%, transparent 70%);
-      top: -60px; left: -60px;
+    .sum-item:last-child { border-bottom: none; padding-bottom: 0; }
+    .sum-ico { font-size: 1.4rem; flex-shrink: 0; padding-top: 1px; }
+    .sum-name { font-weight: 700; font-size: .9rem; }
+    .sum-qty  { font-weight: 500; color: var(--muted); font-size: .85rem; }
+    .sel-chip {
+      display: inline-block; background: var(--pk-soft); color: var(--pk-dark);
+      font-size: .68rem; font-weight: 700; padding: 2px 9px;
+      border-radius: 20px; margin: 3px 3px 0 0;
     }
-    .success-box::after {
-      background: radial-gradient(circle, #f3e8ff 0%, transparent 70%);
-      bottom: -60px; right: -60px;
-    }
-    .success-icon { font-size: 4.5rem; display: block; margin-bottom: 14px; }
 
-    /* ══════════════════════════════════════════════════
-       FLOATING BAG
-    ══════════════════════════════════════════════════ */
-    .bag-fab { position: fixed; top: 68px; right: 18px; z-index: 1050; }
+    /* ── Success ─────────────────────────────────────────── */
+    .success-card {
+      background: var(--surface); border: 1.5px solid var(--border);
+      border-radius: 24px; padding: 52px 32px; text-align: center;
+      max-width: 440px; margin: 0 auto;
+    }
+    .success-emoji { font-size: 4rem; display: block; margin-bottom: 16px; }
+
+    /* ── Floating bag ────────────────────────────────────── */
+    .bag-fab { position: fixed; top: 70px; right: 16px; z-index: 1050; }
 
     .bag-btn {
-      width: 52px; height: 52px; border-radius: 50%;
-      background: var(--pk); color: #fff; border: none; cursor: pointer;
-      box-shadow: 0 4px 18px rgba(214,51,132,.5);
+      width: 48px; height: 48px; border-radius: 14px;
+      background: var(--text); color: #fff; border: none; cursor: pointer;
       display: flex; align-items: center; justify-content: center;
-      position: relative; transition: transform .18s, box-shadow .18s;
-      padding: 0;
+      box-shadow: 0 4px 16px rgba(0,0,0,.22);
+      position: relative;
+      transition: transform .16s, box-shadow .16s;
     }
-    .bag-btn:hover  { transform: scale(1.09); box-shadow: 0 6px 24px rgba(214,51,132,.6); }
-    .bag-btn:active { transform: scale(.94); }
+    .bag-btn:hover  { transform: scale(1.07); box-shadow: 0 6px 20px rgba(0,0,0,.28); }
+    .bag-btn:active { transform: scale(.93); }
 
     .bag-badge {
-      position: absolute; top: -6px; right: -6px;
-      background: #e63946; color: #fff;
-      font-size: .65rem; font-weight: 800;
-      border-radius: 50%; min-width: 22px; height: 22px; padding: 0 4px;
+      position: absolute; top: -7px; right: -7px;
+      background: var(--pk); color: #fff;
+      font-size: .62rem; font-weight: 800;
+      border-radius: 50%; min-width: 20px; height: 20px; padding: 0 3px;
       display: flex; align-items: center; justify-content: center;
-      border: 2.5px solid var(--cream); line-height: 1;
-      font-family: 'Nunito', sans-serif;
+      border: 2px solid var(--bg); line-height: 1;
+      font-family: 'Plus Jakarta Sans', sans-serif;
     }
     .bag-badge.hidden { display: none; }
 
     .bag-panel {
-      position: absolute; top: 62px; right: 0; width: 310px;
-      max-height: calc(100vh - 160px);
-      background: #fff; border-radius: 18px;
-      box-shadow: 0 10px 40px rgba(0,0,0,.18);
+      position: absolute; top: 58px; right: 0; width: 300px;
+      max-height: calc(100vh - 150px);
+      background: var(--surface); border-radius: 18px;
+      border: 1.5px solid var(--border);
+      box-shadow: 0 12px 40px rgba(0,0,0,.14);
       display: flex; flex-direction: column; overflow: hidden;
-      opacity: 0; transform: translateY(-12px) scale(.95);
-      transition: opacity .22s ease, transform .22s ease;
+      opacity: 0; transform: translateY(-10px) scale(.96);
+      transition: opacity .2s ease, transform .2s ease;
       pointer-events: none;
     }
-    .bag-panel.open { opacity: 1; transform: translateY(0) scale(1); pointer-events: all; }
-
-    .bp-header {
-      padding: 14px 16px; border-bottom: 1px solid #fce4f0;
-      display: flex; align-items: center; justify-content: space-between;
-      font-weight: 800; font-size: .92rem;
-      background: var(--pk-light); flex-shrink: 0;
+    .bag-panel.open {
+      opacity: 1; transform: translateY(0) scale(1);
+      pointer-events: all;
     }
-    .bp-header-left { display: flex; align-items: center; gap: 8px; color: var(--pk); }
-    .bp-close { background: none; border: none; font-size: 1.4rem; line-height: 1; color: #bbb; cursor: pointer; padding: 0 2px; }
-    .bp-close:hover { color: #555; }
+
+    .bp-head {
+      padding: 13px 16px;
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+      flex-shrink: 0;
+    }
+    .bp-head-title {
+      font-weight: 800; font-size: .88rem; color: var(--text);
+      display: flex; align-items: center; gap: 7px;
+    }
+    .bp-close {
+      background: none; border: none; cursor: pointer;
+      color: var(--muted); font-size: 1.3rem; line-height: 1; padding: 0;
+    }
+    .bp-close:hover { color: var(--text); }
 
     .bp-items { flex: 1; overflow-y: auto; padding: 10px 12px; }
 
     .bp-item {
-      background: #fafafa;
-      border: 1px solid #f0e4f0;
-      border-radius: 12px;
-      padding: 10px 12px;
-      margin-bottom: 8px;
-      font-size: .83rem;
+      background: var(--bg); border-radius: 12px;
+      padding: 10px 12px; margin-bottom: 8px; font-size: .82rem;
     }
-    .bp-item-name { font-weight: 800; color: #1a1a1a; }
-    .bp-item-qty  { font-weight: 600; color: #999; }
-    .bp-sel-badge {
-      display: inline-block;
-      background: #f0d6e8; color: #a3255f;
-      font-size: .66rem; font-weight: 700;
-      padding: 2px 8px; border-radius: 20px;
-      margin: 2px 3px 0 0;
+    .bp-item-name { font-weight: 700; }
+    .bp-item-qty  { font-weight: 500; color: var(--muted); }
+    .bp-chip {
+      display: inline-block; background: var(--pk-soft); color: var(--pk-dark);
+      font-size: .64rem; font-weight: 700; padding: 2px 7px;
+      border-radius: 20px; margin: 2px 2px 0 0;
     }
-    .bp-empty { text-align: center; color: #ccc; font-size: .88rem; padding: 32px 0; font-weight: 700; }
+    .bp-empty { text-align: center; color: var(--muted); font-size: .88rem; padding: 28px 0; font-weight: 600; }
 
-    .bp-footer { padding: 12px; border-top: 1px solid #f5f5f5; background: #fafafa; flex-shrink: 0; }
+    .bp-foot { padding: 12px; border-top: 1px solid var(--border); flex-shrink: 0; }
 
     .bag-overlay { position: fixed; inset: 0; z-index: 1049; display: none; }
     .bag-overlay.open { display: block; }
 
     @media (max-width: 480px) {
-      .bag-panel { width: calc(100vw - 36px); right: 0; }
-      .bag-fab   { top: 62px; right: 14px; }
+      .bag-panel { width: calc(100vw - 32px); }
+      .bag-fab   { top: 66px; right: 12px; }
     }
 
-    /* ── Summary card ────────────────────────────────── */
-    .summary-card {
-      background: #fff;
-      border: 1.5px solid #fce4f0;
-      border-radius: 16px;
-      padding: 18px 20px;
-    }
-    .summary-item { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 14px; padding-bottom: 14px; border-bottom: 1px solid #f5f5f5; }
-    .summary-item:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
-    .summary-item-icon { font-size: 1.5rem; flex-shrink: 0; }
-    .summary-item-name { font-weight: 800; font-size: .9rem; }
-    .summary-item-qty  { font-weight: 600; color: #999; }
+    /* ── Spinner ─────────────────────────────────────────── */
+    .spinner-pk { color: var(--pk); }
   </style>
 </head>
 <body>
 
-<!-- ══ Navbar ══════════════════════════════════════════════════════════════ -->
-<nav class="navbar">
-  <a class="navbar-brand" href="/">🧁 <span>Jack Mariano Confeitaria</span></a>
-</nav>
-
-<!-- ══ Bag overlay ══════════════════════════════════════════════════════════ -->
+<!-- Overlay for bag -->
 <div class="bag-overlay" id="bag-overlay" onclick="closeBag()"></div>
 
-<!-- ══ Floating Bag ════════════════════════════════════════════════════════ -->
+<!-- ══ Header ══════════════════════════════════════════════════════════════ -->
+<header class="site-header">
+  <a class="brand" href="/">
+    <div class="brand-dot">🧁</div>
+    Jack Mariano Confeitaria
+  </a>
+</header>
+
+<!-- ══ Step bar ════════════════════════════════════════════════════════════ -->
+<div class="step-bar">
+  <div class="step-pill active" id="sp1">
+    <div class="sp-num">1</div>
+    <span>Itens</span>
+  </div>
+  <div class="step-sep" id="ss1"></div>
+  <div class="step-pill pending" id="sp2">
+    <div class="sp-num">2</div>
+    <span>Seus dados</span>
+  </div>
+  <div class="step-sep" id="ss2"></div>
+  <div class="step-pill pending" id="sp3">
+    <div class="sp-num">3</div>
+    <span>Confirmação</span>
+  </div>
+</div>
+
+<!-- ══ Floating bag ════════════════════════════════════════════════════════ -->
 <div class="bag-fab">
   <button class="bag-btn" id="bag-btn" onclick="toggleBag()" aria-label="Abrir sacola">
-    <svg width="22" height="24" viewBox="0 0 22 24" fill="none"
+    <svg width="20" height="22" viewBox="0 0 22 24" fill="none"
          stroke="currentColor" stroke-width="2.2"
          stroke-linecap="round" stroke-linejoin="round">
-      <path d="M7 9 V6.5 a4 4 0 0 1 8 0 V9"/>
-      <path d="M2 9 h18 l-1.8 11.2 A2 2 0 0 1 16.2 22 H5.8 a2 2 0 0 1 -2 -1.8 Z"/>
+      <path d="M7 9V6.5a4 4 0 0 1 8 0V9"/>
+      <path d="M2 9h18l-1.8 11.2A2 2 0 0 1 16.2 22H5.8a2 2 0 0 1-2-1.8Z"/>
     </svg>
     <span class="bag-badge hidden" id="bag-badge">0</span>
   </button>
 
   <div class="bag-panel" id="bag-panel">
-    <div class="bp-header">
-      <div class="bp-header-left">
-        <svg width="16" height="18" viewBox="0 0 22 24" fill="none"
+    <div class="bp-head">
+      <div class="bp-head-title">
+        <svg width="14" height="16" viewBox="0 0 22 24" fill="none"
              stroke="currentColor" stroke-width="2.4"
              stroke-linecap="round" stroke-linejoin="round">
-          <path d="M7 9 V6.5 a4 4 0 0 1 8 0 V9"/>
-          <path d="M2 9 h18 l-1.8 11.2 A2 2 0 0 1 16.2 22 H5.8 a2 2 0 0 1 -2 -1.8 Z"/>
+          <path d="M7 9V6.5a4 4 0 0 1 8 0V9"/>
+          <path d="M2 9h18l-1.8 11.2A2 2 0 0 1 16.2 22H5.8a2 2 0 0 1-2-1.8Z"/>
         </svg>
         Minha Sacola
       </div>
-      <button class="bp-close" onclick="closeBag()" aria-label="Fechar">×</button>
+      <button class="bp-close" onclick="closeBag()">×</button>
     </div>
 
     <div class="bp-items" id="bp-items">
       <div class="bp-empty">Sua sacola está vazia.</div>
     </div>
 
-    <div class="bp-footer d-none" id="bp-footer">
-      <button class="btn btn-pk w-100 btn-sm py-2 mb-2 fw-bold"
+    <div class="bp-foot d-none" id="bp-footer">
+      <button class="btn btn-pk w-100 py-2 mb-2"
               onclick="closeBag(); goStep2()">
         Finalizar pedido →
       </button>
@@ -442,86 +462,43 @@
   </div>
 </div>
 
-<!-- ══ Hero ════════════════════════════════════════════════════════════════ -->
-<div class="hero">
-  <h1>Faça sua <span class="highlight">encomenda</span> 🎉</h1>
-  <p>Bolos, doces e salgados artesanais. Entraremos em contato pelo WhatsApp para confirmar disponibilidade e valor.</p>
-  <div class="step-wrap">
-    <div class="step-col">
-      <div class="step-num active" id="sn1">1</div>
-      <div class="step-label">Itens</div>
+
+<!-- ══ STEP 1 ════════════════════════════════════════════════════════════════ -->
+<div id="step1">
+
+  <div class="hero-strip">
+    <h1>Faça sua <em>encomenda</em> 🎉</h1>
+    <p>Bolos, doces e salgados artesanais. Entraremos em contato pelo WhatsApp para confirmar disponibilidade e valor.</p>
+  </div>
+
+  <div class="page">
+    <p class="s-head">Escolha o produto</p>
+
+    <!-- Category list -->
+    <div class="cat-list" id="cat-list">
+      <div style="text-align:center;padding:40px 0;color:var(--muted)">
+        <div class="spinner-border spinner-border-sm spinner-pk me-2"></div>Carregando...
+      </div>
     </div>
-    <div class="step-line" id="sl1"></div>
-    <div class="step-col">
-      <div class="step-num pending" id="sn2">2</div>
-      <div class="step-label">Seus dados</div>
-    </div>
-    <div class="step-line" id="sl2"></div>
-    <div class="step-col">
-      <div class="step-num pending" id="sn3">3</div>
-      <div class="step-label">Confirmação</div>
-    </div>
+
+    <!-- Options panel (injected per category via JS) -->
+    <div id="options-area"></div>
+
   </div>
 </div>
 
-<!-- ══ STEP 1 — Produtos ════════════════════════════════════════════════════ -->
-<div id="step1">
-  <div class="page-wrap">
 
-    <p class="sec-label">Escolha o produto</p>
-    <div class="cat-grid" id="cat-grid">
-      <div style="grid-column:1/-1;text-align:center;padding:32px;color:#bbb">
-        <div class="spinner-border spinner-border-sm me-2" style="color:#d63384"></div>Carregando...
-      </div>
-    </div>
-
-    <!-- Painel de opções do produto -->
-    <div id="options-area" class="d-none">
-      <p class="sec-label mb-4">Configure seu pedido</p>
-      <div class="options-box">
-        <div class="opt-header">
-          <span class="opt-icon" id="opt-icon"></span>
-          <div>
-            <div class="opt-title" id="opt-name"></div>
-            <div class="opt-price" id="opt-price-from"></div>
-          </div>
-        </div>
-        <div class="opt-body">
-          <div id="opt-fields"></div>
-          <div class="opt-qty-row">
-            <div class="qty-wrap">
-              <label>Quantidade</label>
-              <input type="number" id="item-qty" value="1" min="1">
-            </div>
-            <div class="note-wrap">
-              <label>Observação do item</label>
-              <input type="text" id="item-note" placeholder="Ex: Tema Frozen, sem açúcar...">
-            </div>
-          </div>
-          <button class="btn-add" onclick="addToSacola()">
-            + Adicionar à Sacola
-          </button>
-        </div>
-      </div>
-    </div>
-
-  </div>
-</div><!-- /step1 -->
-
-
-<!-- ══ STEP 2 — Dados do cliente ════════════════════════════════════════════ -->
+<!-- ══ STEP 2 ════════════════════════════════════════════════════════════════ -->
 <div id="step2" class="d-none">
-  <div class="page-wrap">
+  <div class="page">
 
-    <div id="step2-summary" class="mb-4" style="max-width:600px;margin-left:auto;margin-right:auto">
-      <p class="sec-label">Resumo da sacola</p>
-      <div class="summary-card">
-        <div id="summary-list"></div>
-      </div>
+    <p class="s-head">Resumo da sacola</p>
+    <div class="sum-card" id="sum-card">
+      <div id="summary-list"></div>
     </div>
 
-    <p class="sec-label">Seus dados</p>
-    <div class="form-box">
+    <p class="s-head">Seus dados</p>
+    <div class="form-card">
       <div class="row g-3">
         <div class="col-12">
           <label class="form-label">Nome completo <span class="text-danger">*</span></label>
@@ -555,43 +532,45 @@
         </div>
       </div>
       <div id="form-error" class="alert alert-danger mt-3 d-none"></div>
-      <div class="mt-4 d-flex gap-2 justify-content-center flex-wrap">
-        <button class="btn btn-pk-outline px-4" onclick="goStep1()">← Voltar</button>
-        <button class="btn btn-pk px-5" onclick="submitOrder()" id="btn-submit">
+      <div class="d-flex gap-2 mt-4 justify-content-center flex-wrap">
+        <button class="btn btn-pk-outline px-4 py-2" onclick="goStep1()">← Voltar</button>
+        <button class="btn btn-pk px-5 py-2" onclick="submitOrder()" id="btn-submit">
           Enviar pedido
         </button>
       </div>
     </div>
 
-    <p class="text-center text-muted mt-3" style="font-size:.78rem;max-width:420px;margin-left:auto;margin-right:auto;font-weight:600">
-      ℹ️ O pedido <strong>não é confirmado automaticamente</strong>. Nossa equipe entra em contato pelo WhatsApp para verificar disponibilidade e informar o valor.
+    <p class="text-center mt-3" style="font-size:.75rem;color:var(--muted);max-width:420px;margin-left:auto;margin-right:auto;line-height:1.6;font-weight:500">
+      O pedido <strong style="color:var(--text)">não é confirmado automaticamente</strong>. Nossa equipe entra em contato pelo WhatsApp para verificar disponibilidade e valor.
     </p>
 
   </div>
-</div><!-- /step2 -->
+</div>
 
 
-<!-- ══ STEP 3 — Confirmação ═════════════════════════════════════════════════ -->
+<!-- ══ STEP 3 ════════════════════════════════════════════════════════════════ -->
 <div id="step3" class="d-none">
-  <div class="page-wrap">
-    <div class="success-box shadow-sm">
-      <span class="success-icon">🎉</span>
+  <div class="page">
+    <div class="success-card">
+      <span class="success-emoji">🎉</span>
       <h4 style="font-weight:800;margin-bottom:8px">Pedido recebido!</h4>
-      <p class="text-muted mb-3" style="font-size:.93rem;font-weight:600">Nossa equipe entrará em contato pelo WhatsApp para confirmar disponibilidade e informar o valor.</p>
-      <div class="alert alert-success py-2 mb-3" style="font-weight:700">
-        Número do pedido: <strong id="order-id-display">#</strong>
+      <p style="font-size:.9rem;color:var(--muted);font-weight:500;line-height:1.6;margin-bottom:20px">
+        Nossa equipe entrará em contato pelo WhatsApp para confirmar disponibilidade e valor.
+      </p>
+      <div style="background:var(--bg);border-radius:10px;padding:10px 16px;margin-bottom:20px;font-weight:700;font-size:.9rem">
+        Pedido <span id="order-id-display" style="color:var(--pk)">#</span>
       </div>
       <a id="wa-client-btn" href="#" target="_blank"
          class="btn w-100 fw-bold mb-2 py-2"
-         style="background:#25d366;color:#fff;border-radius:14px;font-family:'Nunito',sans-serif;font-size:1rem">
+         style="background:#25d366;color:#fff;border-radius:12px;font-family:'Plus Jakarta Sans',sans-serif">
         <i class="bi bi-whatsapp me-2"></i>Falar no WhatsApp
       </a>
-      <button class="btn btn-pk-outline btn-sm w-100 mt-1" onclick="resetForm()">
+      <button class="btn btn-pk-outline w-100 mt-1 py-2" onclick="resetForm()">
         Fazer novo pedido
       </button>
     </div>
   </div>
-</div><!-- /step3 -->
+</div>
 
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -604,15 +583,15 @@ let bagOpen     = false;
 
 /* ── Steps ──────────────────────────────────────────────────────────────── */
 function setStep(n) {
-  [1,2,3].forEach(i => {
-    document.getElementById('step'+i).classList.toggle('d-none', i !== n);
-    const el = document.getElementById('sn'+i);
-    el.classList.remove('active','done','pending');
-    el.classList.add(i < n ? 'done' : i === n ? 'active' : 'pending');
+  [1, 2, 3].forEach(i => {
+    document.getElementById('step' + i).classList.toggle('d-none', i !== n);
+    const pill = document.getElementById('sp' + i);
+    pill.className = 'step-pill ' + (i < n ? 'done' : i === n ? 'active' : 'pending');
   });
-  [1,2].forEach(i =>
-    document.getElementById('sl'+i)?.classList.toggle('done', i < n)
-  );
+  [1, 2].forEach(i => {
+    const sep = document.getElementById('ss' + i);
+    if (sep) sep.style.background = i < n ? '#16a34a' : 'var(--border)';
+  });
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
@@ -627,50 +606,81 @@ function goStep2() {
 async function loadCategories() {
   const res = await fetch(`${API}/api/categories`);
   categories = await res.json();
-  document.getElementById('cat-grid').innerHTML = categories.map(c => `
-    <div class="cat-card" id="cc-${c.slug}" data-slug="${c.slug}" onclick="selectCat('${c.slug}')">
-      <span class="icon">${c.icon}</span>
-      <div class="name">${c.name}</div>
-      <div class="desc">${c.description}</div>
-      ${c.price_from ? `<span class="price-badge">${c.price_from}</span>` : ''}
-    </div>`).join('');
+
+  const list = document.getElementById('cat-list');
+  list.innerHTML = '';
+
+  categories.forEach(c => {
+    // Category row
+    const row = document.createElement('div');
+    row.className = 'cat-row';
+    row.id = 'cr-' + c.slug;
+    row.dataset.slug = c.slug;
+    row.innerHTML = `
+      <div class="cat-icon-wrap">${c.icon}</div>
+      <div class="cat-text">
+        <div class="cat-name">${c.name}</div>
+        <div class="cat-desc">${c.description}</div>
+      </div>
+      <i class="bi bi-chevron-right cat-arrow"></i>`;
+    row.onclick = () => selectCat(c.slug, row);
+
+    // Options slot (injected below each row)
+    const slot = document.createElement('div');
+    slot.className = 'opts-wrap';
+    slot.id = 'ow-' + c.slug;
+
+    list.appendChild(row);
+    list.appendChild(slot);
+  });
 }
 
-function selectCat(slug) {
-  selectedCat = categories.find(c => c.slug === slug);
-  document.querySelectorAll('.cat-card').forEach(el => el.classList.remove('active'));
-  document.getElementById('cc-' + slug).classList.add('active');
+function selectCat(slug, rowEl) {
+  // Close all other slots
+  document.querySelectorAll('.opts-wrap').forEach(w => w.classList.remove('open'));
+  document.querySelectorAll('.cat-row').forEach(r => r.classList.remove('active'));
 
-  document.getElementById('opt-icon').textContent = selectedCat.icon;
-  document.getElementById('opt-name').textContent  = selectedCat.name;
-  document.getElementById('opt-price-from').textContent = selectedCat.price_from || '';
+  const already = selectedCat && selectedCat.slug === slug;
+  selectedCat = already ? null : categories.find(c => c.slug === slug);
 
-  // options is now { groupName: { price_info, items: [{id,name,active}] } }
-  document.getElementById('opt-fields').innerHTML =
-    Object.entries(selectedCat.options).map(([group, data]) => {
-      const priceBadge = data.price_info
-        ? `<span class="opt-price-badge">${data.price_info}</span>`
-        : '';
-      const opts = data.items
-        .filter(i => i.active)
-        .map(i => `<option value="${i.name}">${i.name}</option>`)
-        .join('');
-      return `
-        <div class="opt-group">
-          <div class="opt-group-label">${group} ${priceBadge}</div>
-          <select class="opt-select" data-group="${group}">
-            <option value="">— escolha —</option>
-            ${opts}
-          </select>
-        </div>`;
-    }).join('');
+  if (already) return; // toggle off
 
-  document.getElementById('item-qty').value  = 1;
-  document.getElementById('item-note').value = '';
-  document.getElementById('options-area').classList.remove('d-none');
-  setTimeout(() =>
-    document.getElementById('options-area')
-      .scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 60);
+  rowEl.classList.add('active');
+
+  const cat  = selectedCat;
+  const wrap = document.getElementById('ow-' + slug);
+
+  // Build options HTML
+  const groupsHtml = Object.entries(cat.options).map(([group, data]) => `
+    <div class="opt-group">
+      <label class="opt-label">${group}</label>
+      <select class="opt-sel" data-group="${group}">
+        <option value="">— escolha —</option>
+        ${data.items.filter(i => i.active).map(i =>
+          `<option value="${i.name}">${i.name}</option>`).join('')}
+      </select>
+    </div>`).join('');
+
+  wrap.innerHTML = `
+    <div class="opts-inner">
+      ${groupsHtml}
+      <div class="qty-note-row">
+        <div class="qty-col">
+          <label>Quantidade</label>
+          <input type="number" id="item-qty" value="1" min="1">
+        </div>
+        <div class="note-col">
+          <label>Observação</label>
+          <input type="text" id="item-note" placeholder="Ex: Tema Frozen, sem açúcar...">
+        </div>
+      </div>
+      <button class="btn-add" onclick="addToSacola()">
+        + Adicionar à Sacola
+      </button>
+    </div>`;
+
+  wrap.classList.add('open');
+  setTimeout(() => rowEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 60);
 }
 
 /* ── Sacola ─────────────────────────────────────────────────────────────── */
@@ -678,11 +688,12 @@ function addToSacola() {
   if (!selectedCat) return;
   const selections = {};
   let valid = true;
-  document.querySelectorAll('#opt-fields .opt-select').forEach(sel => {
+  document.querySelectorAll('#ow-' + selectedCat.slug + ' .opt-sel').forEach(sel => {
     if (!sel.value) { sel.classList.add('is-invalid'); valid = false; }
     else { sel.classList.remove('is-invalid'); selections[sel.dataset.group] = sel.value; }
   });
   if (!valid) return toast('Selecione todas as opções antes de adicionar.', 'danger');
+
   sacola.push({
     category_slug: selectedCat.slug,
     category_name: selectedCat.name,
@@ -713,21 +724,20 @@ function renderBag() {
   badge.classList.remove('hidden');
   footer.classList.remove('d-none');
   items.innerHTML = sacola.map((item, i) => {
-    const sels = Object.entries(item.selections)
-      .map(([,v]) => `<span class="bp-sel-badge">${v}</span>`)
-      .join('');
+    const chips = Object.entries(item.selections)
+      .map(([, v]) => `<span class="bp-chip">${v}</span>`).join('');
     return `
       <div class="bp-item">
         <div class="d-flex justify-content-between align-items-start">
           <div class="bp-item-name">${item.icon} ${item.category_name}
-            <span class="bp-item-qty">×${item.quantity}</span>
+            <span class="bp-item-qty"> ×${item.quantity}</span>
           </div>
-          <button class="btn btn-sm btn-link text-danger p-0 ms-1 lh-1 fw-bold"
+          <button class="btn btn-sm btn-link text-danger p-0 ms-2 lh-1 fw-bold"
                   onclick="removeItem(${i})">✕</button>
         </div>
-        <div class="mt-1">${sels}</div>
+        <div class="mt-1">${chips}</div>
         ${item.item_notes
-          ? `<div class="text-muted mt-1" style="font-size:.73rem;font-weight:600">📝 ${item.item_notes}</div>`
+          ? `<div style="font-size:.72rem;color:var(--muted);margin-top:4px;font-weight:500">📝 ${item.item_notes}</div>`
           : ''}
       </div>`;
   }).join('');
@@ -735,27 +745,25 @@ function renderBag() {
 
 function renderSummary() {
   document.getElementById('summary-list').innerHTML = sacola.map(item => {
-    const sels = Object.entries(item.selections)
-      .map(([,v]) => `<span class="bp-sel-badge">${v}</span>`)
-      .join('');
+    const chips = Object.entries(item.selections)
+      .map(([, v]) => `<span class="sel-chip">${v}</span>`).join('');
     return `
-      <div class="summary-item">
-        <span class="summary-item-icon">${item.icon}</span>
+      <div class="sum-item">
+        <span class="sum-ico">${item.icon}</span>
         <div>
-          <div class="summary-item-name">
-            ${item.category_name}
-            <span class="summary-item-qty">×${item.quantity}</span>
+          <div class="sum-name">${item.category_name}
+            <span class="sum-qty"> ×${item.quantity}</span>
           </div>
-          <div class="mt-1">${sels}</div>
+          <div class="mt-1">${chips}</div>
           ${item.item_notes
-            ? `<div class="text-muted mt-1" style="font-size:.75rem;font-weight:600">📝 ${item.item_notes}</div>`
+            ? `<div style="font-size:.74rem;color:var(--muted);margin-top:4px;font-weight:500">📝 ${item.item_notes}</div>`
             : ''}
         </div>
       </div>`;
   }).join('');
 }
 
-/* ── Bag open / close ───────────────────────────────────────────────────── */
+/* ── Bag toggle ─────────────────────────────────────────────────────────── */
 function toggleBag() { bagOpen ? closeBag() : openBag(); }
 function openBag() {
   document.getElementById('bag-panel').classList.add('open');
@@ -809,16 +817,14 @@ function resetForm() {
     .forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
   document.getElementById('f-time').value = '14:00';
   selectedCat = null;
-  document.querySelectorAll('.cat-card').forEach(el => el.classList.remove('active'));
-  document.getElementById('options-area').classList.add('d-none');
   setStep(1);
 }
 
 /* ── Toast ──────────────────────────────────────────────────────────────── */
 function toast(msg, type = 'info') {
   const div = document.createElement('div');
-  div.className = `alert alert-${type} shadow position-fixed bottom-0 end-0 m-3 py-2 px-3`;
-  div.style.cssText = 'z-index:9999;font-size:.86rem;max-width:300px;border-radius:12px;font-family:Nunito,sans-serif;font-weight:700';
+  div.className = `alert alert-${type} shadow-sm position-fixed bottom-0 end-0 m-3 py-2 px-3`;
+  div.style.cssText = 'z-index:9999;font-size:.84rem;max-width:300px;border-radius:12px;font-family:"Plus Jakarta Sans",sans-serif;font-weight:600';
   div.textContent = msg;
   document.body.appendChild(div);
   setTimeout(() => div.remove(), 2800);
