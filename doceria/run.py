@@ -30,7 +30,6 @@ if __name__ == "__main__":
     print("="*52)
     print(f"  Local:       http://localhost:{port}")
     print(f"  Rede local:  http://{ip}:{port}")
-    print(f"  Admin:       http://{ip}:{port}/painel")
     print("="*52)
     print("  Compartilhe 'Rede local' com qualquer")
     print("  dispositivo conectado ao mesmo Wi-Fi.\n")

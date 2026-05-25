@@ -119,16 +119,16 @@
 <!-- ══ Sidebar ══════════════════════════════════════════════════════════════ -->
 <aside class="sidebar">
   <div class="brand">
-    🧁 Jack Mariano Confeitaria
+    Jack Mariano Confeitaria
     <small>Painel Administrativo</small>
   </div>
   <nav>
-    <div class="nav-section">Gestão</div>
+    <div class="nav-section">Gestao</div>
     <a href="#" class="active" onclick="showSection('pedidos',this)">
       <i class="bi bi-receipt"></i> Pedidos
     </a>
     <a href="#" onclick="showSection('stats',this)">
-      <i class="bi bi-bar-chart-line"></i> Estatísticas
+      <i class="bi bi-bar-chart-line"></i> Estatisticas
     </a>
     <div class="nav-section">Filtrar por status</div>
     <a href="#" onclick="quickFilter('pending',this)">
@@ -138,7 +138,7 @@
       <i class="bi bi-check-circle"></i> Confirmados
     </a>
     <a href="#" onclick="quickFilter('in_progress',this)">
-      <i class="bi bi-hammer"></i> Em produção
+      <i class="bi bi-hammer"></i> Em producao
     </a>
     <a href="#" onclick="quickFilter('ready',this)">
       <i class="bi bi-gift"></i> Prontos
@@ -165,16 +165,16 @@
 
   <div class="content">
 
-    <!-- SEÇÃO PEDIDOS -->
+    <!-- SECAO PEDIDOS -->
     <div id="sec-pedidos">
       <div class="filter-bar mb-3">
         <span class="text-muted small fw-semibold">Filtrar:</span>
         <select id="status-filter" class="form-select form-select-sm"
                 style="width:210px" onchange="loadOrders()">
           <option value="">Todos os pedidos</option>
-          <option value="pending">Aguardando confirmação</option>
+          <option value="pending">Aguardando confirmacao</option>
           <option value="confirmed">Confirmado</option>
-          <option value="in_progress">Em produção</option>
+          <option value="in_progress">Em producao</option>
           <option value="ready">Pronto para retirada</option>
           <option value="cancelled">Cancelado</option>
         </select>
@@ -199,7 +199,7 @@
       </div>
     </div><!-- /sec-pedidos -->
 
-    <!-- SEÇÃO STATS -->
+    <!-- SECAO STATS -->
     <div id="sec-stats" class="d-none">
       <div class="row g-3 mb-4" id="stat-cards">
         <div class="col-12 text-center text-muted py-4">Carregando...</div>
@@ -254,9 +254,9 @@
       <div class="col-7">
         <label class="form-label fw-semibold mb-1" style="font-size:.8rem">Alterar status</label>
         <select id="dp-status-sel" class="form-select form-select-sm">
-          <option value="pending">Aguardando confirmação</option>
+          <option value="pending">Aguardando confirmacao</option>
           <option value="confirmed">Confirmado</option>
-          <option value="in_progress">Em produção</option>
+          <option value="in_progress">Em producao</option>
           <option value="ready">Pronto para retirada</option>
           <option value="cancelled">Cancelado</option>
         </select>
@@ -272,7 +272,7 @@
       <div class="col-12">
         <label class="form-label mb-1" style="font-size:.8rem">Nota interna</label>
         <input type="text" id="dp-admin-notes" class="form-control form-control-sm"
-               placeholder="Anotação para a equipe...">
+               placeholder="Anotacao para a equipe...">
       </div>
     </div>
   </div>
@@ -282,9 +282,9 @@
 <script>
 const API = '';
 const STATUS = {
-  pending:     { label: 'Aguardando confirmação', cls: 's-pending' },
+  pending:     { label: 'Aguardando confirmacao', cls: 's-pending' },
   confirmed:   { label: 'Confirmado',             cls: 's-confirmed' },
-  in_progress: { label: 'Em produção',            cls: 's-in_progress' },
+  in_progress: { label: 'Em producao',            cls: 's-in_progress' },
   ready:       { label: 'Pronto para retirada',   cls: 's-ready' },
   cancelled:   { label: 'Cancelado',              cls: 's-cancelled' },
 };
@@ -299,7 +299,7 @@ function showSection(name, el) {
   document.getElementById('topbar-title').innerHTML =
     name === 'pedidos'
       ? '<i class="bi bi-receipt me-2"></i>Pedidos'
-      : '<i class="bi bi-bar-chart-line me-2"></i>Estatísticas';
+      : '<i class="bi bi-bar-chart-line me-2"></i>Estatisticas';
   if (name === 'stats') loadStats();
 }
 
@@ -382,7 +382,7 @@ async function openPanel(id) {
         : ''}
       <div class="info-row">
         <span class="lbl">Retirada</span>
-        <strong>${fmtDate(o.pickup_date)} às ${o.pickup_time}</strong>
+        <strong>${fmtDate(o.pickup_date)} as ${o.pickup_time}</strong>
       </div>
       ${o.allergies
         ? `<div class="info-row"><span class="lbl">Alergias</span><span class="text-danger">${o.allergies}</span></div>`
@@ -402,14 +402,14 @@ async function openPanel(id) {
       <div class="item-card">
         <div class="ic-title">
           ${item.category_name}
-          <span class="text-muted fw-normal">× ${item.quantity}</span>
+          <span class="text-muted fw-normal">x ${item.quantity}</span>
         </div>
         <div class="mt-2">
           ${Object.entries(item.selections).map(([k,v]) =>
             `<span class="tag">${k}: ${v}</span>`).join('')}
         </div>
         ${item.item_notes
-          ? `<div class="text-muted mt-1" style="font-size:.78rem">📝 ${item.item_notes}</div>`
+          ? `<div class="text-muted mt-1" style="font-size:.78rem">Obs: ${item.item_notes}</div>`
           : ''}
       </div>`).join('')}`;
 
@@ -453,9 +453,9 @@ async function saveStatus() {
 
 /* ── Delete ─────────────────────────────────────────────────────────────── */
 function confirmDelete() {
-  if (!confirm(`Excluir pedido #${currentOrderId}? Essa ação não pode ser desfeita.`)) return;
+  if (!confirm(`Excluir pedido #${currentOrderId}? Essa acao nao pode ser desfeita.`)) return;
   fetch(`${API}/admin/orders/${currentOrderId}`, { method: 'DELETE' })
-    .then(() => { closePanel(); loadOrders(); toast('Pedido excluído.', 'warning'); });
+    .then(() => { closePanel(); loadOrders(); toast('Pedido excluido.', 'warning'); });
 }
 
 /* ── Stats ──────────────────────────────────────────────────────────────── */
@@ -464,15 +464,15 @@ async function loadStats() {
   const d   = await res.json();
 
   const defs = [
-    { val: d.total_orders,                                   lbl: 'Total de pedidos',   icon: '📋', color: '#6366f1' },
-    { val: d.by_status['Aguardando confirmação'] || 0,       lbl: 'Aguardando',         icon: '⏳', color: '#f59e0b' },
-    { val: d.by_status['Em produção'] || 0,                  lbl: 'Em produção',        icon: '🔨', color: '#0ea5e9' },
-    { val: d.by_status['Pronto para retirada'] || 0,         lbl: 'Prontos',            icon: '🎁', color: '#22c55e' },
+    { val: d.total_orders,                                   lbl: 'Total de pedidos',   icon: 'bi bi-clipboard-data', color: '#6366f1' },
+    { val: d.by_status['Aguardando confirmacao'] || 0,       lbl: 'Aguardando',         icon: 'bi bi-hourglass-split', color: '#f59e0b' },
+    { val: d.by_status['Em producao'] || 0,                  lbl: 'Em producao',        icon: 'bi bi-hammer', color: '#0ea5e9' },
+    { val: d.by_status['Pronto para retirada'] || 0,         lbl: 'Prontos',            icon: 'bi bi-gift', color: '#22c55e' },
   ];
   document.getElementById('stat-cards').innerHTML = defs.map(s => `
     <div class="col-sm-6 col-lg-3">
       <div class="stat-card d-flex align-items-center gap-3">
-        <div class="stat-icon">${s.icon}</div>
+        <div class="stat-icon"><i class="${s.icon}" style="color:${s.color}"></i></div>
         <div>
           <div class="stat-val" style="color:${s.color}">${s.val}</div>
           <div class="stat-lbl">${s.lbl}</div>

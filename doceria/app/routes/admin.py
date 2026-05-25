@@ -48,7 +48,7 @@ def update_status(order_id):
     new_status = data.get("status")
     if new_status not in VALID_STATUSES:
         return jsonify({
-            "error": "Status inválido",
+            "error": "Status invalido",
             "valid_statuses": VALID_STATUSES,
         }), 422
 
