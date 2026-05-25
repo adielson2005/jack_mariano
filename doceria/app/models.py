@@ -11,13 +11,22 @@ class Category(db.Model):
     description = db.Column(db.Text)
     icon = db.Column(db.String(10))
     active = db.Column(db.Boolean, default=True)
+    price_from = db.Column(db.String(100), nullable=True)
 
     products = db.relationship("Product", backref="category", lazy=True)
 
     def to_dict(self):
         grouped = {}
         for p in self.products:
-            grouped.setdefault(p.option_group, []).append(
+            raw_group = p.option_group  # may contain "Name|price_info"
+            if "|" in raw_group:
+                group_name, price_info = raw_group.split("|", 1)
+            else:
+                group_name, price_info = raw_group, None
+
+            if group_name not in grouped:
+                grouped[group_name] = {"price_info": price_info, "items": []}
+            grouped[group_name]["items"].append(
                 {"id": p.id, "name": p.name, "active": p.active}
             )
         return {
@@ -27,6 +36,7 @@ class Category(db.Model):
             "description": self.description,
             "icon": self.icon,
             "active": self.active,
+            "price_from": self.price_from,
             "options": grouped,
         }
 
@@ -36,8 +46,8 @@ class Product(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     category_id = db.Column(db.Integer, db.ForeignKey("categories.id"), nullable=False)
-    option_group = db.Column(db.String(50), nullable=False)
-    name = db.Column(db.String(100), nullable=False)
+    option_group = db.Column(db.String(150), nullable=False)
+    name = db.Column(db.String(200), nullable=False)
     active = db.Column(db.Boolean, default=True)
 
 
