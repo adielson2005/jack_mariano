@@ -684,15 +684,24 @@ function selectCat(slug, rowEl) {
 }
 
 /* ── Sacola ─────────────────────────────────────────────────────────────── */
+// Prefixes that indicate "skip this group" — filtered out of saved selections
+const SKIP_VALS = ['Não quero', 'Sem recheio tradicional', 'Sem recheio especial', 'Sem recheio super especial'];
+
 function addToSacola() {
   if (!selectedCat) return;
   const selections = {};
   let valid = true;
   document.querySelectorAll('#ow-' + selectedCat.slug + ' .opt-sel').forEach(sel => {
     if (!sel.value) { sel.classList.add('is-invalid'); valid = false; }
-    else { sel.classList.remove('is-invalid'); selections[sel.dataset.group] = sel.value; }
+    else {
+      sel.classList.remove('is-invalid');
+      if (!SKIP_VALS.includes(sel.value)) {
+        selections[sel.dataset.group] = sel.value;
+      }
+    }
   });
   if (!valid) return toast('Selecione todas as opções antes de adicionar.', 'danger');
+  if (!Object.keys(selections).length) return toast('Escolha pelo menos uma opção antes de adicionar.', 'warning');
 
   sacola.push({
     category_slug: selectedCat.slug,
