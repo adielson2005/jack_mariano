@@ -122,60 +122,96 @@
     }
 
     /* ── Category list ───────────────────────────────────── */
-    .cat-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 32px; }
+    .cat-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 32px; }
 
     .cat-row {
       background: var(--surface);
       border: 1.5px solid var(--border);
-      border-radius: 16px;
-      padding: 16px 18px;
-      display: flex; align-items: center; gap: 16px;
+      border-radius: 20px;
+      padding: 0;
+      display: flex; align-items: stretch; gap: 0;
       cursor: pointer;
-      transition: border-color .2s, box-shadow .2s, transform .15s;
-      user-select: none;
-      position: relative;
       overflow: hidden;
+      transition: box-shadow .22s, transform .18s, border-color .22s;
+      user-select: none;
     }
-    .cat-row::before {
-      content: '';
-      position: absolute; left: 0; top: 0; bottom: 0;
-      width: 4px;
-      background: var(--accent, #eee);
-      border-radius: 4px 0 0 4px;
-      opacity: 0;
-      transition: opacity .2s;
-    }
-    .cat-row:hover { box-shadow: 0 4px 20px rgba(0,0,0,.07); transform: translateY(-1px); }
-    .cat-row.active {
-      border-color: var(--accent, var(--pk));
-      box-shadow: 0 4px 20px color-mix(in srgb, var(--accent, var(--pk)) 18%, transparent);
-    }
-    .cat-row.active::before { opacity: 1; }
-
     .cat-row[data-slug="bolo"]      { --accent: var(--c-bolo); }
     .cat-row[data-slug="doces"]     { --accent: var(--c-doces); }
     .cat-row[data-slug="salgados"]  { --accent: var(--c-salgados); }
     .cat-row[data-slug="combos"]    { --accent: var(--c-combos); }
     .cat-row[data-slug="kit-festa"] { --accent: var(--c-kit-festa); }
 
+    .cat-row:hover {
+      transform: translateY(-3px);
+      border-color: color-mix(in srgb, var(--accent, var(--pk)) 45%, transparent);
+      box-shadow: 0 8px 28px color-mix(in srgb, var(--accent, var(--pk)) 18%, transparent);
+    }
+    .cat-row.active {
+      border-color: var(--accent, var(--pk));
+      box-shadow: 0 8px 28px color-mix(in srgb, var(--accent, var(--pk)) 22%, transparent);
+    }
+
+    /* Colored left icon panel */
     .cat-icon-wrap {
-      width: 52px; height: 52px; border-radius: 14px; flex-shrink: 0;
+      width: 82px; flex-shrink: 0;
       display: flex; align-items: center; justify-content: center;
-      font-size: 1.7rem;
-      background: color-mix(in srgb, var(--accent, var(--pk)) 10%, white);
-      transition: background .2s;
+      font-size: 2.1rem;
+      background: color-mix(in srgb, var(--accent, var(--pk)) 13%, #fff);
+      border-right: 1.5px solid color-mix(in srgb, var(--accent, var(--pk)) 15%, transparent);
+      transition: background .22s, font-size .18s;
+      position: relative;
     }
+    .cat-icon-wrap::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(160deg,
+        color-mix(in srgb, var(--accent, var(--pk)) 6%, transparent) 0%,
+        transparent 60%);
+    }
+    .cat-row:hover .cat-icon-wrap,
     .cat-row.active .cat-icon-wrap {
-      background: color-mix(in srgb, var(--accent, var(--pk)) 18%, white);
+      background: color-mix(in srgb, var(--accent, var(--pk)) 20%, #fff);
+      font-size: 2.3rem;
     }
-    .cat-text { flex: 1; min-width: 0; }
-    .cat-name { font-weight: 800; font-size: .95rem; color: var(--text); }
-    .cat-desc { font-size: .78rem; color: var(--muted); margin-top: 2px; font-weight: 500; line-height: 1.4; }
+
+    /* Text area */
+    .cat-text { flex: 1; min-width: 0; padding: 16px 14px 16px 18px; }
+    .cat-name {
+      font-weight: 800; font-size: 1rem; color: var(--text);
+      display: flex; align-items: center; gap: 8px;
+    }
+    .cat-tag {
+      font-size: .6rem; font-weight: 700; letter-spacing: .08em;
+      text-transform: uppercase; padding: 2px 7px; border-radius: 20px;
+      background: color-mix(in srgb, var(--accent, var(--pk)) 12%, white);
+      color: var(--accent, var(--pk));
+      border: 1px solid color-mix(in srgb, var(--accent, var(--pk)) 25%, transparent);
+      opacity: 0; transition: opacity .22s;
+    }
+    .cat-row.active .cat-tag { opacity: 1; }
+    .cat-desc { font-size: .78rem; color: var(--muted); margin-top: 4px; font-weight: 500; line-height: 1.45; }
+
+    /* Right arrow indicator */
+    .cat-arrow-wrap { display: flex; align-items: center; padding: 0 16px 0 8px; flex-shrink: 0; }
     .cat-arrow {
-      color: var(--muted); font-size: 1rem; flex-shrink: 0;
-      transition: transform .2s, color .2s;
+      width: 30px; height: 30px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      background: color-mix(in srgb, var(--accent, var(--pk)) 10%, white);
+      color: color-mix(in srgb, var(--accent, var(--pk)) 70%, #888);
+      font-size: .8rem;
+      transition: transform .22s, background .22s, color .22s;
+      border: 1px solid color-mix(in srgb, var(--accent, var(--pk)) 18%, transparent);
     }
-    .cat-row.active .cat-arrow { transform: rotate(90deg); color: var(--accent, var(--pk)); }
+    .cat-row:hover .cat-arrow {
+      background: color-mix(in srgb, var(--accent, var(--pk)) 18%, white);
+      color: var(--accent, var(--pk));
+    }
+    .cat-row.active .cat-arrow {
+      transform: rotate(90deg);
+      background: var(--accent, var(--pk));
+      color: #fff;
+      border-color: transparent;
+    }
 
     /* ── Options slide-down ──────────────────────────────── */
     .opts-wrap {
@@ -636,10 +672,12 @@ async function loadCategories() {
     row.innerHTML = `
       <div class="cat-icon-wrap">${c.icon}</div>
       <div class="cat-text">
-        <div class="cat-name">${c.name}</div>
+        <div class="cat-name">${c.name} <span class="cat-tag">Selecionado</span></div>
         <div class="cat-desc">${c.description}</div>
       </div>
-      <i class="bi bi-chevron-right cat-arrow"></i>`;
+      <div class="cat-arrow-wrap">
+        <div class="cat-arrow"><i class="bi bi-chevron-right"></i></div>
+      </div>`;
     row.onclick = () => selectCat(c.slug, row);
 
     // Options slot (injected below each row)
