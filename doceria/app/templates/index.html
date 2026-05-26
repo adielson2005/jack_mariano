@@ -214,6 +214,12 @@
     }
 
     /* ── Options slide-down ──────────────────────────────── */
+    .opts-wrap[data-slug="bolo"]      { --accent: var(--c-bolo); }
+    .opts-wrap[data-slug="doces"]     { --accent: var(--c-doces); }
+    .opts-wrap[data-slug="salgados"]  { --accent: var(--c-salgados); }
+    .opts-wrap[data-slug="combos"]    { --accent: var(--c-combos); }
+    .opts-wrap[data-slug="kit-festa"] { --accent: var(--c-kit-festa); }
+
     .opts-wrap {
       max-height: 0; overflow: hidden;
       transition: max-height .35s cubic-bezier(.4,0,.2,1);
@@ -224,92 +230,143 @@
       background: var(--surface);
       border: 1.5px solid var(--border);
       border-top: none;
-      border-radius: 0 0 16px 16px;
-      padding: 20px 20px 24px;
+      border-radius: 0 0 22px 22px;
+      padding: 8px 14px 20px;
       margin-top: -10px;
       margin-bottom: 10px;
     }
 
-    .opt-group { margin-bottom: 16px; }
+    .opt-group {
+      margin-bottom: 8px;
+      background: var(--bg);
+      border-radius: 14px;
+      padding: 11px 13px 13px;
+    }
     .opt-label {
-      font-size: .68rem; font-weight: 700; color: var(--muted);
+      font-size: .63rem; font-weight: 700; color: var(--muted);
       text-transform: uppercase; letter-spacing: .14em;
-      margin-bottom: 6px; display: block;
+      margin-bottom: 8px;
+      display: flex; align-items: center; gap: 7px;
+    }
+    .opt-label::before {
+      content: '';
+      display: inline-block;
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--accent, var(--pk));
+      flex-shrink: 0;
     }
     .opt-sel {
       width: 100%; padding: 10px 38px 10px 14px;
-      border: 1.5px solid var(--border); border-radius: 10px;
+      border: 1.5px solid var(--border); border-radius: 11px;
       font-family: 'Plus Jakarta Sans', sans-serif;
       font-size: .875rem; font-weight: 500; color: var(--text);
       background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238a87a0' stroke-width='1.8' fill='none' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat right 14px center;
       appearance: none; cursor: pointer;
       transition: border-color .2s, box-shadow .2s;
+      box-shadow: 0 1px 3px rgba(0,0,0,.05);
     }
     .opt-sel:focus {
-      outline: none; border-color: var(--pk);
-      box-shadow: 0 0 0 3px rgba(229,25,107,.1);
+      outline: none;
+      border-color: var(--accent, var(--pk));
+      box-shadow: 0 0 0 3.5px color-mix(in srgb, var(--accent, var(--pk)) 14%, transparent);
     }
     .opt-sel.is-invalid { border-color: #dc3545; }
 
-    .qty-note-row { display: flex; gap: 12px; margin-bottom: 16px; }
+    .qty-note-row {
+      display: flex; gap: 10px; margin-bottom: 12px;
+      background: var(--bg); border-radius: 14px; padding: 11px 13px;
+    }
     .qty-note-row > div { display: flex; flex-direction: column; }
-    .qty-note-row .qty-col { flex: 0 0 90px; }
+    .qty-note-row .qty-col { flex: 0 0 92px; }
     .qty-note-row .note-col { flex: 1; }
     .qty-note-row label {
-      font-size: .68rem; font-weight: 700; color: var(--muted);
-      text-transform: uppercase; letter-spacing: .12em; margin-bottom: 6px;
+      font-size: .63rem; font-weight: 700; color: var(--muted);
+      text-transform: uppercase; letter-spacing: .12em; margin-bottom: 7px;
+      display: flex; align-items: center; gap: 5px;
     }
+    .qty-note-row label i { font-size: .75rem; }
     .qty-note-row input {
-      padding: 10px 14px; border: 1.5px solid var(--border); border-radius: 10px;
+      padding: 10px 12px; border: 1.5px solid var(--border); border-radius: 11px;
       font-family: 'Plus Jakarta Sans', sans-serif;
       font-size: .875rem; font-weight: 500; color: var(--text);
-      transition: border-color .2s;
+      background: #fff;
+      box-shadow: 0 1px 3px rgba(0,0,0,.05);
+      transition: border-color .2s, box-shadow .2s;
     }
     .qty-note-row input:focus {
-      outline: none; border-color: var(--pk);
-      box-shadow: 0 0 0 3px rgba(229,25,107,.1);
+      outline: none; border-color: var(--accent, var(--pk));
+      box-shadow: 0 0 0 3.5px color-mix(in srgb, var(--accent, var(--pk)) 14%, transparent);
     }
 
     .btn-add {
-      width: 100%; padding: 13px;
-      background: linear-gradient(135deg, var(--pk) 0%, #c0134f 100%);
-      color: #fff; border: none; border-radius: 12px;
+      width: 100%; padding: 14px;
+      background: linear-gradient(135deg,
+        var(--accent, var(--pk)) 0%,
+        color-mix(in srgb, var(--accent, var(--pk)) 70%, #000) 100%);
+      color: #fff; border: none; border-radius: 14px;
       font-family: 'Plus Jakarta Sans', sans-serif;
       font-size: .95rem; font-weight: 700;
       cursor: pointer; letter-spacing: .02em;
-      box-shadow: 0 4px 16px rgba(229,25,107,.3);
-      transition: opacity .18s, transform .14s, box-shadow .18s;
+      box-shadow: 0 4px 18px color-mix(in srgb, var(--accent, var(--pk)) 35%, transparent);
+      transition: opacity .18s, transform .14s;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
     }
-    .btn-add:hover  { opacity: .92; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(229,25,107,.38); }
+    .btn-add:hover  { opacity: .91; transform: translateY(-2px); }
     .btn-add:active { transform: translateY(0); opacity: 1; }
 
     /* ── Form ────────────────────────────────────────────── */
     .form-card {
       background: var(--surface); border: 1.5px solid var(--border);
-      border-radius: 20px; padding: 28px 24px;
+      border-radius: 24px; overflow: hidden; padding: 0;
     }
-    .form-label { font-size: .78rem; font-weight: 700; color: #555; margin-bottom: 5px; }
+    .form-card-head {
+      background: linear-gradient(135deg, var(--pk) 0%, #c0134f 100%);
+      padding: 22px 26px 20px;
+    }
+    .form-card-head-emoji { font-size: 1.8rem; margin-bottom: 6px; display: block; }
+    .form-card-head-title {
+      font-weight: 800; font-size: 1rem; color: #fff; line-height: 1.2;
+    }
+    .form-card-head-sub {
+      font-size: .78rem; color: rgba(255,255,255,.72);
+      margin-top: 4px; font-weight: 500; line-height: 1.5;
+    }
+    .form-card-body { padding: 22px 22px 26px; }
+
+    .form-label {
+      font-size: .74rem; font-weight: 700; color: #444; margin-bottom: 6px;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .form-label i { font-size: .82rem; color: var(--pk); opacity: .85; }
     .form-control, .form-select {
-      border: 1.5px solid var(--border); border-radius: 10px;
+      border: 1.5px solid var(--border); border-radius: 12px;
       font-family: 'Plus Jakarta Sans', sans-serif;
       font-size: .875rem; font-weight: 500;
+      background: var(--bg); padding: 11px 14px;
+      box-shadow: 0 1px 3px rgba(0,0,0,.04);
+      transition: border-color .2s, box-shadow .2s, background .2s;
     }
     .form-control:focus, .form-select:focus {
       border-color: var(--pk);
-      box-shadow: 0 0 0 3px rgba(229,25,107,.1);
+      box-shadow: 0 0 0 3.5px rgba(229,25,107,.12);
+      background: #fff;
     }
+    textarea.form-control { resize: vertical; min-height: 90px; }
 
     .btn-pk {
       background: linear-gradient(135deg, var(--pk) 0%, #c0134f 100%);
       color: #fff; border: none; font-weight: 700; border-radius: 12px;
-      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-family: 'Plus Jakarta Sans', sans-serif; font-size: .9rem;
       box-shadow: 0 4px 14px rgba(229,25,107,.3);
+      transition: opacity .18s, transform .14s;
     }
-    .btn-pk:hover { opacity: .9; color: #fff; }
+    .btn-pk:hover { opacity: .9; color: #fff; transform: translateY(-1px); }
+    .btn-pk:active { transform: translateY(0); }
     .btn-pk-outline {
       border: 2px solid var(--border); color: var(--muted);
       background: transparent; font-weight: 600; border-radius: 12px;
       font-family: 'Plus Jakarta Sans', sans-serif;
+      transition: border-color .2s, color .2s, background .2s;
     }
     .btn-pk-outline:hover { border-color: var(--pk); color: var(--pk); background: var(--pk-soft); }
 
@@ -535,45 +592,71 @@
 
     <p class="s-head">Seus dados</p>
     <div class="form-card">
-      <div class="row g-3">
-        <div class="col-12">
-          <label class="form-label">Nome completo <span class="text-danger">*</span></label>
-          <input type="text" id="f-name" class="form-control" placeholder="Maria da Silva">
+
+      <div class="form-card-head">
+        <span class="form-card-head-emoji">👤</span>
+        <div class="form-card-head-title">Informações do pedido</div>
+        <div class="form-card-head-sub">Preencha os campos abaixo para finalizarmos seu pedido</div>
+      </div>
+
+      <div class="form-card-body">
+        <div class="row g-3">
+          <div class="col-12">
+            <label class="form-label">
+              <i class="bi bi-person-fill"></i> Nome completo <span class="text-danger ms-1">*</span>
+            </label>
+            <input type="text" id="f-name" class="form-control" placeholder="Maria da Silva">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">
+              <i class="bi bi-whatsapp"></i> WhatsApp <span class="text-danger ms-1">*</span>
+            </label>
+            <input type="text" id="f-phone" class="form-control" placeholder="(94) 99999-0000">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">
+              <i class="bi bi-gift"></i> Data de nascimento
+            </label>
+            <input type="date" id="f-birth" class="form-control">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">
+              <i class="bi bi-calendar-event"></i> Data de retirada <span class="text-danger ms-1">*</span>
+            </label>
+            <input type="date" id="f-date" class="form-control">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">
+              <i class="bi bi-clock"></i> Horário <span class="text-danger ms-1">*</span>
+            </label>
+            <input type="time" id="f-time" class="form-control" value="14:00">
+          </div>
+          <div class="col-12">
+            <label class="form-label">
+              <i class="bi bi-shield-exclamation"></i> Alergias ou restrições
+            </label>
+            <input type="text" id="f-allergy" class="form-control"
+                   placeholder="Ex: intolerante à lactose, alergia a amendoim...">
+          </div>
+          <div class="col-12">
+            <label class="form-label">
+              <i class="bi bi-pencil-square"></i> Observações gerais
+            </label>
+            <textarea id="f-notes" class="form-control" rows="3"
+                      placeholder="Informações adicionais sobre seu pedido..."></textarea>
+          </div>
         </div>
-        <div class="col-md-6">
-          <label class="form-label">WhatsApp <span class="text-danger">*</span></label>
-          <input type="text" id="f-phone" class="form-control" placeholder="(94) 99999-0000">
-        </div>
-        <div class="col-md-6">
-          <label class="form-label">Data de nascimento</label>
-          <input type="date" id="f-birth" class="form-control">
-        </div>
-        <div class="col-md-6">
-          <label class="form-label">Data de retirada <span class="text-danger">*</span></label>
-          <input type="date" id="f-date" class="form-control">
-        </div>
-        <div class="col-md-6">
-          <label class="form-label">Horário <span class="text-danger">*</span></label>
-          <input type="time" id="f-time" class="form-control" value="14:00">
-        </div>
-        <div class="col-12">
-          <label class="form-label">Alergias ou restrições</label>
-          <input type="text" id="f-allergy" class="form-control"
-                 placeholder="Ex: intolerante à lactose, alergia a amendoim...">
-        </div>
-        <div class="col-12">
-          <label class="form-label">Observações gerais</label>
-          <textarea id="f-notes" class="form-control" rows="3"
-                    placeholder="Informações adicionais sobre seu pedido..."></textarea>
+        <div id="form-error" class="alert alert-danger mt-3 d-none"></div>
+        <div class="d-flex gap-2 mt-4 justify-content-center flex-wrap">
+          <button class="btn btn-pk-outline px-4 py-2" onclick="goStep1()">
+            <i class="bi bi-arrow-left me-1"></i> Voltar
+          </button>
+          <button class="btn btn-pk px-5 py-2" onclick="submitOrder()" id="btn-submit">
+            <i class="bi bi-send-fill me-1"></i> Enviar pedido
+          </button>
         </div>
       </div>
-      <div id="form-error" class="alert alert-danger mt-3 d-none"></div>
-      <div class="d-flex gap-2 mt-4 justify-content-center flex-wrap">
-        <button class="btn btn-pk-outline px-4 py-2" onclick="goStep1()">← Voltar</button>
-        <button class="btn btn-pk px-5 py-2" onclick="submitOrder()" id="btn-submit">
-          Enviar pedido
-        </button>
-      </div>
+
     </div>
 
     <p class="text-center mt-3" style="font-size:.75rem;color:var(--muted);max-width:420px;margin-left:auto;margin-right:auto;line-height:1.6;font-weight:500">
@@ -684,6 +767,7 @@ async function loadCategories() {
     const slot = document.createElement('div');
     slot.className = 'opts-wrap';
     slot.id = 'ow-' + c.slug;
+    slot.dataset.slug = c.slug;
 
     list.appendChild(row);
     list.appendChild(slot);
@@ -721,16 +805,16 @@ function selectCat(slug, rowEl) {
       ${groupsHtml}
       <div class="qty-note-row">
         <div class="qty-col">
-          <label>Quantidade</label>
+          <label><i class="bi bi-hash"></i> Qtd.</label>
           <input type="number" id="item-qty" value="1" min="1">
         </div>
         <div class="note-col">
-          <label>Observação</label>
+          <label><i class="bi bi-chat-dots"></i> Observação</label>
           <input type="text" id="item-note" placeholder="Ex: Tema Frozen, sem açúcar...">
         </div>
       </div>
       <button class="btn-add" onclick="addToSacola()">
-        + Adicionar à Sacola
+        <i class="bi bi-basket3-fill"></i> Adicionar à Sacola
       </button>
     </div>`;
 
