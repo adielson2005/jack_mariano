@@ -66,9 +66,13 @@
     .step-bar {
       background: var(--surface);
       border-bottom: 1px solid var(--border);
-      padding: 12px 20px;
+      padding: 10px 16px;
       display: flex; align-items: center; justify-content: center; gap: 6px;
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      scrollbar-width: none;
     }
+    .step-bar::-webkit-scrollbar { display: none; }
     .step-pill {
       display: flex; align-items: center; gap: 7px;
       padding: 6px 14px; border-radius: 999px;
@@ -107,8 +111,9 @@
     /* ── Hero strip ──────────────────────────────────────── */
     .hero-strip {
       text-align: center;
-      padding: 36px 20px 28px;
+      padding: 32px 20px 26px;
       max-width: 640px; margin: 0 auto;
+      width: 100%;
     }
     .hero-strip h1 {
       font-size: clamp(1.55rem, 5vw, 2.2rem);
@@ -474,9 +479,85 @@
     .bag-overlay { position: fixed; inset: 0; z-index: 1049; display: none; }
     .bag-overlay.open { display: block; }
 
+    /* ── Responsive ─────────────────────────────────────────── */
+
+    /* Telefones muito pequenos (< 380px) */
+    @media (max-width: 380px) {
+      .step-pill span { display: none; }
+      .step-pill { padding: 5px 8px; gap: 4px; }
+      .step-sep  { width: 16px; }
+      .hero-strip { padding: 22px 14px 18px; }
+      .hero-strip h1 { font-size: 1.28rem; }
+      .cat-icon-wrap { width: 60px; font-size: 1.65rem; }
+      .cat-text { padding: 11px 8px 11px 12px; }
+      .cat-name { font-size: .85rem; }
+      .cat-desc { font-size: .7rem; }
+      .cat-arrow { width: 26px; height: 26px; font-size: .7rem; }
+      .cat-arrow-wrap { padding: 0 10px 0 4px; }
+      .opts-inner { padding: 4px 8px 14px; }
+      .opt-group { padding: 9px 10px 11px; }
+      .qty-note-row { flex-direction: column; gap: 8px; }
+      .qty-note-row .qty-col { flex: none; }
+    }
+
+    /* Mobile padrão (< 640px) */
+    @media (max-width: 640px) {
+      .page { padding: 18px 12px 60px; }
+      .site-header { padding: 0 14px; }
+      .hero-strip { padding: 26px 14px 20px; }
+      .cat-list { gap: 10px; }
+      .form-card-head { padding: 18px 18px 16px; }
+      .form-card-body { padding: 16px 16px 22px; }
+      .sum-card { padding: 14px 16px; }
+    }
+
+    /* Bag panel no mobile */
     @media (max-width: 480px) {
-      .bag-panel { width: calc(100vw - 32px); }
+      .bag-panel { width: calc(100vw - 28px); }
       .bag-fab   { top: 66px; right: 12px; }
+    }
+
+    /* Tablets e desktops (≥ 768px) */
+    @media (min-width: 768px) {
+      .page { max-width: 700px; padding: 38px 30px 80px; }
+      .hero-strip { padding: 52px 30px 40px; max-width: 700px; }
+      .hero-strip h1 { font-size: 2.1rem; }
+      .cat-list { gap: 14px; }
+      .cat-icon-wrap { width: 90px; font-size: 2.3rem; }
+      .cat-text { padding: 18px 16px 18px 22px; }
+      .cat-name { font-size: 1.06rem; }
+      .cat-desc { font-size: .83rem; }
+      .cat-arrow { width: 34px; height: 34px; }
+      .opts-inner { padding: 10px 18px 24px; }
+      .opt-group { padding: 14px 16px 16px; }
+      .qty-note-row { padding: 14px 16px; }
+      .form-card-head { padding: 28px 32px 24px; }
+      .form-card-body { padding: 26px 28px 32px; }
+      .bag-panel { width: 320px; }
+      .bag-fab { top: 74px; right: 20px; }
+      .sum-card { padding: 20px 24px; }
+    }
+
+    /* Desktops largos (≥ 1024px) */
+    @media (min-width: 1024px) {
+      .page { max-width: 800px; padding: 44px 40px 90px; }
+      .hero-strip { max-width: 800px; padding: 64px 40px 50px; }
+      .hero-strip h1 { font-size: 2.4rem; }
+      .hero-strip p { font-size: 1rem; }
+      .cat-list { gap: 16px; margin-bottom: 36px; }
+      .cat-icon-wrap { width: 96px; font-size: 2.5rem; }
+      .cat-text { padding: 20px 18px 20px 24px; }
+      .cat-name { font-size: 1.1rem; }
+      .cat-desc { font-size: .86rem; }
+      .opts-inner { padding: 12px 20px 28px; }
+      .opt-group { padding: 15px 18px 17px; }
+      .qty-note-row { gap: 14px; padding: 15px 18px; }
+      .btn-add { padding: 16px; font-size: 1rem; border-radius: 16px; }
+      .bag-panel { width: 360px; }
+      .form-card-head { padding: 30px 36px 26px; }
+      .form-card-body { padding: 28px 32px 36px; }
+      .form-card-head-emoji { font-size: 2rem; }
+      .form-card-head-title { font-size: 1.1rem; }
     }
 
     /* ── Spinner ─────────────────────────────────────────── */
