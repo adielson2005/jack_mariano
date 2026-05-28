@@ -1,5 +1,7 @@
+import os
 import socket
-from flask import render_template
+from werkzeug.security import check_password_hash, generate_password_hash
+from flask import render_template, session, redirect, request
 from app import create_app
 
 app = create_app()
@@ -8,9 +10,43 @@ app = create_app()
 def index():
     return render_template("index.html")
 
+_ADMIN_USER = os.environ.get("ADMIN_USER", "admin")
+_ADMIN_HASH = generate_password_hash(os.environ.get("ADMIN_PASSWORD", "jackmariano2024"))
+
+
 @app.route("/painel")
-def admin():
+def admin_panel():
+    if not session.get("admin_logged_in"):
+        return redirect("/painel/login")
     return render_template("admin.html")
+
+
+@app.route("/painel/login", methods=["GET", "POST"])
+def admin_login():
+    if session.get("admin_logged_in"):
+        return redirect("/painel")
+    error = None
+    if request.method == "POST":
+        attempts = session.get("_login_attempts", 0)
+        if attempts >= 5:
+            error = "Muitas tentativas. Feche o navegador e tente novamente."
+        else:
+            user = request.form.get("username", "").strip()
+            pwd  = request.form.get("password", "")
+            if user == _ADMIN_USER and check_password_hash(_ADMIN_HASH, pwd):
+                session.clear()
+                session["admin_logged_in"] = True
+                session.permanent = True
+                return redirect("/painel")
+            session["_login_attempts"] = attempts + 1
+            error = "Usuário ou senha incorretos."
+    return render_template("admin_login.html", error=error)
+
+
+@app.route("/painel/logout")
+def admin_logout():
+    session.clear()
+    return redirect("/painel/login")
 
 def get_local_ip():
     try:

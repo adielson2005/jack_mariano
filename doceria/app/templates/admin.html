@@ -148,8 +148,13 @@
     </a>
   </nav>
   <footer>
-    <a href="/" target="_blank">
+    <a href="/" target="_blank" style="display:block;margin-bottom:10px">
       <i class="bi bi-box-arrow-up-left me-1"></i>Ver site do cliente
+    </a>
+    <a href="/painel/logout"
+       style="color:#f38ba8"
+       onclick="return confirm('Sair do painel?')">
+      <i class="bi bi-box-arrow-right me-1"></i>Sair
     </a>
   </footer>
 </aside>
@@ -281,6 +286,13 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
 const API = '';
+
+// Intercept 401 → redirect to login
+async function apiFetch(url, opts = {}) {
+  const res = await fetch(url, opts);
+  if (res.status === 401) { window.location.href = '/painel/login'; return null; }
+  return res;
+}
 const STATUS = {
   pending:     { label: 'Aguardando confirmacao', cls: 's-pending' },
   confirmed:   { label: 'Confirmado',             cls: 's-confirmed' },
@@ -325,7 +337,8 @@ async function loadOrders() {
   const tbody  = document.getElementById('orders-tbody');
   tbody.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-muted">
     <div class="spinner-border spinner-border-sm me-2"></div>Carregando...</td></tr>`;
-  const res = await fetch(url);
+  const res = await apiFetch(url);
+  if (!res) return;
   const d   = await res.json();
   document.getElementById('orders-count').textContent = `${d.total} pedido(s)`;
   if (!d.orders.length) {
@@ -354,7 +367,8 @@ async function loadOrders() {
 /* ── Detail panel ───────────────────────────────────────────────────────── */
 async function openPanel(id) {
   currentOrderId = id;
-  const res = await fetch(`${API}/admin/orders/${id}`);
+  const res = await apiFetch(`${API}/admin/orders/${id}`);
+  if (!res) return;
   const o   = await res.json();
   const s   = STATUS[o.status] || { label: o.status, cls: '' };
 
@@ -414,9 +428,9 @@ async function openPanel(id) {
       </div>`).join('')}`;
 
   // Busca link WhatsApp via API
-  fetch(`${API}/api/whatsapp/${id}`)
-    .then(r => r.json())
-    .then(d => { document.getElementById('dp-wa-btn').href = d.admin_link; })
+  apiFetch(`${API}/api/whatsapp/${id}`)
+    .then(r => r && r.json())
+    .then(d => { if (d) document.getElementById('dp-wa-btn').href = d.admin_link; })
     .catch(() => {});
 
   document.getElementById('detail-panel').classList.add('open');
@@ -431,7 +445,8 @@ function closePanel() {
 
 /* ── WhatsApp ────────────────────────────────────────────────────────────── */
 async function openWA(el) {
-  const res = await fetch(`${API}/api/whatsapp/${el.dataset.id}`);
+  const res = await apiFetch(`${API}/api/whatsapp/${el.dataset.id}`);
+  if (!res) return;
   const d   = await res.json();
   window.open(d.admin_link, '_blank');
 }
@@ -439,7 +454,7 @@ async function openWA(el) {
 /* ── Update status ──────────────────────────────────────────────────────── */
 async function saveStatus() {
   if (!currentOrderId) return;
-  const res = await fetch(`${API}/admin/orders/${currentOrderId}/status`, {
+  const res = await apiFetch(`${API}/admin/orders/${currentOrderId}/status`, {
     method: 'PATCH',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
@@ -447,6 +462,7 @@ async function saveStatus() {
       admin_notes: document.getElementById('dp-admin-notes').value,
     })
   });
+  if (!res) return;
   if (res.ok) { closePanel(); loadOrders(); toast('Status atualizado!', 'success'); }
   else toast('Erro ao salvar.', 'danger');
 }
@@ -454,13 +470,14 @@ async function saveStatus() {
 /* ── Delete ─────────────────────────────────────────────────────────────── */
 function confirmDelete() {
   if (!confirm(`Excluir pedido #${currentOrderId}? Essa acao nao pode ser desfeita.`)) return;
-  fetch(`${API}/admin/orders/${currentOrderId}`, { method: 'DELETE' })
-    .then(() => { closePanel(); loadOrders(); toast('Pedido excluido.', 'warning'); });
+  apiFetch(`${API}/admin/orders/${currentOrderId}`, { method: 'DELETE' })
+    .then(r => { if (r) { closePanel(); loadOrders(); toast('Pedido excluido.', 'warning'); } });
 }
 
 /* ── Stats ──────────────────────────────────────────────────────────────── */
 async function loadStats() {
-  const res = await fetch(`${API}/admin/stats`);
+  const res = await apiFetch(`${API}/admin/stats`);
+  if (!res) return;
   const d   = await res.json();
 
   const defs = [

@@ -1,8 +1,21 @@
-from flask import Blueprint, jsonify, request
+from functools import wraps
+from flask import Blueprint, jsonify, request, session
 from app import db
 from app.models import Order, STATUS_LABELS
 
 admin_bp = Blueprint("admin", __name__)
+
+
+def login_required(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        if not session.get('admin_logged_in'):
+            return jsonify({
+                'error': 'Sessão expirada. Faça login novamente.',
+                'login_url': '/painel/login'
+            }), 401
+        return f(*args, **kwargs)
+    return decorated
 
 VALID_STATUSES = list(STATUS_LABELS.keys())
 
@@ -10,6 +23,7 @@ VALID_STATUSES = list(STATUS_LABELS.keys())
 # ── List orders ───────────────────────────────────────────────────────────────
 
 @admin_bp.get("/orders")
+@login_required
 def list_orders():
     status   = request.args.get("status")
     page     = int(request.args.get("page", 1))
@@ -33,6 +47,7 @@ def list_orders():
 # ── Get single order ──────────────────────────────────────────────────────────
 
 @admin_bp.get("/orders/<int:order_id>")
+@login_required
 def get_order(order_id):
     order = Order.query.get_or_404(order_id)
     return jsonify(order.to_dict())
@@ -41,6 +56,7 @@ def get_order(order_id):
 # ── Update status ─────────────────────────────────────────────────────────────
 
 @admin_bp.patch("/orders/<int:order_id>/status")
+@login_required
 def update_status(order_id):
     order = Order.query.get_or_404(order_id)
     data  = request.get_json(silent=True) or {}
@@ -66,6 +82,7 @@ def update_status(order_id):
 # ── Delete order ──────────────────────────────────────────────────────────────
 
 @admin_bp.delete("/orders/<int:order_id>")
+@login_required
 def delete_order(order_id):
     order = Order.query.get_or_404(order_id)
     db.session.delete(order)
@@ -76,6 +93,7 @@ def delete_order(order_id):
 # ── Stats ─────────────────────────────────────────────────────────────────────
 
 @admin_bp.get("/stats")
+@login_required
 def stats():
     from sqlalchemy import func
     from app.models import OrderItem

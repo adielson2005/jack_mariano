@@ -1,4 +1,5 @@
 import os
+from datetime import timedelta
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -27,3 +28,4 @@ class Config:
         "pool_recycle": 1800,    # recicla conexões a cada 30 min
     }
     JSON_SORT_KEYS = False
+    PERMANENT_SESSION_LIFETIME = timedelta(days=7)

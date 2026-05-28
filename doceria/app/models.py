@@ -70,6 +70,7 @@ class Order(db.Model):
 
     # Status: pending | confirmed | in_progress | ready | cancelled
     status = db.Column(db.String(20), default="pending")
+    admin_notes = db.Column(db.Text)
 
     items = db.relationship("OrderItem", backref="order", lazy=True, cascade="all, delete-orphan")
 
@@ -84,6 +85,7 @@ class Order(db.Model):
             "pickup_time": self.pickup_time,
             "allergies": self.allergies,
             "notes": self.notes,
+            "admin_notes": self.admin_notes,
             "status": self.status,
             "status_label": STATUS_LABELS.get(self.status, self.status),
         }
