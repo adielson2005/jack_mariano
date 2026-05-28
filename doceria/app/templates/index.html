@@ -276,6 +276,64 @@
       box-shadow: 0 0 0 3.5px color-mix(in srgb, var(--accent, var(--pk)) 14%, transparent);
     }
     .opt-sel.is-invalid { border-color: #dc3545; }
+    .opt-sel.sel-filled {
+      border-color: color-mix(in srgb, var(--accent, var(--pk)) 40%, transparent);
+      background: color-mix(in srgb, var(--accent, var(--pk)) 5%, white);
+    }
+
+    /* ── Option grid & pills ─────────────────────────────── */
+    .opts-groups-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    /* pill groups ocupam largura total */
+    .opt-group[data-pills] { grid-column: 1 / -1; }
+
+    @media (max-width: 520px) {
+      .opts-groups-grid { grid-template-columns: 1fr; }
+    }
+
+    .og-icon { font-style: normal; }
+    .opt-badge {
+      font-size: .57rem; font-weight: 700; letter-spacing: .06em;
+      text-transform: uppercase; padding: 2px 7px; border-radius: 20px;
+      background: var(--bg); color: var(--muted);
+      border: 1px solid var(--border);
+      margin-left: 5px; vertical-align: middle;
+    }
+
+    .opt-pills {
+      display: flex; flex-wrap: wrap; gap: 6px;
+      border-radius: 10px; transition: box-shadow .18s;
+    }
+    .opt-pills.is-invalid { box-shadow: 0 0 0 2px #dc3545; padding: 5px; }
+
+    .opt-pill {
+      padding: 7px 14px; border-radius: 999px;
+      border: 1.5px solid var(--border);
+      background: #fff; color: var(--text);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: .8rem; font-weight: 600; cursor: pointer;
+      transition: border-color .18s, background .18s, color .18s, transform .12s, box-shadow .15s;
+      line-height: 1.3;
+    }
+    .opt-pill:hover {
+      border-color: color-mix(in srgb, var(--accent, var(--pk)) 55%, transparent);
+      color: var(--accent, var(--pk)); transform: translateY(-1px);
+    }
+    .opt-pill.sel {
+      background: var(--accent, var(--pk));
+      border-color: var(--accent, var(--pk));
+      color: #fff;
+      box-shadow: 0 2px 8px color-mix(in srgb, var(--accent, var(--pk)) 35%, transparent);
+    }
+    .opt-pill.sel-skip {
+      background: var(--bg);
+      border-color: color-mix(in srgb, var(--muted) 25%, transparent);
+      color: var(--muted);
+    }
 
     .qty-note-row {
       display: flex; gap: 10px; margin-bottom: 12px;
@@ -899,19 +957,11 @@ function selectCat(slug, rowEl) {
   const wrap = document.getElementById('ow-' + slug);
 
   // Build options HTML
-  const groupsHtml = Object.entries(cat.options).map(([group, data]) => `
-    <div class="opt-group">
-      <label class="opt-label">${group}</label>
-      <select class="opt-sel" data-group="${group}">
-        <option value="">— escolha —</option>
-        ${data.items.filter(i => i.active).map(i =>
-          `<option value="${i.name}">${i.name}</option>`).join('')}
-      </select>
-    </div>`).join('');
+  const groupsHtml = Object.entries(cat.options).map(([g, d]) => renderOptGroup(g, d)).join('');
 
   wrap.innerHTML = `
     <div class="opts-inner">
-      ${groupsHtml}
+      <div class="opts-groups-grid">${groupsHtml}</div>
       <div class="qty-note-row">
         <div class="qty-col">
           <label><i class="bi bi-hash"></i> Qtd.</label>
@@ -931,24 +981,116 @@ function selectCat(slug, rowEl) {
   setTimeout(() => rowEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 60);
 }
 
+/* ── Option helpers ─────────────────────────────────────────────────────── */
+
+function isSkipValue(v) {
+  return v.startsWith('Não quero') || v.startsWith('Sem ');
+}
+
+function groupIcon(name) {
+  const n = name.toLowerCase();
+  if (n.includes('massa'))                       return '🍞';
+  if (n.includes('recheio'))                     return '🎂';
+  if (n.includes('decoraç'))                     return '✨';
+  if (n.includes('topo'))                        return '🎊';
+  if (n.includes('brigadeiro'))                  return '🍫';
+  if (n.includes('copinho'))                     return '🥤';
+  if (n.includes('brownie'))                     return '🍪';
+  if (n.includes('trufa'))                       return '🍬';
+  if (n.includes('pipoca'))                      return '🍿';
+  if (n.includes('doce'))                        return '🍭';
+  if (n.includes('frito'))                       return '🍗';
+  if (n.includes('assado'))                      return '🥐';
+  if (n.includes('empadinha'))                   return '🥧';
+  if (n.includes('pastel'))                      return '🫔';
+  if (n.includes('colorido') || n.includes('carimbado')) return '🎨';
+  if (n.includes('combo') || n.includes('escolha')) return '🎁';
+  if (n.includes('kit'))                         return '🎊';
+  if (n.includes('acréscimo'))                   return '➕';
+  return '📋';
+}
+
+function renderOptGroup(group, data) {
+  const items = data.items.filter(i => i.active);
+  if (!items.length) return '';
+
+  const icon     = groupIcon(group);
+  const isOpt    = isSkipValue(items[0].name);
+  // Pills quando há ≤ 4 opções e nenhuma é texto longo
+  const usePills = items.length <= 4 && items.every(i => i.name.length <= 35);
+  const esc      = s => s.replace(/"/g, '&quot;');
+
+  const label = `<label class="opt-label">
+    <span class="og-icon">${icon}</span> ${group}${isOpt
+      ? ' <span class="opt-badge">opcional</span>' : ''}
+  </label>`;
+
+  if (usePills) {
+    const pills = items.map((item, idx) => {
+      const skip    = isSkipValue(item.name);
+      const autoSel = idx === 0 && isOpt ? (skip ? ' sel-skip' : ' sel') : '';
+      return `<button type="button" class="opt-pill${autoSel}"
+        data-value="${esc(item.name)}" onclick="selectPill(this)">${item.name}</button>`;
+    }).join('');
+
+    const opts = items.map((i, idx) =>
+      `<option value="${esc(i.name)}"${idx === 0 && isOpt ? ' selected' : ''}>${i.name}</option>`
+    ).join('');
+
+    return `<div class="opt-group" data-pills="1">
+      ${label}
+      <div class="opt-pills">${pills}</div>
+      <select class="opt-sel" data-group="${esc(group)}" style="display:none">${opts}</select>
+    </div>`;
+  }
+
+  // Dropdown: opcional = primeiro item pré-selecionado; obrigatório = "— escolha —"
+  const opts = items.map((i, idx) =>
+    `<option value="${esc(i.name)}"${idx === 0 && isOpt ? ' selected' : ''}>${i.name}</option>`
+  ).join('');
+
+  return `<div class="opt-group">
+    ${label}
+    <select class="opt-sel" data-group="${esc(group)}"
+      onchange="this.classList.remove('is-invalid');this.classList.toggle('sel-filled',!!this.value)">
+      ${isOpt ? '' : '<option value="">— escolha —</option>'}
+      ${opts}
+    </select>
+  </div>`;
+}
+
+function selectPill(btn) {
+  const grp = btn.closest('.opt-group');
+  grp.querySelectorAll('.opt-pill').forEach(p => p.classList.remove('sel', 'sel-skip'));
+  btn.classList.add(isSkipValue(btn.dataset.value) ? 'sel-skip' : 'sel');
+  grp.querySelector('select.opt-sel').value = btn.dataset.value;
+  grp.querySelector('.opt-pills').classList.remove('is-invalid');
+}
+
 /* ── Sacola ─────────────────────────────────────────────────────────────── */
-// Prefixes that indicate "skip this group" — filtered out of saved selections
-const SKIP_VALS = ['Não quero', 'Sem recheio tradicional', 'Sem recheio especial', 'Sem recheio super especial'];
 
 function addToSacola() {
   if (!selectedCat) return;
   const selections = {};
   let valid = true;
   document.querySelectorAll('#ow-' + selectedCat.slug + ' .opt-sel').forEach(sel => {
-    if (!sel.value) { sel.classList.add('is-invalid'); valid = false; }
-    else {
+    if (!sel.value) {
+      const grp = sel.closest('.opt-group');
+      if (grp && grp.dataset.pills) {
+        grp.querySelector('.opt-pills').classList.add('is-invalid');
+      } else {
+        sel.classList.add('is-invalid');
+      }
+      valid = false;
+    } else {
       sel.classList.remove('is-invalid');
-      if (!SKIP_VALS.includes(sel.value)) {
+      sel.closest('.opt-group')?.querySelector('.opt-pills')?.classList.remove('is-invalid');
+      if (!isSkipValue(sel.value)) {
         selections[sel.dataset.group] = sel.value;
       }
     }
   });
-  if (!valid) return toast('Selecione todas as opções antes de adicionar.', 'danger');
+  if (!valid) return toast('Preencha as opções obrigatórias antes de adicionar.', 'danger');
   if (!Object.keys(selections).length) return toast('Escolha pelo menos uma opção antes de adicionar.', 'warning');
 
   sacola.push({
