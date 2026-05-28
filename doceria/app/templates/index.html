@@ -1,0 +1,1247 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Encomendas – Jack Mariano Confeitaria</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <style>
+    /* ── Tokens ─────────────────────────────────────────── */
+    :root {
+      --pk:      #e5196b;
+      --pk-soft: #fdf0f6;
+      --pk-dark: #b8105a;
+      --bg:      #f7f4fb;
+      --surface: #ffffff;
+      --border:  #ede8f5;
+      --text:    #1c1c2e;
+      --muted:   #8a87a0;
+
+      --c-bolo:      #e5196b;
+      --c-doces:     #7c3aed;
+      --c-salgados:  #ea580c;
+      --c-combos:    #0284c7;
+      --c-kit-festa: #16a34a;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+      color: var(--text);
+    }
+
+    /* ── Scrollbar ───────────────────────────────────────── */
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #ddd; border-radius: 10px; }
+
+    /* ── Header ──────────────────────────────────────────── */
+    .site-header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 0 20px;
+      height: 60px;
+      display: flex; align-items: center; justify-content: space-between;
+      position: sticky; top: 0; z-index: 900;
+    }
+    .brand {
+      font-weight: 800; font-size: 1rem; color: var(--text);
+      display: flex; align-items: center; gap: 8px;
+      text-decoration: none;
+    }
+    .brand-dot {
+      width: 28px; height: 28px; border-radius: 8px;
+      background: linear-gradient(135deg, var(--pk) 0%, #ff6eb0 100%);
+      display: flex; align-items: center; justify-content: center;
+      font-size: .9rem;
+    }
+
+    /* ── Step bar ────────────────────────────────────────── */
+    .step-bar {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 10px 16px;
+      display: flex; align-items: center; justify-content: center; gap: 6px;
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .step-bar::-webkit-scrollbar { display: none; }
+    .step-pill {
+      display: flex; align-items: center; gap: 7px;
+      padding: 6px 14px; border-radius: 999px;
+      font-size: .78rem; font-weight: 700;
+      background: transparent; color: var(--muted);
+      border: 1.5px solid transparent;
+      transition: all .25s;
+    }
+    .step-pill .sp-num {
+      width: 20px; height: 20px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: .7rem; font-weight: 800;
+      background: #e9e6f4; color: var(--muted);
+      transition: all .25s;
+    }
+    .step-pill.active {
+      background: var(--pk-soft);
+      color: var(--pk);
+      border-color: #f5c0d9;
+    }
+    .step-pill.active .sp-num { background: var(--pk); color: #fff; }
+    .step-pill.done { color: #16a34a; }
+    .step-pill.done .sp-num { background: #16a34a; color: #fff; }
+    .step-sep { width: 28px; height: 1.5px; background: var(--border); border-radius: 2px; }
+
+    /* ── Page wrap ───────────────────────────────────────── */
+    .page { max-width: 640px; margin: 0 auto; padding: 28px 16px 60px; }
+
+    /* ── Section heading ─────────────────────────────────── */
+    .s-head {
+      font-size: .7rem; font-weight: 700; color: var(--muted);
+      text-transform: uppercase; letter-spacing: .16em;
+      margin-bottom: 14px;
+    }
+
+    /* ── Hero strip ──────────────────────────────────────── */
+    .hero-strip {
+      text-align: center;
+      padding: 32px 20px 26px;
+      max-width: 640px; margin: 0 auto;
+      width: 100%;
+    }
+    .hero-strip h1 {
+      font-size: clamp(1.55rem, 5vw, 2.2rem);
+      font-weight: 800; line-height: 1.2;
+      color: var(--text);
+    }
+    .hero-strip h1 em { font-style: normal; color: var(--pk); }
+    .hero-strip p {
+      font-size: .9rem; color: var(--muted); font-weight: 500;
+      max-width: 380px; margin: 10px auto 0; line-height: 1.6;
+    }
+
+    /* ── Category list ───────────────────────────────────── */
+    .cat-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 32px; }
+
+    .cat-row {
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: 20px;
+      padding: 0;
+      display: flex; align-items: stretch; gap: 0;
+      cursor: pointer;
+      overflow: hidden;
+      transition: box-shadow .22s, transform .18s, border-color .22s;
+      user-select: none;
+    }
+    .cat-row[data-slug="bolo"]      { --accent: var(--c-bolo); }
+    .cat-row[data-slug="doces"]     { --accent: var(--c-doces); }
+    .cat-row[data-slug="salgados"]  { --accent: var(--c-salgados); }
+    .cat-row[data-slug="combos"]    { --accent: var(--c-combos); }
+    .cat-row[data-slug="kit-festa"] { --accent: var(--c-kit-festa); }
+
+    .cat-row:hover {
+      transform: translateY(-3px);
+      border-color: color-mix(in srgb, var(--accent, var(--pk)) 45%, transparent);
+      box-shadow: 0 8px 28px color-mix(in srgb, var(--accent, var(--pk)) 18%, transparent);
+    }
+    .cat-row.active {
+      border-color: var(--accent, var(--pk));
+      box-shadow: 0 8px 28px color-mix(in srgb, var(--accent, var(--pk)) 22%, transparent);
+    }
+
+    /* Colored left icon panel */
+    .cat-icon-wrap {
+      width: 82px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2.1rem;
+      background: color-mix(in srgb, var(--accent, var(--pk)) 13%, #fff);
+      border-right: 1.5px solid color-mix(in srgb, var(--accent, var(--pk)) 15%, transparent);
+      transition: background .22s, font-size .18s;
+      position: relative;
+    }
+    .cat-icon-wrap::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(160deg,
+        color-mix(in srgb, var(--accent, var(--pk)) 6%, transparent) 0%,
+        transparent 60%);
+    }
+    .cat-row:hover .cat-icon-wrap,
+    .cat-row.active .cat-icon-wrap {
+      background: color-mix(in srgb, var(--accent, var(--pk)) 20%, #fff);
+      font-size: 2.3rem;
+    }
+
+    /* Text area */
+    .cat-text { flex: 1; min-width: 0; padding: 16px 14px 16px 18px; }
+    .cat-name {
+      font-weight: 800; font-size: 1rem; color: var(--text);
+      display: flex; align-items: center; gap: 8px;
+    }
+    .cat-tag {
+      font-size: .6rem; font-weight: 700; letter-spacing: .08em;
+      text-transform: uppercase; padding: 2px 7px; border-radius: 20px;
+      background: color-mix(in srgb, var(--accent, var(--pk)) 12%, white);
+      color: var(--accent, var(--pk));
+      border: 1px solid color-mix(in srgb, var(--accent, var(--pk)) 25%, transparent);
+      opacity: 0; transition: opacity .22s;
+    }
+    .cat-row.active .cat-tag { opacity: 1; }
+    .cat-desc { font-size: .78rem; color: var(--muted); margin-top: 4px; font-weight: 500; line-height: 1.45; }
+
+    /* Right arrow indicator */
+    .cat-arrow-wrap { display: flex; align-items: center; padding: 0 16px 0 8px; flex-shrink: 0; }
+    .cat-arrow {
+      width: 30px; height: 30px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      background: color-mix(in srgb, var(--accent, var(--pk)) 10%, white);
+      color: color-mix(in srgb, var(--accent, var(--pk)) 70%, #888);
+      font-size: .8rem;
+      transition: transform .22s, background .22s, color .22s;
+      border: 1px solid color-mix(in srgb, var(--accent, var(--pk)) 18%, transparent);
+    }
+    .cat-row:hover .cat-arrow {
+      background: color-mix(in srgb, var(--accent, var(--pk)) 18%, white);
+      color: var(--accent, var(--pk));
+    }
+    .cat-row.active .cat-arrow {
+      transform: rotate(90deg);
+      background: var(--accent, var(--pk));
+      color: #fff;
+      border-color: transparent;
+    }
+
+    /* ── Options slide-down ──────────────────────────────── */
+    .opts-wrap[data-slug="bolo"]      { --accent: var(--c-bolo); }
+    .opts-wrap[data-slug="doces"]     { --accent: var(--c-doces); }
+    .opts-wrap[data-slug="salgados"]  { --accent: var(--c-salgados); }
+    .opts-wrap[data-slug="combos"]    { --accent: var(--c-combos); }
+    .opts-wrap[data-slug="kit-festa"] { --accent: var(--c-kit-festa); }
+
+    .opts-wrap {
+      max-height: 0; overflow: hidden;
+      transition: max-height .35s cubic-bezier(.4,0,.2,1);
+    }
+    .opts-wrap.open { max-height: 1200px; }
+
+    .opts-inner {
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-top: none;
+      border-radius: 0 0 22px 22px;
+      padding: 8px 14px 20px;
+      margin-top: -10px;
+      margin-bottom: 10px;
+    }
+
+    .opt-group {
+      margin-bottom: 8px;
+      background: var(--bg);
+      border-radius: 14px;
+      padding: 11px 13px 13px;
+    }
+    .opt-label {
+      font-size: .63rem; font-weight: 700; color: var(--muted);
+      text-transform: uppercase; letter-spacing: .14em;
+      margin-bottom: 8px;
+      display: flex; align-items: center; gap: 7px;
+    }
+    .opt-label::before {
+      content: '';
+      display: inline-block;
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--accent, var(--pk));
+      flex-shrink: 0;
+    }
+    .opt-sel {
+      width: 100%; padding: 10px 38px 10px 14px;
+      border: 1.5px solid var(--border); border-radius: 11px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: .875rem; font-weight: 500; color: var(--text);
+      background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238a87a0' stroke-width='1.8' fill='none' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat right 14px center;
+      appearance: none; cursor: pointer;
+      transition: border-color .2s, box-shadow .2s;
+      box-shadow: 0 1px 3px rgba(0,0,0,.05);
+    }
+    .opt-sel:focus {
+      outline: none;
+      border-color: var(--accent, var(--pk));
+      box-shadow: 0 0 0 3.5px color-mix(in srgb, var(--accent, var(--pk)) 14%, transparent);
+    }
+    .opt-sel.is-invalid { border-color: #dc3545; }
+    .opt-sel.sel-filled {
+      border-color: color-mix(in srgb, var(--accent, var(--pk)) 40%, transparent);
+      background: color-mix(in srgb, var(--accent, var(--pk)) 5%, white);
+    }
+
+    /* ── Option grid & pills ─────────────────────────────── */
+    .opts-groups-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    /* pill groups ocupam largura total */
+    .opt-group[data-pills] { grid-column: 1 / -1; }
+
+    @media (max-width: 520px) {
+      .opts-groups-grid { grid-template-columns: 1fr; }
+    }
+
+    .og-icon { font-style: normal; }
+    .opt-badge {
+      font-size: .57rem; font-weight: 700; letter-spacing: .06em;
+      text-transform: uppercase; padding: 2px 7px; border-radius: 20px;
+      background: var(--bg); color: var(--muted);
+      border: 1px solid var(--border);
+      margin-left: 5px; vertical-align: middle;
+    }
+
+    .opt-pills {
+      display: flex; flex-wrap: wrap; gap: 6px;
+      border-radius: 10px; transition: box-shadow .18s;
+    }
+    .opt-pills.is-invalid { box-shadow: 0 0 0 2px #dc3545; padding: 5px; }
+
+    .opt-pill {
+      padding: 7px 14px; border-radius: 999px;
+      border: 1.5px solid var(--border);
+      background: #fff; color: var(--text);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: .8rem; font-weight: 600; cursor: pointer;
+      transition: border-color .18s, background .18s, color .18s, transform .12s, box-shadow .15s;
+      line-height: 1.3;
+    }
+    .opt-pill:hover {
+      border-color: color-mix(in srgb, var(--accent, var(--pk)) 55%, transparent);
+      color: var(--accent, var(--pk)); transform: translateY(-1px);
+    }
+    .opt-pill.sel {
+      background: var(--accent, var(--pk));
+      border-color: var(--accent, var(--pk));
+      color: #fff;
+      box-shadow: 0 2px 8px color-mix(in srgb, var(--accent, var(--pk)) 35%, transparent);
+    }
+    .opt-pill.sel-skip {
+      background: var(--bg);
+      border-color: color-mix(in srgb, var(--muted) 25%, transparent);
+      color: var(--muted);
+    }
+
+    .qty-note-row {
+      display: flex; gap: 10px; margin-bottom: 12px;
+      background: var(--bg); border-radius: 14px; padding: 11px 13px;
+    }
+    .qty-note-row > div { display: flex; flex-direction: column; }
+    .qty-note-row .qty-col { flex: 0 0 92px; }
+    .qty-note-row .note-col { flex: 1; }
+    .qty-note-row label {
+      font-size: .63rem; font-weight: 700; color: var(--muted);
+      text-transform: uppercase; letter-spacing: .12em; margin-bottom: 7px;
+      display: flex; align-items: center; gap: 5px;
+    }
+    .qty-note-row label i { font-size: .75rem; }
+    .qty-note-row input {
+      padding: 10px 12px; border: 1.5px solid var(--border); border-radius: 11px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: .875rem; font-weight: 500; color: var(--text);
+      background: #fff;
+      box-shadow: 0 1px 3px rgba(0,0,0,.05);
+      transition: border-color .2s, box-shadow .2s;
+    }
+    .qty-note-row input:focus {
+      outline: none; border-color: var(--accent, var(--pk));
+      box-shadow: 0 0 0 3.5px color-mix(in srgb, var(--accent, var(--pk)) 14%, transparent);
+    }
+
+    .btn-add {
+      width: 100%; padding: 14px;
+      background: linear-gradient(135deg,
+        var(--accent, var(--pk)) 0%,
+        color-mix(in srgb, var(--accent, var(--pk)) 70%, #000) 100%);
+      color: #fff; border: none; border-radius: 14px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: .95rem; font-weight: 700;
+      cursor: pointer; letter-spacing: .02em;
+      box-shadow: 0 4px 18px color-mix(in srgb, var(--accent, var(--pk)) 35%, transparent);
+      transition: opacity .18s, transform .14s;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+    }
+    .btn-add:hover  { opacity: .91; transform: translateY(-2px); }
+    .btn-add:active { transform: translateY(0); opacity: 1; }
+
+    /* ── Form ────────────────────────────────────────────── */
+    .form-card {
+      background: var(--surface); border: 1.5px solid var(--border);
+      border-radius: 24px; overflow: hidden; padding: 0;
+    }
+    .form-card-head {
+      background: linear-gradient(135deg, var(--pk) 0%, #c0134f 100%);
+      padding: 22px 26px 20px;
+    }
+    .form-card-head-emoji { font-size: 1.8rem; margin-bottom: 6px; display: block; }
+    .form-card-head-title {
+      font-weight: 800; font-size: 1rem; color: #fff; line-height: 1.2;
+    }
+    .form-card-head-sub {
+      font-size: .78rem; color: rgba(255,255,255,.72);
+      margin-top: 4px; font-weight: 500; line-height: 1.5;
+    }
+    .form-card-body { padding: 22px 22px 26px; }
+
+    .form-label {
+      font-size: .74rem; font-weight: 700; color: #444; margin-bottom: 6px;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .form-label i { font-size: .82rem; color: var(--pk); opacity: .85; }
+    .form-control, .form-select {
+      border: 1.5px solid var(--border); border-radius: 12px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: .875rem; font-weight: 500;
+      background: var(--bg); padding: 11px 14px;
+      box-shadow: 0 1px 3px rgba(0,0,0,.04);
+      transition: border-color .2s, box-shadow .2s, background .2s;
+    }
+    .form-control:focus, .form-select:focus {
+      border-color: var(--pk);
+      box-shadow: 0 0 0 3.5px rgba(229,25,107,.12);
+      background: #fff;
+    }
+    textarea.form-control { resize: vertical; min-height: 90px; }
+
+    .btn-pk {
+      background: linear-gradient(135deg, var(--pk) 0%, #c0134f 100%);
+      color: #fff; border: none; font-weight: 700; border-radius: 12px;
+      font-family: 'Plus Jakarta Sans', sans-serif; font-size: .9rem;
+      box-shadow: 0 4px 14px rgba(229,25,107,.3);
+      transition: opacity .18s, transform .14s;
+    }
+    .btn-pk:hover { opacity: .9; color: #fff; transform: translateY(-1px); }
+    .btn-pk:active { transform: translateY(0); }
+    .btn-pk-outline {
+      border: 2px solid var(--border); color: var(--muted);
+      background: transparent; font-weight: 600; border-radius: 12px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      transition: border-color .2s, color .2s, background .2s;
+    }
+    .btn-pk-outline:hover { border-color: var(--pk); color: var(--pk); background: var(--pk-soft); }
+
+    /* ── Summary ─────────────────────────────────────────── */
+    .sum-card {
+      background: var(--surface); border: 1.5px solid var(--border);
+      border-radius: 16px; padding: 18px 20px; margin-bottom: 24px;
+    }
+    .sum-item {
+      display: flex; align-items: flex-start; gap: 12px;
+      padding: 10px 0; border-bottom: 1px solid var(--border);
+    }
+    .sum-item:last-child { border-bottom: none; padding-bottom: 0; }
+    .sum-ico { font-size: 1.4rem; flex-shrink: 0; padding-top: 1px; }
+    .sum-name { font-weight: 700; font-size: .9rem; }
+    .sum-qty  { font-weight: 500; color: var(--muted); font-size: .85rem; }
+    .sel-chip {
+      display: inline-block; background: var(--pk-soft); color: var(--pk-dark);
+      font-size: .68rem; font-weight: 700; padding: 2px 9px;
+      border-radius: 20px; margin: 3px 3px 0 0;
+    }
+
+    /* ── Success ─────────────────────────────────────────── */
+    .success-card {
+      background: var(--surface); border: 1.5px solid var(--border);
+      border-radius: 24px; padding: 52px 32px; text-align: center;
+      max-width: 440px; margin: 0 auto;
+    }
+    .success-emoji { font-size: 4rem; display: block; margin-bottom: 16px; }
+
+    /* ── Bag no header ───────────────────────────────────── */
+    .bag-fab { position: relative; }
+
+    .bag-btn {
+      width: 44px; height: 44px; border-radius: 12px;
+      background: var(--text); color: #fff; border: none; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 2px 10px rgba(0,0,0,.18);
+      position: relative;
+      transition: transform .16s, box-shadow .16s, background .18s;
+    }
+    .bag-btn:hover  { transform: scale(1.06); box-shadow: 0 4px 16px rgba(0,0,0,.26); background: #2d2d44; }
+    .bag-btn:active { transform: scale(.93); }
+
+    .bag-badge {
+      position: absolute; top: -6px; right: -6px;
+      background: var(--pk); color: #fff;
+      font-size: .6rem; font-weight: 800;
+      border-radius: 50%; min-width: 18px; height: 18px; padding: 0 2px;
+      display: flex; align-items: center; justify-content: center;
+      border: 2px solid var(--surface); line-height: 1;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    .bag-badge.hidden { display: none; }
+
+    .bag-panel {
+      position: absolute; top: calc(100% + 10px); right: 0; width: 300px;
+      max-height: calc(100vh - 90px);
+      background: var(--surface); border-radius: 18px;
+      border: 1.5px solid var(--border);
+      box-shadow: 0 12px 40px rgba(0,0,0,.14);
+      display: flex; flex-direction: column; overflow: hidden;
+      opacity: 0; transform: translateY(-10px) scale(.96);
+      transition: opacity .2s ease, transform .2s ease;
+      pointer-events: none;
+    }
+    .bag-panel.open {
+      opacity: 1; transform: translateY(0) scale(1);
+      pointer-events: all;
+    }
+
+    /* ── WhatsApp Help FAB ───────────────────────────────── */
+    .wa-help-fab {
+      position: fixed; bottom: 24px; right: 20px; z-index: 1060;
+      display: flex; align-items: center; gap: 8px;
+      background: #25d366; color: #fff;
+      border-radius: 999px; padding: 12px 20px 12px 16px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: .85rem; font-weight: 700; letter-spacing: .01em;
+      text-decoration: none;
+      box-shadow: 0 4px 18px rgba(37,211,102,.42);
+      transition: transform .18s, box-shadow .18s;
+    }
+    .wa-help-fab:hover {
+      color: #fff; transform: translateY(-2px);
+      box-shadow: 0 8px 28px rgba(37,211,102,.55);
+    }
+    .wa-help-fab i { font-size: 1.15rem; }
+    @media (max-width: 480px) {
+      .wa-help-fab .wa-label { display: none; }
+      .wa-help-fab { padding: 13px; border-radius: 50%; }
+    }
+
+    .bp-head {
+      padding: 13px 16px;
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+      flex-shrink: 0;
+    }
+    .bp-head-title {
+      font-weight: 800; font-size: .88rem; color: var(--text);
+      display: flex; align-items: center; gap: 7px;
+    }
+    .bp-close {
+      background: none; border: none; cursor: pointer;
+      color: var(--muted); font-size: 1.3rem; line-height: 1; padding: 0;
+    }
+    .bp-close:hover { color: var(--text); }
+
+    .bp-items { flex: 1; overflow-y: auto; padding: 10px 12px; }
+
+    .bp-item {
+      background: var(--bg); border-radius: 12px;
+      padding: 10px 12px; margin-bottom: 8px; font-size: .82rem;
+    }
+    .bp-item-name { font-weight: 700; }
+    .bp-item-qty  { font-weight: 500; color: var(--muted); }
+    .bp-chip {
+      display: inline-block; background: var(--pk-soft); color: var(--pk-dark);
+      font-size: .64rem; font-weight: 700; padding: 2px 7px;
+      border-radius: 20px; margin: 2px 2px 0 0;
+    }
+    .bp-empty { text-align: center; color: var(--muted); font-size: .88rem; padding: 28px 0; font-weight: 600; }
+
+    .bp-foot { padding: 12px; border-top: 1px solid var(--border); flex-shrink: 0; }
+
+    .bag-overlay { position: fixed; inset: 0; z-index: 1049; display: none; }
+    .bag-overlay.open { display: block; }
+
+    /* ── Responsive ─────────────────────────────────────────── */
+
+    /* Telefones muito pequenos (< 380px) */
+    @media (max-width: 380px) {
+      .step-pill span { display: none; }
+      .step-pill { padding: 5px 8px; gap: 4px; }
+      .step-sep  { width: 16px; }
+      .hero-strip { padding: 22px 14px 18px; }
+      .hero-strip h1 { font-size: 1.28rem; }
+      .cat-icon-wrap { width: 60px; font-size: 1.65rem; }
+      .cat-text { padding: 11px 8px 11px 12px; }
+      .cat-name { font-size: .85rem; }
+      .cat-desc { font-size: .7rem; }
+      .cat-arrow { width: 26px; height: 26px; font-size: .7rem; }
+      .cat-arrow-wrap { padding: 0 10px 0 4px; }
+      .opts-inner { padding: 4px 8px 14px; }
+      .opt-group { padding: 9px 10px 11px; }
+      .qty-note-row { flex-direction: column; gap: 8px; }
+      .qty-note-row .qty-col { flex: none; }
+    }
+
+    /* Mobile padrão (< 640px) */
+    @media (max-width: 640px) {
+      .page { padding: 18px 12px 60px; }
+      .site-header { padding: 0 14px; }
+      .hero-strip { padding: 26px 14px 20px; }
+      .cat-list { gap: 10px; }
+      .form-card-head { padding: 18px 18px 16px; }
+      .form-card-body { padding: 16px 16px 22px; }
+      .sum-card { padding: 14px 16px; }
+    }
+
+    /* Bag panel no mobile */
+    @media (max-width: 480px) {
+      .bag-panel { width: calc(100vw - 28px); right: -4px; }
+    }
+
+    /* Tablets e desktops (≥ 768px) */
+    @media (min-width: 768px) {
+      .page { max-width: 700px; padding: 38px 30px 80px; }
+      .hero-strip { padding: 52px 30px 40px; max-width: 700px; }
+      .hero-strip h1 { font-size: 2.1rem; }
+      .cat-list { gap: 14px; }
+      .cat-icon-wrap { width: 90px; font-size: 2.3rem; }
+      .cat-text { padding: 18px 16px 18px 22px; }
+      .cat-name { font-size: 1.06rem; }
+      .cat-desc { font-size: .83rem; }
+      .cat-arrow { width: 34px; height: 34px; }
+      .opts-inner { padding: 10px 18px 24px; }
+      .opt-group { padding: 14px 16px 16px; }
+      .qty-note-row { padding: 14px 16px; }
+      .form-card-head { padding: 28px 32px 24px; }
+      .form-card-body { padding: 26px 28px 32px; }
+      .bag-panel { width: 320px; }
+      .sum-card { padding: 20px 24px; }
+    }
+
+    /* Desktops largos (≥ 1024px) */
+    @media (min-width: 1024px) {
+      .page { max-width: 800px; padding: 44px 40px 90px; }
+      .hero-strip { max-width: 800px; padding: 64px 40px 50px; }
+      .hero-strip h1 { font-size: 2.4rem; }
+      .hero-strip p { font-size: 1rem; }
+      .cat-list { gap: 16px; margin-bottom: 36px; }
+      .cat-icon-wrap { width: 96px; font-size: 2.5rem; }
+      .cat-text { padding: 20px 18px 20px 24px; }
+      .cat-name { font-size: 1.1rem; }
+      .cat-desc { font-size: .86rem; }
+      .opts-inner { padding: 12px 20px 28px; }
+      .opt-group { padding: 15px 18px 17px; }
+      .qty-note-row { gap: 14px; padding: 15px 18px; }
+      .btn-add { padding: 16px; font-size: 1rem; border-radius: 16px; }
+      .bag-panel { width: 360px; }
+      .form-card-head { padding: 30px 36px 26px; }
+      .form-card-body { padding: 28px 32px 36px; }
+      .form-card-head-emoji { font-size: 2rem; }
+      .form-card-head-title { font-size: 1.1rem; }
+    }
+
+    /* ── Spinner ─────────────────────────────────────────── */
+    .spinner-pk { color: var(--pk); }
+  </style>
+</head>
+<body>
+
+<!-- Overlay for bag -->
+<div class="bag-overlay" id="bag-overlay" onclick="closeBag()"></div>
+
+<!-- ══ Header ══════════════════════════════════════════════════════════════ -->
+<header class="site-header">
+  <a class="brand" href="/">
+    <div class="brand-dot">🧁</div>
+    Jack Mariano Confeitaria
+  </a>
+
+  <!-- Sacola dentro do header -->
+  <div class="bag-fab">
+    <button class="bag-btn" id="bag-btn" onclick="toggleBag()" aria-label="Abrir sacola">
+      <svg width="19" height="21" viewBox="0 0 22 24" fill="none"
+           stroke="currentColor" stroke-width="2.2"
+           stroke-linecap="round" stroke-linejoin="round">
+        <path d="M7 9V6.5a4 4 0 0 1 8 0V9"/>
+        <path d="M2 9h18l-1.8 11.2A2 2 0 0 1 16.2 22H5.8a2 2 0 0 1-2-1.8Z"/>
+      </svg>
+      <span class="bag-badge hidden" id="bag-badge">0</span>
+    </button>
+
+    <div class="bag-panel" id="bag-panel">
+      <div class="bp-head">
+        <div class="bp-head-title">
+          <svg width="14" height="16" viewBox="0 0 22 24" fill="none"
+               stroke="currentColor" stroke-width="2.4"
+               stroke-linecap="round" stroke-linejoin="round">
+            <path d="M7 9V6.5a4 4 0 0 1 8 0V9"/>
+            <path d="M2 9h18l-1.8 11.2A2 2 0 0 1 16.2 22H5.8a2 2 0 0 1-2-1.8Z"/>
+          </svg>
+          Minha Sacola
+        </div>
+        <button class="bp-close" onclick="closeBag()">×</button>
+      </div>
+
+      <div class="bp-items" id="bp-items">
+        <div class="bp-empty">Sua sacola está vazia.</div>
+      </div>
+
+      <div class="bp-foot d-none" id="bp-footer">
+        <button class="btn btn-pk w-100 py-2 mb-2"
+                onclick="closeBag(); goStep2()">
+          Finalizar pedido →
+        </button>
+        <button class="btn btn-link btn-sm text-danger w-100 p-0 fw-semibold"
+                onclick="clearSacola()">Esvaziar sacola</button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ══ Botão de ajuda WhatsApp (fixo) ══════════════════════════════════════ -->
+<a href="https://wa.me/5594984239253?text=Ol%C3%A1!%20Gostaria%20de%20tirar%20uma%20d%C3%BAvida%20sobre%20os%20produtos%20da%20Jack%20Mariano%20Confeitaria.%20%F0%9F%A7%81"
+   target="_blank" rel="noopener" class="wa-help-fab" aria-label="Falar no WhatsApp">
+  <i class="bi bi-whatsapp"></i>
+  <span class="wa-label">Ajuda</span>
+</a>
+
+<!-- ══ Step bar ════════════════════════════════════════════════════════════ -->
+<div class="step-bar">
+  <div class="step-pill active" id="sp1">
+    <div class="sp-num">1</div>
+    <span>Itens</span>
+  </div>
+  <div class="step-sep" id="ss1"></div>
+  <div class="step-pill pending" id="sp2">
+    <div class="sp-num">2</div>
+    <span>Seus dados</span>
+  </div>
+  <div class="step-sep" id="ss2"></div>
+  <div class="step-pill pending" id="sp3">
+    <div class="sp-num">3</div>
+    <span>Confirmação</span>
+  </div>
+</div>
+
+
+<!-- ══ STEP 1 ════════════════════════════════════════════════════════════════ -->
+<div id="step1">
+
+  <div class="hero-strip">
+    <h1>Faça sua <em>encomenda</em> 🎉</h1>
+    <p>Saboreamos sua vida com o melhor da nossa doceria!</p>
+  </div>
+
+  <div class="page">
+    <p class="s-head">Escolha o produto</p>
+
+    <!-- Category list -->
+    <div class="cat-list" id="cat-list">
+      <div style="text-align:center;padding:40px 0;color:var(--muted)">
+        <div class="spinner-border spinner-border-sm spinner-pk me-2"></div>Carregando...
+      </div>
+    </div>
+
+    <!-- Options panel (injected per category via JS) -->
+    <div id="options-area"></div>
+
+  </div>
+</div>
+
+
+<!-- ══ STEP 2 ════════════════════════════════════════════════════════════════ -->
+<div id="step2" class="d-none">
+  <div class="page">
+
+    <p class="s-head">Resumo da sacola</p>
+    <div class="sum-card" id="sum-card">
+      <div id="summary-list"></div>
+    </div>
+
+    <p class="s-head">Seus dados</p>
+    <div class="form-card">
+
+      <div class="form-card-head">
+        <span class="form-card-head-emoji">👤</span>
+        <div class="form-card-head-title">Informações do pedido</div>
+        <div class="form-card-head-sub">Preencha os campos abaixo para finalizarmos seu pedido</div>
+      </div>
+
+      <div class="form-card-body">
+        <div class="row g-3">
+          <div class="col-12">
+            <label class="form-label">
+              <i class="bi bi-person-fill"></i> Nome completo <span class="text-danger ms-1">*</span>
+            </label>
+            <input type="text" id="f-name" class="form-control" placeholder="Maria da Silva">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">
+              <i class="bi bi-whatsapp"></i> WhatsApp <span class="text-danger ms-1">*</span>
+            </label>
+            <input type="text" id="f-phone" class="form-control" placeholder="(94) 99999-0000">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">
+              <i class="bi bi-gift"></i> Data de nascimento
+            </label>
+            <input type="date" id="f-birth" class="form-control">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">
+              <i class="bi bi-calendar-event"></i> Data de retirada <span class="text-danger ms-1">*</span>
+            </label>
+            <input type="date" id="f-date" class="form-control">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">
+              <i class="bi bi-clock"></i> Horário <span class="text-danger ms-1">*</span>
+            </label>
+            <input type="time" id="f-time" class="form-control" value="09:00"
+                   min="08:00" max="20:00">
+          </div>
+          <div class="col-12">
+            <label class="form-label">
+              <i class="bi bi-shield-exclamation"></i> Alergias ou restrições
+            </label>
+            <input type="text" id="f-allergy" class="form-control"
+                   placeholder="Ex: intolerante à lactose, alergia a amendoim...">
+          </div>
+          <div class="col-12">
+            <label class="form-label">
+              <i class="bi bi-pencil-square"></i> Observações gerais
+            </label>
+            <textarea id="f-notes" class="form-control" rows="3"
+                      placeholder="Informações adicionais sobre seu pedido..."></textarea>
+          </div>
+        </div>
+        <div id="form-error" class="alert alert-danger mt-3 d-none"></div>
+        <div class="d-flex gap-2 mt-4 justify-content-center flex-wrap">
+          <button class="btn btn-pk-outline px-4 py-2" onclick="goStep1()">
+            <i class="bi bi-arrow-left me-1"></i> Voltar
+          </button>
+          <button class="btn btn-pk px-5 py-2" onclick="submitOrder()" id="btn-submit">
+            <i class="bi bi-send-fill me-1"></i> Enviar pedido
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+    <p class="text-center mt-3" style="font-size:.75rem;color:var(--muted);max-width:420px;margin-left:auto;margin-right:auto;line-height:1.6;font-weight:500">
+      O pedido <strong style="color:var(--text)">não é confirmado automaticamente</strong>. Nossa equipe entra em contato pelo WhatsApp para verificar disponibilidade e valor.
+    </p>
+
+  </div>
+</div>
+
+
+<!-- ══ STEP 3 ════════════════════════════════════════════════════════════════ -->
+<div id="step3" class="d-none">
+  <div class="page">
+    <div class="success-card">
+      <span class="success-emoji">🎉</span>
+      <h4 style="font-weight:800;margin-bottom:8px">Pedido enviado!</h4>
+      <p style="font-size:.88rem;color:var(--muted);font-weight:500;line-height:1.65;margin-bottom:16px">
+        O WhatsApp foi aberto com seu pedido completo pré-preenchido.<br>
+        <strong style="color:var(--text)">Só toque em Enviar</strong> para notificar a loja! 📲
+      </p>
+      <div style="background:var(--bg);border-radius:10px;padding:10px 16px;margin-bottom:20px;font-weight:700;font-size:.9rem">
+        Pedido <span id="order-id-display" style="color:var(--pk)">#</span>
+      </div>
+      <a id="wa-client-btn" href="#" target="_blank" rel="noopener"
+         class="btn w-100 fw-bold mb-2 py-3"
+         style="background:#25d366;color:#fff;border-radius:14px;font-family:'Plus Jakarta Sans',sans-serif;font-size:.95rem;box-shadow:0 4px 16px rgba(37,211,102,.35)">
+        <i class="bi bi-whatsapp me-2"></i>Abrir WhatsApp &amp; Enviar pedido
+      </a>
+      <button class="btn btn-pk-outline w-100 mt-2 py-2" onclick="resetForm()">
+        Fazer novo pedido
+      </button>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══ Footer ════════════════════════════════════════════════════════════════ -->
+<footer style="
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  padding: 20px 16px;
+  text-align: center;
+  margin-top: 40px;
+">
+  <p style="margin:0;font-size:.78rem;color:var(--muted);font-weight:500;line-height:1.8">
+    &copy; 2026 <strong style="color:var(--text)">Jack Mariano Confeitaria</strong>. Todos os direitos reservados.
+  </p>
+  <p style="margin:0;font-size:.72rem;color:var(--muted);font-weight:400">
+    Sistema desenvolvido por <a href="https://araujx.dev" target="_blank"
+      style="color:var(--pk);text-decoration:none;font-weight:600">araujx.dev</a>
+  </p>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+const API = '';
+let categories  = [];
+let selectedCat = null;
+let sacola      = [];
+let bagOpen     = false;
+
+/* ── Steps ──────────────────────────────────────────────────────────────── */
+function setStep(n) {
+  [1, 2, 3].forEach(i => {
+    document.getElementById('step' + i).classList.toggle('d-none', i !== n);
+    const pill = document.getElementById('sp' + i);
+    pill.className = 'step-pill ' + (i < n ? 'done' : i === n ? 'active' : 'pending');
+  });
+  [1, 2].forEach(i => {
+    const sep = document.getElementById('ss' + i);
+    if (sep) sep.style.background = i < n ? '#16a34a' : 'var(--border)';
+  });
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function goStep1() { setStep(1); }
+function goStep2() {
+  if (!sacola.length) return toast('Adicione pelo menos um item à sacola.', 'warning');
+  // Define data mínima de retirada (amanhã)
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  const minDate = tomorrow.toISOString().split('T')[0];
+  const fDate = document.getElementById('f-date');
+  fDate.min = minDate;
+  if (!fDate.value || fDate.value < minDate) fDate.value = minDate;
+  renderSummary();
+  setStep(2);
+}
+
+/* ── Categories ─────────────────────────────────────────────────────────── */
+async function loadCategories() {
+  const res = await fetch(`${API}/api/categories`);
+  categories = await res.json();
+
+  const list = document.getElementById('cat-list');
+  list.innerHTML = '';
+
+  categories.forEach(c => {
+    // Category row
+    const row = document.createElement('div');
+    row.className = 'cat-row';
+    row.id = 'cr-' + c.slug;
+    row.dataset.slug = c.slug;
+    row.innerHTML = `
+      <div class="cat-icon-wrap">${c.icon}</div>
+      <div class="cat-text">
+        <div class="cat-name">${c.name} <span class="cat-tag">Selecionado</span></div>
+        <div class="cat-desc">${c.description}</div>
+      </div>
+      <div class="cat-arrow-wrap">
+        <div class="cat-arrow"><i class="bi bi-chevron-right"></i></div>
+      </div>`;
+    row.onclick = () => selectCat(c.slug, row);
+
+    // Options slot (injected below each row)
+    const slot = document.createElement('div');
+    slot.className = 'opts-wrap';
+    slot.id = 'ow-' + c.slug;
+    slot.dataset.slug = c.slug;
+
+    list.appendChild(row);
+    list.appendChild(slot);
+  });
+}
+
+function selectCat(slug, rowEl) {
+  // Close all other slots
+  document.querySelectorAll('.opts-wrap').forEach(w => w.classList.remove('open'));
+  document.querySelectorAll('.cat-row').forEach(r => r.classList.remove('active'));
+
+  const already = selectedCat && selectedCat.slug === slug;
+  selectedCat = already ? null : categories.find(c => c.slug === slug);
+
+  if (already) return; // toggle off
+
+  rowEl.classList.add('active');
+
+  const cat  = selectedCat;
+  const wrap = document.getElementById('ow-' + slug);
+
+  // Build options HTML
+  const groupsHtml = Object.entries(cat.options).map(([g, d]) => renderOptGroup(g, d)).join('');
+
+  wrap.innerHTML = `
+    <div class="opts-inner">
+      <div class="opts-groups-grid">${groupsHtml}</div>
+      <div class="qty-note-row">
+        <div class="qty-col">
+          <label><i class="bi bi-hash"></i> Qtd.</label>
+          <input type="number" id="item-qty" value="1" min="1">
+        </div>
+        <div class="note-col">
+          <label><i class="bi bi-chat-dots"></i> Observação</label>
+          <input type="text" id="item-note" placeholder="Ex: Tema Frozen, sem açúcar...">
+        </div>
+      </div>
+      <button class="btn-add" onclick="addToSacola()">
+        <i class="bi bi-basket3-fill"></i> Adicionar à Sacola
+      </button>
+    </div>`;
+
+  wrap.classList.add('open');
+  setTimeout(() => rowEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 60);
+}
+
+/* ── Option helpers ─────────────────────────────────────────────────────── */
+
+function isSkipValue(v) {
+  return v.startsWith('Não quero') || v.startsWith('Sem ');
+}
+
+function groupIcon(name) {
+  const n = name.toLowerCase();
+  if (n.includes('massa'))                       return '🍞';
+  if (n.includes('recheio'))                     return '🎂';
+  if (n.includes('decoraç'))                     return '✨';
+  if (n.includes('topo'))                        return '🎊';
+  if (n.includes('brigadeiro'))                  return '🍫';
+  if (n.includes('copinho'))                     return '🥤';
+  if (n.includes('brownie'))                     return '🍪';
+  if (n.includes('trufa'))                       return '🍬';
+  if (n.includes('pipoca'))                      return '🍿';
+  if (n.includes('doce'))                        return '🍭';
+  if (n.includes('frito'))                       return '🍗';
+  if (n.includes('assado'))                      return '🥐';
+  if (n.includes('empadinha'))                   return '🥧';
+  if (n.includes('pastel'))                      return '🫔';
+  if (n.includes('colorido') || n.includes('carimbado')) return '🎨';
+  if (n.includes('combo') || n.includes('escolha')) return '🎁';
+  if (n.includes('kit'))                         return '🎊';
+  if (n.includes('acréscimo'))                   return '➕';
+  return '📋';
+}
+
+function renderOptGroup(group, data) {
+  const items = data.items.filter(i => i.active);
+  if (!items.length) return '';
+
+  const icon     = groupIcon(group);
+  const isOpt    = isSkipValue(items[0].name);
+  // Pills quando há ≤ 4 opções e nenhuma é texto longo
+  const usePills = items.length <= 4 && items.every(i => i.name.length <= 35);
+  const esc      = s => s.replace(/"/g, '&quot;');
+
+  const label = `<label class="opt-label">
+    <span class="og-icon">${icon}</span> ${group}${isOpt
+      ? ' <span class="opt-badge">opcional</span>' : ''}
+  </label>`;
+
+  if (usePills) {
+    const pills = items.map((item, idx) => {
+      const skip    = isSkipValue(item.name);
+      const autoSel = idx === 0 && isOpt ? (skip ? ' sel-skip' : ' sel') : '';
+      return `<button type="button" class="opt-pill${autoSel}"
+        data-value="${esc(item.name)}" onclick="selectPill(this)">${item.name}</button>`;
+    }).join('');
+
+    const opts = items.map((i, idx) =>
+      `<option value="${esc(i.name)}"${idx === 0 && isOpt ? ' selected' : ''}>${i.name}</option>`
+    ).join('');
+
+    return `<div class="opt-group" data-pills="1">
+      ${label}
+      <div class="opt-pills">${pills}</div>
+      <select class="opt-sel" data-group="${esc(group)}" style="display:none">${opts}</select>
+    </div>`;
+  }
+
+  // Dropdown: opcional = primeiro item pré-selecionado; obrigatório = "— escolha —"
+  const opts = items.map((i, idx) =>
+    `<option value="${esc(i.name)}"${idx === 0 && isOpt ? ' selected' : ''}>${i.name}</option>`
+  ).join('');
+
+  return `<div class="opt-group">
+    ${label}
+    <select class="opt-sel" data-group="${esc(group)}"
+      onchange="this.classList.remove('is-invalid');this.classList.toggle('sel-filled',!!this.value)">
+      ${isOpt ? '' : '<option value="">— escolha —</option>'}
+      ${opts}
+    </select>
+  </div>`;
+}
+
+function selectPill(btn) {
+  const grp = btn.closest('.opt-group');
+  grp.querySelectorAll('.opt-pill').forEach(p => p.classList.remove('sel', 'sel-skip'));
+  btn.classList.add(isSkipValue(btn.dataset.value) ? 'sel-skip' : 'sel');
+  grp.querySelector('select.opt-sel').value = btn.dataset.value;
+  grp.querySelector('.opt-pills').classList.remove('is-invalid');
+}
+
+/* ── Sacola ─────────────────────────────────────────────────────────────── */
+
+function addToSacola() {
+  if (!selectedCat) return;
+  const selections = {};
+  let valid = true;
+  document.querySelectorAll('#ow-' + selectedCat.slug + ' .opt-sel').forEach(sel => {
+    if (!sel.value) {
+      const grp = sel.closest('.opt-group');
+      if (grp && grp.dataset.pills) {
+        grp.querySelector('.opt-pills').classList.add('is-invalid');
+      } else {
+        sel.classList.add('is-invalid');
+      }
+      valid = false;
+    } else {
+      sel.classList.remove('is-invalid');
+      sel.closest('.opt-group')?.querySelector('.opt-pills')?.classList.remove('is-invalid');
+      if (!isSkipValue(sel.value)) {
+        selections[sel.dataset.group] = sel.value;
+      }
+    }
+  });
+  if (!valid) return toast('Preencha as opções obrigatórias antes de adicionar.', 'danger');
+  if (!Object.keys(selections).length) return toast('Escolha pelo menos uma opção antes de adicionar.', 'warning');
+
+  sacola.push({
+    category_slug: selectedCat.slug,
+    category_name: selectedCat.name,
+    icon:          selectedCat.icon,
+    quantity:      Math.max(1, parseInt(document.getElementById('item-qty').value) || 1),
+    selections,
+    item_notes: document.getElementById('item-note').value.trim()
+  });
+  renderBag();
+  openBag();
+  toast(`${selectedCat.icon} Adicionado à sacola!`, 'success');
+}
+
+function removeItem(i) { sacola.splice(i, 1); renderBag(); }
+function clearSacola()  { sacola = []; renderBag(); closeBag(); }
+
+function renderBag() {
+  const badge  = document.getElementById('bag-badge');
+  const items  = document.getElementById('bp-items');
+  const footer = document.getElementById('bp-footer');
+  if (!sacola.length) {
+    badge.classList.add('hidden');
+    items.innerHTML = '<div class="bp-empty">Sua sacola está vazia.</div>';
+    footer.classList.add('d-none');
+    return;
+  }
+  badge.textContent = sacola.length;
+  badge.classList.remove('hidden');
+  footer.classList.remove('d-none');
+  items.innerHTML = sacola.map((item, i) => {
+    const chips = Object.entries(item.selections)
+      .map(([, v]) => `<span class="bp-chip">${v}</span>`).join('');
+    return `
+      <div class="bp-item">
+        <div class="d-flex justify-content-between align-items-start">
+          <div class="bp-item-name">${item.icon} ${item.category_name}
+            <span class="bp-item-qty"> ×${item.quantity}</span>
+          </div>
+          <button class="btn btn-sm btn-link text-danger p-0 ms-2 lh-1 fw-bold"
+                  onclick="removeItem(${i})">✕</button>
+        </div>
+        <div class="mt-1">${chips}</div>
+        ${item.item_notes
+          ? `<div style="font-size:.72rem;color:var(--muted);margin-top:4px;font-weight:500">📝 ${item.item_notes}</div>`
+          : ''}
+      </div>`;
+  }).join('');
+}
+
+function renderSummary() {
+  document.getElementById('summary-list').innerHTML = sacola.map(item => {
+    const chips = Object.entries(item.selections)
+      .map(([, v]) => `<span class="sel-chip">${v}</span>`).join('');
+    return `
+      <div class="sum-item">
+        <span class="sum-ico">${item.icon}</span>
+        <div>
+          <div class="sum-name">${item.category_name}
+            <span class="sum-qty"> ×${item.quantity}</span>
+          </div>
+          <div class="mt-1">${chips}</div>
+          ${item.item_notes
+            ? `<div style="font-size:.74rem;color:var(--muted);margin-top:4px;font-weight:500">📝 ${item.item_notes}</div>`
+            : ''}
+        </div>
+      </div>`;
+  }).join('');
+}
+
+/* ── Bag toggle ─────────────────────────────────────────────────────────── */
+function toggleBag() { bagOpen ? closeBag() : openBag(); }
+function openBag() {
+  document.getElementById('bag-panel').classList.add('open');
+  document.getElementById('bag-overlay').classList.add('open');
+  bagOpen = true;
+}
+function closeBag() {
+  document.getElementById('bag-panel').classList.remove('open');
+  document.getElementById('bag-overlay').classList.remove('open');
+  bagOpen = false;
+}
+
+/* ── Submit ─────────────────────────────────────────────────────────────── */
+async function submitOrder() {
+  const btn   = document.getElementById('btn-submit');
+  const errEl = document.getElementById('form-error');
+  errEl.classList.add('d-none');
+  const payload = {
+    customer_name:      document.getElementById('f-name').value.trim(),
+    customer_whatsapp:  document.getElementById('f-phone').value.trim(),
+    customer_birthdate: document.getElementById('f-birth').value,
+    pickup_date:        document.getElementById('f-date').value,
+    pickup_time:        document.getElementById('f-time').value,
+    allergies:          document.getElementById('f-allergy').value.trim(),
+    notes:              document.getElementById('f-notes').value.trim(),
+    items: sacola.map(({ icon, ...rest }) => rest),
+  };
+  btn.disabled = true; btn.textContent = 'Enviando...';
+  try {
+    const res  = await fetch(`${API}/api/orders`, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    const data = await res.json();
+    if (res.ok) {
+      document.getElementById('order-id-display').textContent = '#' + data.order.id;
+      document.getElementById('wa-client-btn').href = data.whatsapp_link;
+      sacola = []; renderBag(); setStep(3);
+      // Abre o WhatsApp automaticamente com o pedido pré-preenchido
+      setTimeout(() => { try { window.open(data.whatsapp_link, '_blank'); } catch(e) {} }, 700);
+    } else {
+      errEl.innerHTML = '⚠️ ' + (data.details ? data.details.join('<br>') : data.error);
+      errEl.classList.remove('d-none');
+    }
+  } finally {
+    btn.disabled = false; btn.textContent = 'Enviar pedido';
+  }
+}
+
+function resetForm() {
+  sacola = []; renderBag();
+  ['f-name','f-phone','f-birth','f-date','f-allergy','f-notes']
+    .forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+  document.getElementById('f-time').value = '09:00';
+  selectedCat = null;
+  setStep(1);
+}
+
+/* ── Toast ──────────────────────────────────────────────────────────────── */
+function toast(msg, type = 'info') {
+  const div = document.createElement('div');
+  div.className = `alert alert-${type} shadow-sm position-fixed bottom-0 end-0 m-3 py-2 px-3`;
+  div.style.cssText = 'z-index:9999;font-size:.84rem;max-width:300px;border-radius:12px;font-family:"Plus Jakarta Sans",sans-serif;font-weight:600';
+  div.textContent = msg;
+  document.body.appendChild(div);
+  setTimeout(() => div.remove(), 2800);
+}
+
+/* ── Init ───────────────────────────────────────────────────────────────── */
+loadCategories();
+setStep(1);
+</script>
+</body>
+</html>

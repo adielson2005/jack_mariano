@@ -1,0 +1,95 @@
+import json
+from urllib.parse import quote
+
+SHOP_WHATSAPP = "5594984239253"
+SHOP_NAME     = "Jack Mariano Confeitaria"
+
+_EMOJI = {
+    "bolo":      "🎂",
+    "doces":     "🍬",
+    "salgados":  "🥟",
+    "combos":    "🎁",
+    "kit-festa": "🎊",
+}
+
+
+def build_client_link(order) -> str:
+    """
+    Link que o cliente abre após confirmar o pedido.
+    O WhatsApp já abre com a mensagem completa pré-preenchida
+    apontando para o número da loja — basta apertar Enviar.
+    """
+    lines = []
+    for item in order.items:
+        emoji = _EMOJI.get(item.category_slug, "📦")
+        lines.append(f"{emoji} *{item.category_name}* × {item.quantity}")
+
+        sels = json.loads(item.selections) if item.selections else {}
+        for group, choice in sels.items():
+            lines.append(f"    ‣ _{group}:_ {choice}")
+
+        if item.item_notes:
+            lines.append(f"    📝 {item.item_notes}")
+
+    items_block = "\n".join(lines)
+
+    parts = [
+        f"Olá, *{SHOP_NAME}*! 🧁",
+        "",
+        f"Acabei de finalizar meu pedido pelo site.",
+        "",
+        f"👤 *Cliente:* {order.customer_name}",
+        f"📱 *WhatsApp:* {order.customer_whatsapp}",
+        "",
+        f"🛍️ *Itens do pedido:*",
+        items_block,
+        "",
+        f"📅 *Retirada:* {_fmt_date(order.pickup_date)} às {order.pickup_time}",
+    ]
+
+    if order.allergies:
+        parts.append(f"⚠️ *Alergias/restrições:* {order.allergies}")
+    if order.notes:
+        parts.append(f"📝 *Observações:* {order.notes}")
+
+    parts += ["", f"_Pedido #{order.id} — aguardo a confirmação! 😊_"]
+
+    return f"https://wa.me/{SHOP_WHATSAPP}?text={quote(chr(10).join(parts))}"
+
+
+def build_admin_link(order) -> str:
+    """Link para o admin contatar o cliente com resumo do pedido."""
+    phone = _normalize_phone(order.customer_whatsapp)
+    items_lines = "\n".join(
+        f"  • {item.category_name} × {item.quantity}"
+        for item in order.items
+    )
+    msg = (
+        f"Olá, *{order.customer_name}*! 👋\n\n"
+        f"Aqui é da *{SHOP_NAME}*! 🧁\n"
+        f"Recebemos seu pedido *#{order.id}* e gostaríamos de confirmar os detalhes.\n\n"
+        f"📦 *Itens solicitados:*\n{items_lines}\n\n"
+        f"📅 *Retirada:* {_fmt_date(order.pickup_date)} às {order.pickup_time}\n\n"
+        f"Em breve confirmamos disponibilidade e valor. Obrigada pela preferência! 🎂"
+    )
+    return f"https://wa.me/{phone}?text={quote(msg)}"
+
+
+def build_help_link() -> str:
+    """Link direto para a loja — botão de ajuda."""
+    msg = f"Olá! Gostaria de tirar uma dúvida sobre os produtos da *{SHOP_NAME}*. 🧁"
+    return f"https://wa.me/{SHOP_WHATSAPP}?text={quote(msg)}"
+
+
+def _normalize_phone(phone: str) -> str:
+    digits = "".join(c for c in phone if c.isdigit())
+    if not digits.startswith("55"):
+        digits = "55" + digits
+    return digits
+
+
+def _fmt_date(date_str: str) -> str:
+    if not date_str or "-" not in date_str:
+        return date_str or ""
+    y, m, d = date_str.split("-")
+    return f"{d}/{m}/{y}"
