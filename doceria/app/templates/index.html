@@ -795,7 +795,8 @@
             <label class="form-label">
               <i class="bi bi-clock"></i> Horário <span class="text-danger ms-1">*</span>
             </label>
-            <input type="time" id="f-time" class="form-control" value="14:00">
+            <input type="time" id="f-time" class="form-control" value="09:00"
+                   min="08:00" max="20:00">
           </div>
           <div class="col-12">
             <label class="form-label">
@@ -901,6 +902,13 @@ function setStep(n) {
 function goStep1() { setStep(1); }
 function goStep2() {
   if (!sacola.length) return toast('Adicione pelo menos um item à sacola.', 'warning');
+  // Define data mínima de retirada (amanhã)
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  const minDate = tomorrow.toISOString().split('T')[0];
+  const fDate = document.getElementById('f-date');
+  fDate.min = minDate;
+  if (!fDate.value || fDate.value < minDate) fDate.value = minDate;
   renderSummary();
   setStep(2);
 }
@@ -1216,7 +1224,7 @@ function resetForm() {
   sacola = []; renderBag();
   ['f-name','f-phone','f-birth','f-date','f-allergy','f-notes']
     .forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
-  document.getElementById('f-time').value = '14:00';
+  document.getElementById('f-time').value = '09:00';
   selectedCat = null;
   setStep(1);
 }

@@ -1,7 +1,7 @@
 import os
 import socket
 from werkzeug.security import check_password_hash, generate_password_hash
-from flask import render_template, session, redirect, request
+from flask import render_template, session, redirect, request, Response
 from app import create_app
 
 app = create_app()
@@ -47,6 +47,34 @@ def admin_login():
 def admin_logout():
     session.clear()
     return redirect("/painel/login")
+
+
+# ── Produção / infra ──────────────────────────────────────────────────────────
+
+@app.route("/health")
+def health():
+    """Health check para load balancers e plataformas de deploy."""
+    from app import db
+    try:
+        db.session.execute(db.text("SELECT 1"))
+        db_ok = True
+    except Exception:
+        db_ok = False
+    status = 200 if db_ok else 503
+    return {"status": "ok" if db_ok else "degraded", "db": db_ok}, status
+
+
+@app.route("/robots.txt")
+def robots():
+    """Impede indexação do painel admin por buscadores."""
+    content = (
+        "User-agent: *\n"
+        "Disallow: /painel/\n"
+        "Disallow: /admin/\n"
+        "Allow: /\n"
+    )
+    return Response(content, mimetype="text/plain")
+
 
 def get_local_ip():
     try:
