@@ -47,7 +47,7 @@
       border-bottom: 1px solid var(--border);
       padding: 0 20px;
       height: 60px;
-      display: flex; align-items: center; justify-content: center;
+      display: flex; align-items: center; justify-content: space-between;
       position: sticky; top: 0; z-index: 900;
     }
     .brand {
@@ -402,34 +402,34 @@
     }
     .success-emoji { font-size: 4rem; display: block; margin-bottom: 16px; }
 
-    /* ── Floating bag ────────────────────────────────────── */
-    .bag-fab { position: fixed; top: 70px; right: 16px; z-index: 1050; }
+    /* ── Bag no header ───────────────────────────────────── */
+    .bag-fab { position: relative; }
 
     .bag-btn {
-      width: 48px; height: 48px; border-radius: 14px;
+      width: 44px; height: 44px; border-radius: 12px;
       background: var(--text); color: #fff; border: none; cursor: pointer;
       display: flex; align-items: center; justify-content: center;
-      box-shadow: 0 4px 16px rgba(0,0,0,.22);
+      box-shadow: 0 2px 10px rgba(0,0,0,.18);
       position: relative;
-      transition: transform .16s, box-shadow .16s;
+      transition: transform .16s, box-shadow .16s, background .18s;
     }
-    .bag-btn:hover  { transform: scale(1.07); box-shadow: 0 6px 20px rgba(0,0,0,.28); }
+    .bag-btn:hover  { transform: scale(1.06); box-shadow: 0 4px 16px rgba(0,0,0,.26); background: #2d2d44; }
     .bag-btn:active { transform: scale(.93); }
 
     .bag-badge {
-      position: absolute; top: -7px; right: -7px;
+      position: absolute; top: -6px; right: -6px;
       background: var(--pk); color: #fff;
-      font-size: .62rem; font-weight: 800;
-      border-radius: 50%; min-width: 20px; height: 20px; padding: 0 3px;
+      font-size: .6rem; font-weight: 800;
+      border-radius: 50%; min-width: 18px; height: 18px; padding: 0 2px;
       display: flex; align-items: center; justify-content: center;
-      border: 2px solid var(--bg); line-height: 1;
+      border: 2px solid var(--surface); line-height: 1;
       font-family: 'Plus Jakarta Sans', sans-serif;
     }
     .bag-badge.hidden { display: none; }
 
     .bag-panel {
-      position: absolute; top: 58px; right: 0; width: 300px;
-      max-height: calc(100vh - 150px);
+      position: absolute; top: calc(100% + 10px); right: 0; width: 300px;
+      max-height: calc(100vh - 90px);
       background: var(--surface); border-radius: 18px;
       border: 1.5px solid var(--border);
       box-shadow: 0 12px 40px rgba(0,0,0,.14);
@@ -441,6 +441,28 @@
     .bag-panel.open {
       opacity: 1; transform: translateY(0) scale(1);
       pointer-events: all;
+    }
+
+    /* ── WhatsApp Help FAB ───────────────────────────────── */
+    .wa-help-fab {
+      position: fixed; bottom: 24px; right: 20px; z-index: 1060;
+      display: flex; align-items: center; gap: 8px;
+      background: #25d366; color: #fff;
+      border-radius: 999px; padding: 12px 20px 12px 16px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: .85rem; font-weight: 700; letter-spacing: .01em;
+      text-decoration: none;
+      box-shadow: 0 4px 18px rgba(37,211,102,.42);
+      transition: transform .18s, box-shadow .18s;
+    }
+    .wa-help-fab:hover {
+      color: #fff; transform: translateY(-2px);
+      box-shadow: 0 8px 28px rgba(37,211,102,.55);
+    }
+    .wa-help-fab i { font-size: 1.15rem; }
+    @media (max-width: 480px) {
+      .wa-help-fab .wa-label { display: none; }
+      .wa-help-fab { padding: 13px; border-radius: 50%; }
     }
 
     .bp-head {
@@ -513,8 +535,7 @@
 
     /* Bag panel no mobile */
     @media (max-width: 480px) {
-      .bag-panel { width: calc(100vw - 28px); }
-      .bag-fab   { top: 66px; right: 12px; }
+      .bag-panel { width: calc(100vw - 28px); right: -4px; }
     }
 
     /* Tablets e desktops (≥ 768px) */
@@ -534,7 +555,6 @@
       .form-card-head { padding: 28px 32px 24px; }
       .form-card-body { padding: 26px 28px 32px; }
       .bag-panel { width: 320px; }
-      .bag-fab { top: 74px; right: 20px; }
       .sum-card { padding: 20px 24px; }
     }
 
@@ -575,7 +595,55 @@
     <div class="brand-dot">🧁</div>
     Jack Mariano Confeitaria
   </a>
+
+  <!-- Sacola dentro do header -->
+  <div class="bag-fab">
+    <button class="bag-btn" id="bag-btn" onclick="toggleBag()" aria-label="Abrir sacola">
+      <svg width="19" height="21" viewBox="0 0 22 24" fill="none"
+           stroke="currentColor" stroke-width="2.2"
+           stroke-linecap="round" stroke-linejoin="round">
+        <path d="M7 9V6.5a4 4 0 0 1 8 0V9"/>
+        <path d="M2 9h18l-1.8 11.2A2 2 0 0 1 16.2 22H5.8a2 2 0 0 1-2-1.8Z"/>
+      </svg>
+      <span class="bag-badge hidden" id="bag-badge">0</span>
+    </button>
+
+    <div class="bag-panel" id="bag-panel">
+      <div class="bp-head">
+        <div class="bp-head-title">
+          <svg width="14" height="16" viewBox="0 0 22 24" fill="none"
+               stroke="currentColor" stroke-width="2.4"
+               stroke-linecap="round" stroke-linejoin="round">
+            <path d="M7 9V6.5a4 4 0 0 1 8 0V9"/>
+            <path d="M2 9h18l-1.8 11.2A2 2 0 0 1 16.2 22H5.8a2 2 0 0 1-2-1.8Z"/>
+          </svg>
+          Minha Sacola
+        </div>
+        <button class="bp-close" onclick="closeBag()">×</button>
+      </div>
+
+      <div class="bp-items" id="bp-items">
+        <div class="bp-empty">Sua sacola está vazia.</div>
+      </div>
+
+      <div class="bp-foot d-none" id="bp-footer">
+        <button class="btn btn-pk w-100 py-2 mb-2"
+                onclick="closeBag(); goStep2()">
+          Finalizar pedido →
+        </button>
+        <button class="btn btn-link btn-sm text-danger w-100 p-0 fw-semibold"
+                onclick="clearSacola()">Esvaziar sacola</button>
+      </div>
+    </div>
+  </div>
 </header>
+
+<!-- ══ Botão de ajuda WhatsApp (fixo) ══════════════════════════════════════ -->
+<a href="https://wa.me/5594984239253?text=Ol%C3%A1!%20Gostaria%20de%20tirar%20uma%20d%C3%BAvida%20sobre%20os%20produtos%20da%20Jack%20Mariano%20Confeitaria.%20%F0%9F%A7%81"
+   target="_blank" rel="noopener" class="wa-help-fab" aria-label="Falar no WhatsApp">
+  <i class="bi bi-whatsapp"></i>
+  <span class="wa-label">Ajuda</span>
+</a>
 
 <!-- ══ Step bar ════════════════════════════════════════════════════════════ -->
 <div class="step-bar">
@@ -592,47 +660,6 @@
   <div class="step-pill pending" id="sp3">
     <div class="sp-num">3</div>
     <span>Confirmação</span>
-  </div>
-</div>
-
-<!-- ══ Floating bag ════════════════════════════════════════════════════════ -->
-<div class="bag-fab">
-  <button class="bag-btn" id="bag-btn" onclick="toggleBag()" aria-label="Abrir sacola">
-    <svg width="20" height="22" viewBox="0 0 22 24" fill="none"
-         stroke="currentColor" stroke-width="2.2"
-         stroke-linecap="round" stroke-linejoin="round">
-      <path d="M7 9V6.5a4 4 0 0 1 8 0V9"/>
-      <path d="M2 9h18l-1.8 11.2A2 2 0 0 1 16.2 22H5.8a2 2 0 0 1-2-1.8Z"/>
-    </svg>
-    <span class="bag-badge hidden" id="bag-badge">0</span>
-  </button>
-
-  <div class="bag-panel" id="bag-panel">
-    <div class="bp-head">
-      <div class="bp-head-title">
-        <svg width="14" height="16" viewBox="0 0 22 24" fill="none"
-             stroke="currentColor" stroke-width="2.4"
-             stroke-linecap="round" stroke-linejoin="round">
-          <path d="M7 9V6.5a4 4 0 0 1 8 0V9"/>
-          <path d="M2 9h18l-1.8 11.2A2 2 0 0 1 16.2 22H5.8a2 2 0 0 1-2-1.8Z"/>
-        </svg>
-        Minha Sacola
-      </div>
-      <button class="bp-close" onclick="closeBag()">×</button>
-    </div>
-
-    <div class="bp-items" id="bp-items">
-      <div class="bp-empty">Sua sacola está vazia.</div>
-    </div>
-
-    <div class="bp-foot d-none" id="bp-footer">
-      <button class="btn btn-pk w-100 py-2 mb-2"
-              onclick="closeBag(); goStep2()">
-        Finalizar pedido →
-      </button>
-      <button class="btn btn-link btn-sm text-danger w-100 p-0 fw-semibold"
-              onclick="clearSacola()">Esvaziar sacola</button>
-    </div>
   </div>
 </div>
 
@@ -753,19 +780,20 @@
   <div class="page">
     <div class="success-card">
       <span class="success-emoji">🎉</span>
-      <h4 style="font-weight:800;margin-bottom:8px">Pedido recebido!</h4>
-      <p style="font-size:.9rem;color:var(--muted);font-weight:500;line-height:1.6;margin-bottom:20px">
-        Nossa equipe entrará em contato pelo WhatsApp para confirmar disponibilidade e valor.
+      <h4 style="font-weight:800;margin-bottom:8px">Pedido enviado!</h4>
+      <p style="font-size:.88rem;color:var(--muted);font-weight:500;line-height:1.65;margin-bottom:16px">
+        O WhatsApp foi aberto com seu pedido completo pré-preenchido.<br>
+        <strong style="color:var(--text)">Só toque em Enviar</strong> para notificar a loja! 📲
       </p>
       <div style="background:var(--bg);border-radius:10px;padding:10px 16px;margin-bottom:20px;font-weight:700;font-size:.9rem">
         Pedido <span id="order-id-display" style="color:var(--pk)">#</span>
       </div>
-      <a id="wa-client-btn" href="#" target="_blank"
-         class="btn w-100 fw-bold mb-2 py-2"
-         style="background:#25d366;color:#fff;border-radius:12px;font-family:'Plus Jakarta Sans',sans-serif">
-        <i class="bi bi-whatsapp me-2"></i>Falar no WhatsApp
+      <a id="wa-client-btn" href="#" target="_blank" rel="noopener"
+         class="btn w-100 fw-bold mb-2 py-3"
+         style="background:#25d366;color:#fff;border-radius:14px;font-family:'Plus Jakarta Sans',sans-serif;font-size:.95rem;box-shadow:0 4px 16px rgba(37,211,102,.35)">
+        <i class="bi bi-whatsapp me-2"></i>Abrir WhatsApp &amp; Enviar pedido
       </a>
-      <button class="btn btn-pk-outline w-100 mt-1 py-2" onclick="resetForm()">
+      <button class="btn btn-pk-outline w-100 mt-2 py-2" onclick="resetForm()">
         Fazer novo pedido
       </button>
     </div>
@@ -1031,6 +1059,8 @@ async function submitOrder() {
       document.getElementById('order-id-display').textContent = '#' + data.order.id;
       document.getElementById('wa-client-btn').href = data.whatsapp_link;
       sacola = []; renderBag(); setStep(3);
+      // Abre o WhatsApp automaticamente com o pedido pré-preenchido
+      setTimeout(() => { try { window.open(data.whatsapp_link, '_blank'); } catch(e) {} }, 700);
     } else {
       errEl.innerHTML = '⚠️ ' + (data.details ? data.details.join('<br>') : data.error);
       errEl.classList.remove('d-none');

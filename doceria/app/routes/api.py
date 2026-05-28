@@ -2,7 +2,7 @@ import json
 from flask import Blueprint, jsonify, request
 from app import db
 from app.models import Category, Order, OrderItem
-from app.utils import build_client_link, build_admin_link
+from app.utils import build_client_link, build_admin_link, build_help_link
 
 api_bp = Blueprint("api", __name__)
 
@@ -64,7 +64,7 @@ def create_order():
 
     return jsonify({
         "message": "Pedido recebido! Entraremos em contato via WhatsApp em breve. 🧁",
-        "whatsapp_link": build_client_link(order.id, order.customer_name),
+        "whatsapp_link": build_client_link(order),
         "order": order.to_dict(),
     }), 201
 
@@ -82,8 +82,9 @@ def whatsapp_links(order_id):
     """Retorna link wa.me para o cliente contatar a loja."""
     order = Order.query.get_or_404(order_id)
     return jsonify({
-        "client_link": build_client_link(order.id, order.customer_name),
+        "client_link": build_client_link(order),
         "admin_link":  build_admin_link(order),
+        "help_link":   build_help_link(),
         "shop_number": "+55 94984239253",
     })
 
