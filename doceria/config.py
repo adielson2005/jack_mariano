@@ -38,3 +38,10 @@ class Config:
     }
     JSON_SORT_KEYS = False
     PERMANENT_SESSION_LIFETIME = timedelta(days=7)
+
+    # ── Segurança de sessão (HTTPS em produção) ───────────────────────────────
+    # Em produção no Render, o tráfego é sempre HTTPS.
+    # SESSION_COOKIE_SECURE garante que o cookie só vai em conexões seguras.
+    SESSION_COOKIE_SECURE   = os.environ.get("FLASK_ENV") != "development"
+    SESSION_COOKIE_HTTPONLY = True          # JS não consegue ler o cookie
+    SESSION_COOKIE_SAMESITE = "Lax"        # protege contra CSRF
