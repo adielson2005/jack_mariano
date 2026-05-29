@@ -690,7 +690,7 @@ async function openPanel(id) {
     ${itemsHtml}`;
 
   // Busca link WhatsApp
-  apiFetch(`${API}/api/whatsapp/${id}`)
+  apiFetch(`${API}/admin/whatsapp/${id}`)
     .then(r => r && r.json())
     .then(d => { if (d) document.getElementById('dp-wa-btn').href = d.admin_link; })
     .catch(() => {});
@@ -708,7 +708,7 @@ function closePanel() {
 /* ── WhatsApp from table ────────────────────────────────────────────────── */
 async function openWA(el, e) {
   e.preventDefault();
-  const res = await apiFetch(`${API}/api/whatsapp/${el.dataset.id}`);
+  const res = await apiFetch(`${API}/admin/whatsapp/${el.dataset.id}`);
   if (!res) return;
   const d = await res.json();
   window.open(d.admin_link, '_blank');

@@ -915,10 +915,20 @@ function goStep2() {
 
 /* ── Categories ─────────────────────────────────────────────────────────── */
 async function loadCategories() {
-  const res = await fetch(`${API}/api/categories`);
-  categories = await res.json();
-
   const list = document.getElementById('cat-list');
+  try {
+    const res = await fetch(`${API}/api/categories`);
+    if (!res.ok) throw new Error('Servidor indisponível');
+    categories = await res.json();
+  } catch (e) {
+    list.innerHTML = `<div style="text-align:center;padding:40px 0;color:var(--muted)">
+      <i class="bi bi-wifi-off" style="font-size:2rem;display:block;margin-bottom:12px"></i>
+      Não foi possível carregar o cardápio.<br>
+      <button class="btn btn-sm btn-pk-outline mt-3" onclick="loadCategories()">Tentar novamente</button>
+    </div>`;
+    return;
+  }
+
   list.innerHTML = '';
 
   categories.forEach(c => {
@@ -928,10 +938,10 @@ async function loadCategories() {
     row.id = 'cr-' + c.slug;
     row.dataset.slug = c.slug;
     row.innerHTML = `
-      <div class="cat-icon-wrap">${c.icon}</div>
+      <div class="cat-icon-wrap">${esc(c.icon)}</div>
       <div class="cat-text">
-        <div class="cat-name">${c.name} <span class="cat-tag">Selecionado</span></div>
-        <div class="cat-desc">${c.description}</div>
+        <div class="cat-name">${esc(c.name)} <span class="cat-tag">Selecionado</span></div>
+        <div class="cat-desc">${esc(c.description)}</div>
       </div>
       <div class="cat-arrow-wrap">
         <div class="cat-arrow"><i class="bi bi-chevron-right"></i></div>
@@ -1026,7 +1036,6 @@ function renderOptGroup(group, data) {
   const isOpt    = isSkipValue(items[0].name);
   // Pills quando há ≤ 4 opções e nenhuma é texto longo
   const usePills = items.length <= 4 && items.every(i => i.name.length <= 35);
-  const esc      = s => s.replace(/"/g, '&quot;');
 
   const label = `<label class="opt-label">
     <span class="og-icon">${icon}</span> ${group}${isOpt
@@ -1132,19 +1141,19 @@ function renderBag() {
   footer.classList.remove('d-none');
   items.innerHTML = sacola.map((item, i) => {
     const chips = Object.entries(item.selections)
-      .map(([, v]) => `<span class="bp-chip">${v}</span>`).join('');
+      .map(([, v]) => `<span class="bp-chip">${esc(v)}</span>`).join('');
     return `
       <div class="bp-item">
         <div class="d-flex justify-content-between align-items-start">
-          <div class="bp-item-name">${item.icon} ${item.category_name}
-            <span class="bp-item-qty"> ×${item.quantity}</span>
+          <div class="bp-item-name">${esc(item.icon)} ${esc(item.category_name)}
+            <span class="bp-item-qty"> ×${esc(item.quantity)}</span>
           </div>
           <button class="btn btn-sm btn-link text-danger p-0 ms-2 lh-1 fw-bold"
                   onclick="removeItem(${i})">✕</button>
         </div>
         <div class="mt-1">${chips}</div>
         ${item.item_notes
-          ? `<div style="font-size:.72rem;color:var(--muted);margin-top:4px;font-weight:500">📝 ${item.item_notes}</div>`
+          ? `<div style="font-size:.72rem;color:var(--muted);margin-top:4px;font-weight:500">📝 ${esc(item.item_notes)}</div>`
           : ''}
       </div>`;
   }).join('');
@@ -1153,17 +1162,17 @@ function renderBag() {
 function renderSummary() {
   document.getElementById('summary-list').innerHTML = sacola.map(item => {
     const chips = Object.entries(item.selections)
-      .map(([, v]) => `<span class="sel-chip">${v}</span>`).join('');
+      .map(([, v]) => `<span class="sel-chip">${esc(v)}</span>`).join('');
     return `
       <div class="sum-item">
-        <span class="sum-ico">${item.icon}</span>
+        <span class="sum-ico">${esc(item.icon)}</span>
         <div>
-          <div class="sum-name">${item.category_name}
-            <span class="sum-qty"> ×${item.quantity}</span>
+          <div class="sum-name">${esc(item.category_name)}
+            <span class="sum-qty"> ×${esc(item.quantity)}</span>
           </div>
           <div class="mt-1">${chips}</div>
           ${item.item_notes
-            ? `<div style="font-size:.74rem;color:var(--muted);margin-top:4px;font-weight:500">📝 ${item.item_notes}</div>`
+            ? `<div style="font-size:.74rem;color:var(--muted);margin-top:4px;font-weight:500">📝 ${esc(item.item_notes)}</div>`
             : ''}
         </div>
       </div>`;
@@ -1198,7 +1207,8 @@ async function submitOrder() {
     notes:              document.getElementById('f-notes').value.trim(),
     items: sacola.map(({ icon, ...rest }) => rest),
   };
-  btn.disabled = true; btn.textContent = 'Enviando...';
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Enviando...';
   try {
     const res  = await fetch(`${API}/api/orders`, {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
@@ -1206,17 +1216,23 @@ async function submitOrder() {
     });
     const data = await res.json();
     if (res.ok) {
-      document.getElementById('order-id-display').textContent = '#' + data.order.id;
+      document.getElementById('order-id-display').textContent = '#' + data.order_id;
       document.getElementById('wa-client-btn').href = data.whatsapp_link;
       sacola = []; renderBag(); setStep(3);
       // Abre o WhatsApp automaticamente com o pedido pré-preenchido
       setTimeout(() => { try { window.open(data.whatsapp_link, '_blank'); } catch(e) {} }, 700);
     } else {
-      errEl.innerHTML = '⚠️ ' + (data.details ? data.details.join('<br>') : data.error);
+      // Usa textContent para evitar XSS — mensagens vêm do servidor
+      const msgs = data.details ? data.details : [data.error || 'Erro desconhecido'];
+      errEl.textContent = '⚠️ ' + msgs.join(' | ');
       errEl.classList.remove('d-none');
     }
+  } catch (e) {
+    errEl.textContent = '⚠️ Falha de conexão. Verifique sua internet e tente novamente.';
+    errEl.classList.remove('d-none');
   } finally {
-    btn.disabled = false; btn.textContent = 'Enviar pedido';
+    btn.disabled = false;
+    btn.innerHTML = '<i class="bi bi-send-fill me-1"></i> Enviar pedido';
   }
 }
 
@@ -1240,6 +1256,18 @@ function toast(msg, type = 'info') {
 }
 
 /* ── Init ───────────────────────────────────────────────────────────────── */
+
+// Sanitiza strings antes de inserir em innerHTML
+function esc(s) {
+  if (s == null) return '';
+  return String(s)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
 loadCategories();
 setStep(1);
 </script>

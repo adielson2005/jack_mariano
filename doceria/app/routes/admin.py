@@ -2,6 +2,7 @@ from functools import wraps
 from flask import Blueprint, jsonify, request, session
 from app import db
 from app.models import Order, STATUS_LABELS
+from app.utils import build_client_link, build_admin_link, build_help_link
 
 admin_bp = Blueprint("admin", __name__)
 
@@ -88,6 +89,21 @@ def delete_order(order_id):
     db.session.delete(order)
     db.session.commit()
     return jsonify({"message": f"Pedido #{order_id} removido."})
+
+
+# ── WhatsApp links (admin-only) ───────────────────────────────────────────────
+
+@admin_bp.get("/whatsapp/<int:order_id>")
+@login_required
+def whatsapp_links(order_id):
+    """Retorna links wa.me para o admin contatar o cliente e para o cliente."""
+    order = Order.query.get_or_404(order_id)
+    return jsonify({
+        "client_link": build_client_link(order),
+        "admin_link":  build_admin_link(order),
+        "help_link":   build_help_link(),
+        "shop_number": "+55 94984239253",
+    })
 
 
 # ── Stats ─────────────────────────────────────────────────────────────────────

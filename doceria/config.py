@@ -6,7 +6,16 @@ load_dotenv()
 
 
 class Config:
-    SECRET_KEY = os.environ.get("SECRET_KEY", "doceria-secret-key-2024")
+    _secret = os.environ.get("SECRET_KEY", "")
+    if not _secret:
+        import warnings
+        warnings.warn(
+            "SECRET_KEY não definida — usando valor padrão inseguro. "
+            "Defina SECRET_KEY como uma string aleatória longa antes de ir a produção.",
+            stacklevel=2,
+        )
+        _secret = "doceria-secret-key-2024"
+    SECRET_KEY = _secret
 
     # Lê a URL do banco de dados da variável de ambiente DATABASE_URL.
     # Plataformas como Heroku/Render entregam "postgres://..." — corrigimos

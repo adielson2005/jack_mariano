@@ -10,7 +10,10 @@ def create_app():
     app.config.from_object("config.Config")
 
     db.init_app(app)
-    CORS(app)
+    # Permite apenas requisições da mesma origem (sem acesso cross-origin externo)
+    CORS(app, resources={r"/api/*": {"origins": "*"}},
+         methods=["GET", "POST"],
+         allow_headers=["Content-Type"])
 
     from app.routes.api import api_bp
     from app.routes.admin import admin_bp
