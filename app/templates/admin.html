@@ -45,10 +45,9 @@
       color: var(--brand); line-height: 1.3;
       display: flex; align-items: center; gap: 10px;
     }
-    .sidebar .brand .brand-dot {
-      width: 32px; height: 32px; border-radius: 9px; flex-shrink: 0;
-      background: linear-gradient(135deg, #cba6f7 0%, #f38ba8 100%);
-      display: flex; align-items: center; justify-content: center; font-size: 1rem;
+    .sidebar .brand .brand-logo {
+      width: 36px; height: 36px; flex-shrink: 0;
+      object-fit: contain; border-radius: 8px;
     }
     .sidebar .brand small {
       display: block; font-size: .68rem; font-weight: 400;
@@ -259,7 +258,8 @@
 <!-- ══ Sidebar ══════════════════════════════════════════════════════════════ -->
 <aside class="sidebar" id="sidebar">
   <div class="brand">
-    <div class="brand-dot">🧁</div>
+    <img src="{{ url_for('static', filename='img/jack_mariano.png') }}"
+         alt="Jack Mariano" class="brand-logo">
     <div>
       Jack Mariano
       <small>Painel Administrativo</small>

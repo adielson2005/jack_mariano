@@ -49,12 +49,6 @@
       display: flex; align-items: center; gap: 8px;
       text-decoration: none;
     }
-    .brand-dot {
-      width: 28px; height: 28px; border-radius: 8px;
-      background: linear-gradient(135deg, var(--pk) 0%, #ff6eb0 100%);
-      display: flex; align-items: center; justify-content: center;
-      font-size: .9rem; flex-shrink: 0;
-    }
 
     /* ── Card de login ───────────────────────────────────────── */
     .login-wrap {
@@ -76,11 +70,13 @@
       margin-bottom: 36px;
     }
     .card-icon {
-      width: 64px; height: 64px; border-radius: 18px;
-      background: linear-gradient(135deg, var(--pk) 0%, #ff6eb0 100%);
+      width: 80px; height: 80px; border-radius: 18px;
       display: flex; align-items: center; justify-content: center;
-      font-size: 2rem; margin: 0 auto 18px;
-      box-shadow: 0 8px 24px rgba(229, 25, 107, 0.25);
+      margin: 0 auto 18px;
+      overflow: hidden;
+    }
+    .card-icon img {
+      width: 100%; height: 100%; object-fit: contain;
     }
     .card-head h1 {
       font-size: 1.25rem; font-weight: 800; color: var(--text);
@@ -217,8 +213,9 @@
   <!-- Header fixo igual ao site -->
   <header class="site-header">
     <a href="/" class="brand">
-      <div class="brand-dot">🧁</div>
-      Jack Mariano Confeitaria
+      <img src="{{ url_for('static', filename='img/jack_mariano.png') }}"
+           alt="Jack Mariano Confeitaria" height="40"
+           style="display:block;object-fit:contain">
     </a>
   </header>
 
@@ -233,7 +230,10 @@
     <div class="login-card">
 
       <div class="card-head">
-        <div class="card-icon">🧁</div>
+        <div class="card-icon">
+          <img src="{{ url_for('static', filename='img/jack_mariano.png') }}"
+               alt="Jack Mariano Confeitaria">
+        </div>
         <h1>Acesso ao Painel</h1>
         <p>Entre com suas credenciais de administrador</p>
       </div>
