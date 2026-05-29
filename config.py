@@ -26,8 +26,16 @@ class Config:
 
     if not _db_url:
         raise RuntimeError(
-            "DATABASE_URL não definida. "
-            "Crie o arquivo .env com: DATABASE_URL=postgresql://usuario:senha@localhost:5432/doceria"
+            "\n\n"
+            "  ╔══════════════════════════════════════════════════════════╗\n"
+            "  ║  DATABASE_URL não definida — aplicação não pode iniciar  ║\n"
+            "  ╠══════════════════════════════════════════════════════════╣\n"
+            "  ║  Localmente: crie o arquivo .env com:                    ║\n"
+            "  ║    DATABASE_URL=postgresql://user:senha@host:5432/db     ║\n"
+            "  ║                                                          ║\n"
+            "  ║  No Render: vá em Environment e adicione DATABASE_URL.   ║\n"
+            "  ║  Use neon.tech para obter um PostgreSQL gratuito.        ║\n"
+            "  ╚══════════════════════════════════════════════════════════╝\n"
         )
 
     SQLALCHEMY_DATABASE_URI = _db_url
@@ -42,6 +50,6 @@ class Config:
     # ── Segurança de sessão (HTTPS em produção) ───────────────────────────────
     # Em produção no Render, o tráfego é sempre HTTPS.
     # SESSION_COOKIE_SECURE garante que o cookie só vai em conexões seguras.
-    SESSION_COOKIE_SECURE   = os.environ.get("FLASK_ENV") != "development"
+    SESSION_COOKIE_SECURE   = os.environ.get("FLASK_ENV") == "production"
     SESSION_COOKIE_HTTPONLY = True          # JS não consegue ler o cookie
     SESSION_COOKIE_SAMESITE = "Lax"        # protege contra CSRF

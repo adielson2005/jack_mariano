@@ -1,45 +1,36 @@
 ## render.yaml — Deploy automático no Render
 ## Documentação: https://render.com/docs/blueprint-spec
-
-databases:
-  - name: jack-mariano-db
-    databaseName: doceria
-    user: doceria
-    plan: free          # PostgreSQL gratuito do Render (90 dias, depois upgrade)
-    region: oregon      # mesmo region do web service
+##
+## ATENÇÃO: O PostgreSQL gratuito do Render foi descontinuado.
+## Use o Neon (neon.tech) para banco gratuito e cole a URL em DATABASE_URL.
 
 services:
   - type: web
     name: jack-mariano-confeitaria
     runtime: python
     region: oregon
-    plan: free          # Plano gratuito (pode fazer upgrade depois)
+    plan: free
 
     buildCommand: pip install -r requirements.txt
     startCommand: gunicorn run:app --bind 0.0.0.0:$PORT --workers 2 --timeout 120
 
-    healthCheckPath: /health   # Render verifica se o serviço subiu
+    healthCheckPath: /health
 
     envVars:
-      # Banco de dados: puxado automaticamente do banco criado acima
+      # Cole aqui a URL do seu PostgreSQL (ex: Neon, Supabase, Railway)
       - key: DATABASE_URL
-        fromDatabase:
-          name: jack-mariano-db
-          property: connectionString
+        sync: false
 
-      # Chave secreta do Flask: gerada automaticamente pelo Render (valor único por deploy)
+      # Chave secreta do Flask: gerada automaticamente pelo Render
       - key: SECRET_KEY
         generateValue: true
 
-      # Usuário do painel admin
       - key: ADMIN_USER
         value: admin
 
-      # Senha do painel admin: VOCÊ DEVE DEFINIR ESTE VALOR MANUALMENTE no dashboard do Render
-      # Dashboard → jack-mariano-confeitaria → Environment → ADMIN_PASSWORD
+      # Defina manualmente no dashboard: Environment → ADMIN_PASSWORD
       - key: ADMIN_PASSWORD
-        sync: false     # não coloca no render.yaml — precisa ser definido manualmente
+        sync: false
 
-      # Garante que SESSION_COOKIE_SECURE=True em produção
       - key: FLASK_ENV
         value: production
