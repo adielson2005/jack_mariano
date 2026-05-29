@@ -32,3 +32,6 @@ Thumbs.db
 # Claude Code / ferramentas locais
 .claude/
 .qodo/
+
+# Permitir .env.example mesmo que .env.* esteja ignorado
+!.env.example

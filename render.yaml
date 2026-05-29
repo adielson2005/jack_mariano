@@ -14,7 +14,6 @@ services:
     runtime: python
     region: oregon
     plan: free          # Plano gratuito (pode fazer upgrade depois)
-    rootDir: doceria    # pasta onde está o projeto Flask
 
     buildCommand: pip install -r requirements.txt
     startCommand: gunicorn run:app --bind 0.0.0.0:$PORT --workers 2 --timeout 120
