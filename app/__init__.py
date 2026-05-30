@@ -23,9 +23,42 @@ def create_app():
 
     with app.app_context():
         db.create_all()
+        _migrate_db()
         _seed_data()
 
     return app
+
+
+def _migrate_db():
+    """Adiciona colunas novas a tabelas existentes (idempotente — PostgreSQL)."""
+    from sqlalchemy import text
+
+    stmts = [
+        "ALTER TABLE orders ADD COLUMN IF NOT EXISTS customer_cpf VARCHAR(20)",
+        "ALTER TABLE orders ADD COLUMN IF NOT EXISTS customer_birthdate VARCHAR(10)",
+        "ALTER TABLE orders ADD COLUMN IF NOT EXISTS delivery_type VARCHAR(10) DEFAULT 'retirada'",
+        "ALTER TABLE orders ADD COLUMN IF NOT EXISTS delivery_address TEXT",
+        "ALTER TABLE orders ADD COLUMN IF NOT EXISTS delivery_neighborhood VARCHAR(150)",
+        "ALTER TABLE orders ADD COLUMN IF NOT EXISTS delivery_recipient VARCHAR(150)",
+        "ALTER TABLE orders ADD COLUMN IF NOT EXISTS delivery_contact VARCHAR(50)",
+    ]
+
+    with db.engine.connect() as conn:
+        # Ampliar whatsapp — sintaxe segura no PostgreSQL
+        try:
+            conn.execute(text(
+                "ALTER TABLE orders ALTER COLUMN customer_whatsapp TYPE VARCHAR(50)"
+            ))
+            conn.commit()
+        except Exception:
+            conn.rollback()
+
+        for stmt in stmts:
+            try:
+                conn.execute(text(stmt))
+                conn.commit()
+            except Exception:
+                conn.rollback()
 
 
 def _seed_data():

@@ -1227,7 +1227,6 @@ function addToSacola() {
     }
   });
   if (!valid) return toast('Preencha as opções obrigatórias antes de adicionar.', 'danger');
-  if (!Object.keys(selections).length) return toast('Escolha pelo menos uma opção antes de adicionar.', 'warning');
 
   sacola.push({
     category_slug: selectedCat.slug,
