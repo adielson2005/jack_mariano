@@ -45,6 +45,7 @@ def _seed_data():
                 "Massa": [
                     "Branca (Baunilha)",
                     "Chocolate",
+                    "Red Velvet",
                 ],
                 "Recheio Tradicional": [
                     "Sem recheio tradicional",
@@ -93,6 +94,8 @@ def _seed_data():
                 ],
                 "Decoração": [
                     "Sem decoração",
+                    "Chantilly",
+                    "Pasta Americana",
                     "Morangos",
                     "Brigadeiro Festa Tradicional",
                     "Macarrons",

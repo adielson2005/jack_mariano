@@ -357,7 +357,7 @@
             <tr>
               <th>#</th>
               <th>Cliente</th>
-              <th>Retirada</th>
+              <th>Data / Tipo</th>
               <th>Criado em</th>
               <th>Status</th>
               <th><i class="bi bi-whatsapp text-success"></i></th>
@@ -595,11 +595,12 @@ async function loadOrders(silent = false) {
     if (o.pickup_date === today)    dateCls = 'pickup-today';
     else if (o.pickup_date === tomorrow) dateCls = 'pickup-soon';
 
+    const typeIcon = o.delivery_type === 'entrega' ? '🛵 ' : '🏪 ';
     return `
     <tr onclick="openPanel(${o.id})">
       <td class="fw-bold text-muted">#${o.id}</td>
       <td class="fw-semibold">${esc(o.customer_name)}</td>
-      <td class="${dateCls}">${dateLabel} <span class="text-muted fw-normal">${o.pickup_time}</span></td>
+      <td class="${dateCls}">${typeIcon}${dateLabel} <span class="text-muted fw-normal">${o.pickup_time}</span></td>
       <td class="text-muted" style="font-size:.8rem">${o.created_at}</td>
       <td><span class="status-pill ${s.cls}">${s.label}</span></td>
       <td onclick="event.stopPropagation()">
@@ -642,6 +643,29 @@ async function openPanel(id) {
   const bdayHtml = o.customer_birthdate
     ? `<div class="info-row"><span class="lbl">Nascimento</span><span>${fmtDate(o.customer_birthdate)}</span></div>`
     : '';
+  const cpfHtml = o.customer_cpf
+    ? `<div class="info-row"><span class="lbl">CPF</span><span>${esc(o.customer_cpf)}</span></div>`
+    : '';
+
+  // Agendamento (retirada ou entrega)
+  const isEntrega   = o.delivery_type === 'entrega';
+  const schedLabel  = isEntrega ? '🛵 Entrega' : '🏪 Retirada';
+  let scheduleHtml  = `
+    <div class="info-row">
+      <span class="lbl">${schedLabel}</span>
+      <strong>${fmtDate(o.pickup_date)} às ${o.pickup_time}</strong>
+    </div>`;
+  if (isEntrega) {
+    if (o.delivery_address)
+      scheduleHtml += `<div class="info-row"><span class="lbl">📍 Endereço</span><span>${esc(o.delivery_address)}</span></div>`;
+    if (o.delivery_neighborhood)
+      scheduleHtml += `<div class="info-row"><span class="lbl">🏘️ Bairro</span><span>${esc(o.delivery_neighborhood)}</span></div>`;
+    if (o.delivery_recipient)
+      scheduleHtml += `<div class="info-row"><span class="lbl">👤 Recebe</span><span>${esc(o.delivery_recipient)}</span></div>`;
+    if (o.delivery_contact)
+      scheduleHtml += `<div class="info-row"><span class="lbl">📱 Contato</span>
+        <a href="https://wa.me/55${o.delivery_contact.replace(/\D/g,'')}" target="_blank">${esc(o.delivery_contact)}</a></div>`;
+  }
 
   const itemsHtml = o.items.map(item => {
     const tags = Object.entries(item.selections)
@@ -676,11 +700,7 @@ async function openPanel(id) {
           ${esc(o.customer_whatsapp)}
         </a>
       </div>
-      ${bdayHtml}
-      <div class="info-row">
-        <span class="lbl">Retirada</span>
-        <strong>${fmtDate(o.pickup_date)} às ${o.pickup_time}</strong>
-      </div>
+      ${cpfHtml}${bdayHtml}${scheduleHtml}
       ${allergyHtml}${notesHtml}${adminNotesHtml}
     </div>
     <div class="text-muted fw-bold mb-3"

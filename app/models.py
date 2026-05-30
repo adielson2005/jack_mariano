@@ -58,15 +58,24 @@ class Order(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
     # Customer data
-    customer_name = db.Column(db.String(150), nullable=False)
-    customer_whatsapp = db.Column(db.String(20), nullable=False)
+    customer_name      = db.Column(db.String(150), nullable=False)
+    customer_whatsapp  = db.Column(db.String(50),  nullable=False)
+    customer_cpf       = db.Column(db.String(20))
     customer_birthdate = db.Column(db.String(10))
 
-    # Order details
+    # Scheduling
     pickup_date = db.Column(db.String(10), nullable=False)
-    pickup_time = db.Column(db.String(5), nullable=False)
+    pickup_time = db.Column(db.String(5),  nullable=False)
+
+    # Delivery type: "retirada" | "entrega"
+    delivery_type         = db.Column(db.String(10), default="retirada")
+    delivery_address      = db.Column(db.Text)
+    delivery_neighborhood = db.Column(db.String(150))
+    delivery_recipient    = db.Column(db.String(150))
+    delivery_contact      = db.Column(db.String(50))
+
     allergies = db.Column(db.Text)
-    notes = db.Column(db.Text)
+    notes     = db.Column(db.Text)
 
     # Status: pending | confirmed | in_progress | ready | cancelled
     status = db.Column(db.String(20), default="pending")
@@ -76,18 +85,24 @@ class Order(db.Model):
 
     def to_dict(self, include_items=True):
         data = {
-            "id": self.id,
-            "created_at": self.created_at.strftime("%d/%m/%Y %H:%M"),
-            "customer_name": self.customer_name,
-            "customer_whatsapp": self.customer_whatsapp,
-            "customer_birthdate": self.customer_birthdate,
-            "pickup_date": self.pickup_date,
-            "pickup_time": self.pickup_time,
-            "allergies": self.allergies,
-            "notes": self.notes,
-            "admin_notes": self.admin_notes,
-            "status": self.status,
-            "status_label": STATUS_LABELS.get(self.status, self.status),
+            "id":                    self.id,
+            "created_at":            self.created_at.strftime("%d/%m/%Y %H:%M"),
+            "customer_name":         self.customer_name,
+            "customer_whatsapp":     self.customer_whatsapp,
+            "customer_cpf":          self.customer_cpf,
+            "customer_birthdate":    self.customer_birthdate,
+            "pickup_date":           self.pickup_date,
+            "pickup_time":           self.pickup_time,
+            "delivery_type":         self.delivery_type or "retirada",
+            "delivery_address":      self.delivery_address,
+            "delivery_neighborhood": self.delivery_neighborhood,
+            "delivery_recipient":    self.delivery_recipient,
+            "delivery_contact":      self.delivery_contact,
+            "allergies":             self.allergies,
+            "notes":                 self.notes,
+            "admin_notes":           self.admin_notes,
+            "status":                self.status,
+            "status_label":          STATUS_LABELS.get(self.status, self.status),
         }
         if include_items:
             data["items"] = [i.to_dict() for i in self.items]

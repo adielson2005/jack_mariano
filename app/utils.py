@@ -33,19 +33,44 @@ def build_client_link(order) -> str:
 
     items_block = "\n".join(lines)
 
+    delivery_type = getattr(order, "delivery_type", None) or "retirada"
+
     parts = [
         f"Olá, *{SHOP_NAME}*! 🧁",
         "",
-        f"Acabei de finalizar meu pedido pelo site.",
+        "Acabei de finalizar meu pedido pelo site.",
         "",
         f"👤 *Cliente:* {order.customer_name}",
         f"📱 *WhatsApp:* {order.customer_whatsapp}",
+    ]
+
+    cpf = getattr(order, "customer_cpf", None)
+    if cpf:
+        parts.append(f"🪪 *CPF:* {cpf}")
+
+    parts += [
         "",
-        f"🛍️ *Itens do pedido:*",
+        "🛍️ *Itens do pedido:*",
         items_block,
         "",
-        f"📅 *Retirada:* {_fmt_date(order.pickup_date)} às {order.pickup_time}",
     ]
+
+    if delivery_type == "entrega":
+        parts.append(f"🛵 *Entrega:* {_fmt_date(order.pickup_date)} às {order.pickup_time}")
+        addr = getattr(order, "delivery_address", None)
+        nbhd = getattr(order, "delivery_neighborhood", None)
+        recp = getattr(order, "delivery_recipient", None)
+        cont = getattr(order, "delivery_contact", None)
+        if addr:
+            parts.append(f"📍 *Endereço:* {addr}")
+        if nbhd:
+            parts.append(f"🏘️ *Bairro:* {nbhd}")
+        if recp:
+            parts.append(f"👤 *Recebe:* {recp}")
+        if cont:
+            parts.append(f"📱 *Contato destinatário:* {cont}")
+    else:
+        parts.append(f"📅 *Retirada:* {_fmt_date(order.pickup_date)} às {order.pickup_time}")
 
     if order.allergies:
         parts.append(f"⚠️ *Alergias/restrições:* {order.allergies}")
@@ -64,12 +89,25 @@ def build_admin_link(order) -> str:
         f"  • {item.category_name} × {item.quantity}"
         for item in order.items
     )
+
+    delivery_type = getattr(order, "delivery_type", None) or "retirada"
+
+    if delivery_type == "entrega":
+        addr = getattr(order, "delivery_address", "") or ""
+        nbhd = getattr(order, "delivery_neighborhood", "") or ""
+        local = f"{addr}, {nbhd}".strip(", ") if addr or nbhd else ""
+        schedule_line = f"🛵 *Entrega:* {_fmt_date(order.pickup_date)} às {order.pickup_time}"
+        if local:
+            schedule_line += f"\n📍 *Endereço:* {local}"
+    else:
+        schedule_line = f"📅 *Retirada:* {_fmt_date(order.pickup_date)} às {order.pickup_time}"
+
     msg = (
         f"Olá, *{order.customer_name}*! 👋\n\n"
         f"Aqui é da *{SHOP_NAME}*! 🧁\n"
         f"Recebemos seu pedido *#{order.id}* e gostaríamos de confirmar os detalhes.\n\n"
         f"📦 *Itens solicitados:*\n{items_lines}\n\n"
-        f"📅 *Retirada:* {_fmt_date(order.pickup_date)} às {order.pickup_time}\n\n"
+        f"{schedule_line}\n\n"
         f"Em breve confirmamos disponibilidade e valor. Obrigada pela preferência! 🎂"
     )
     return f"https://wa.me/{phone}?text={quote(msg)}"

@@ -10,7 +10,8 @@ api_bp = Blueprint("api", __name__)
 
 # Limites de tamanho dos campos de texto
 _MAX_NAME      = 150
-_MAX_PHONE     = 30
+_MAX_PHONE     = 50
+_MAX_CPF       = 20
 _MAX_DATE      = 10
 _MAX_TIME      = 5
 _MAX_TEXT      = 500
@@ -55,14 +56,22 @@ def create_order():
     # Valida slugs das categorias contra o banco
     valid_slugs = {c.slug for c in Category.query.filter_by(active=True).all()}
 
+    delivery_type = data.get("delivery_type", "retirada")
+
     order = Order(
-        customer_name=data["customer_name"].strip()[:_MAX_NAME],
-        customer_whatsapp=_clean_phone(data["customer_whatsapp"])[:_MAX_PHONE],
-        customer_birthdate=data.get("customer_birthdate", "").strip()[:_MAX_DATE] or None,
-        pickup_date=data["pickup_date"].strip(),
-        pickup_time=data["pickup_time"].strip(),
-        allergies=data.get("allergies", "").strip()[:_MAX_TEXT] or None,
-        notes=data.get("notes", "").strip()[:_MAX_NOTES] or None,
+        customer_name         = data["customer_name"].strip()[:_MAX_NAME],
+        customer_whatsapp     = _clean_phone(data["customer_whatsapp"])[:_MAX_PHONE],
+        customer_cpf          = data.get("customer_cpf", "").strip()[:_MAX_CPF] or None,
+        customer_birthdate    = data.get("customer_birthdate", "").strip()[:_MAX_DATE] or None,
+        pickup_date           = data["pickup_date"].strip(),
+        pickup_time           = data["pickup_time"].strip(),
+        delivery_type         = delivery_type,
+        delivery_address      = data.get("delivery_address",      "").strip()[:_MAX_TEXT]  or None,
+        delivery_neighborhood = data.get("delivery_neighborhood", "").strip()[:_MAX_TEXT]  or None,
+        delivery_recipient    = data.get("delivery_recipient",    "").strip()[:_MAX_NAME]  or None,
+        delivery_contact      = _clean_phone(data.get("delivery_contact", ""))[:_MAX_PHONE] or None,
+        allergies             = data.get("allergies", "").strip()[:_MAX_TEXT]  or None,
+        notes                 = data.get("notes",     "").strip()[:_MAX_NOTES] or None,
     )
     db.session.add(order)
     db.session.flush()
@@ -124,12 +133,12 @@ def help_link():
 def _validate_order(data: dict) -> list[str]:
     errors = []
 
-    # Campos obrigatórios
+    # Campos obrigatórios básicos
     required = {
         "customer_name":     "Nome completo",
         "customer_whatsapp": "WhatsApp",
-        "pickup_date":       "Data de retirada",
-        "pickup_time":       "Horário de retirada",
+        "pickup_date":       "Data",
+        "pickup_time":       "Horário",
     }
     for field, label in required.items():
         val = data.get(field, "")
@@ -143,23 +152,35 @@ def _validate_order(data: dict) -> list[str]:
     if len(data["customer_name"].strip()) < 2:
         errors.append("Nome deve ter ao menos 2 caracteres")
 
-    # Formato de data: YYYY-MM-DD e deve ser futuro (>= amanhã)
+    # Tipo de entrega
+    delivery_type = data.get("delivery_type", "retirada")
+    if delivery_type not in ("retirada", "entrega"):
+        errors.append("Tipo de entrega inválido")
+
+    # Campos obrigatórios para entrega
+    if delivery_type == "entrega":
+        if not data.get("delivery_address", "").strip():
+            errors.append("Endereço é obrigatório para entrega")
+        if not data.get("delivery_neighborhood", "").strip():
+            errors.append("Bairro é obrigatório para entrega")
+
+    # Formato de data: YYYY-MM-DD e deve ser >= hoje (timezone do cliente pode variar)
     pickup_date = data["pickup_date"].strip()
     if not re.fullmatch(r"\d{4}-\d{2}-\d{2}", pickup_date):
-        errors.append("Data de retirada em formato inválido (esperado YYYY-MM-DD)")
+        errors.append("Data em formato inválido (esperado YYYY-MM-DD)")
     else:
         try:
             y, m, d = pickup_date.split("-")
             pedido_date = date_type(int(y), int(m), int(d))
-            if pedido_date <= date_type.today():
-                errors.append("A data de retirada deve ser a partir de amanhã")
+            if pedido_date < date_type.today():
+                errors.append("A data deve ser hoje ou uma data futura")
         except ValueError:
-            errors.append("Data de retirada inválida")
+            errors.append("Data inválida")
 
     # Formato de hora: HH:MM
     pickup_time = data["pickup_time"].strip()
     if not re.fullmatch(r"([01]\d|2[0-3]):[0-5]\d", pickup_time):
-        errors.append("Horário de retirada em formato inválido (esperado HH:MM)")
+        errors.append("Horário em formato inválido (esperado HH:MM)")
 
     return errors
 

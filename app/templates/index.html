@@ -634,6 +634,41 @@
 
     /* ── Spinner ─────────────────────────────────────────── */
     .spinner-pk { color: var(--pk); }
+
+    /* ── Delivery toggle ─────────────────────────────────── */
+    .delivery-toggle {
+      display: flex; gap: 8px;
+    }
+    .dt-btn {
+      flex: 1; padding: 13px 10px; border-radius: 14px;
+      border: 2px solid var(--border);
+      background: var(--bg); cursor: pointer;
+      display: flex; flex-direction: column; align-items: center; gap: 5px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: .82rem; font-weight: 600;
+      color: var(--muted); transition: all .2s;
+      line-height: 1.3;
+    }
+    .dt-btn i { font-size: 1.45rem; transition: color .2s; }
+    .dt-btn:hover { border-color: var(--pk); color: var(--pk); }
+    .dt-btn.active {
+      border-color: var(--pk);
+      background: var(--pk-soft);
+      color: var(--pk);
+      box-shadow: 0 0 0 3px rgba(229,25,107,.08);
+    }
+
+    /* ── Delivery notice ─────────────────────────────────── */
+    .delivery-notice {
+      background: #fff8e1;
+      border: 1.5px solid #ffe082;
+      border-radius: 11px;
+      padding: 10px 14px;
+      font-size: .8rem; font-weight: 600;
+      color: #7c5d00;
+      display: flex; align-items: flex-start; gap: 8px;
+    }
+    .delivery-notice i { font-size: .95rem; flex-shrink: 0; margin-top: 1px; color: #f59e0b; }
   </style>
 </head>
 <body>
@@ -762,12 +797,23 @@
 
       <div class="form-card-body">
         <div class="row g-3">
-          <div class="col-12">
+
+          <!-- Nome + CPF -->
+          <div class="col-md-8">
             <label class="form-label">
               <i class="bi bi-person-fill"></i> Nome completo <span class="text-danger ms-1">*</span>
             </label>
             <input type="text" id="f-name" class="form-control" placeholder="Maria da Silva">
           </div>
+          <div class="col-md-4">
+            <label class="form-label">
+              <i class="bi bi-card-text"></i> CPF
+              <small style="font-weight:400;color:var(--muted)">(opcional)</small>
+            </label>
+            <input type="text" id="f-cpf" class="form-control" placeholder="000.000.000-00">
+          </div>
+
+          <!-- WhatsApp + Nascimento -->
           <div class="col-md-6">
             <label class="form-label">
               <i class="bi bi-whatsapp"></i> WhatsApp <span class="text-danger ms-1">*</span>
@@ -780,8 +826,29 @@
             </label>
             <input type="date" id="f-birth" class="form-control">
           </div>
-          <div class="col-md-6">
+
+          <!-- Toggle retirada / entrega -->
+          <div class="col-12">
             <label class="form-label">
+              <i class="bi bi-geo-alt-fill"></i> Tipo do pedido <span class="text-danger ms-1">*</span>
+            </label>
+            <div class="delivery-toggle">
+              <button type="button" id="btn-retirada" class="dt-btn active"
+                      onclick="setDeliveryType('retirada')">
+                <i class="bi bi-shop"></i>
+                <span>Retirada na loja</span>
+              </button>
+              <button type="button" id="btn-entrega" class="dt-btn"
+                      onclick="setDeliveryType('entrega')">
+                <i class="bi bi-bicycle"></i>
+                <span>Entrega</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Data + Horário -->
+          <div class="col-md-6">
+            <label class="form-label" id="lbl-date">
               <i class="bi bi-calendar-event"></i> Data de retirada <span class="text-danger ms-1">*</span>
             </label>
             <input type="date" id="f-date" class="form-control">
@@ -793,6 +860,48 @@
             <input type="time" id="f-time" class="form-control" value="09:00"
                    min="08:00" max="20:00">
           </div>
+
+          <!-- Campos exclusivos de entrega -->
+          <div class="col-12 d-none" id="delivery-fields">
+            <div class="row g-3">
+              <div class="col-12">
+                <div class="delivery-notice">
+                  <i class="bi bi-info-circle-fill"></i>
+                  A taxa de entrega será calculada e informada pela equipe ao confirmar o pedido.
+                </div>
+              </div>
+              <div class="col-12">
+                <label class="form-label">
+                  <i class="bi bi-map"></i> Endereço <span class="text-danger ms-1">*</span>
+                </label>
+                <input type="text" id="f-address" class="form-control"
+                       placeholder="Rua, número, complemento">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">
+                  <i class="bi bi-pin-map"></i> Bairro <span class="text-danger ms-1">*</span>
+                </label>
+                <input type="text" id="f-neighborhood" class="form-control"
+                       placeholder="Nome do bairro">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">
+                  <i class="bi bi-person-check"></i> Quem vai receber
+                </label>
+                <input type="text" id="f-recipient" class="form-control"
+                       placeholder="Deixe em branco se for você">
+              </div>
+              <div class="col-12">
+                <label class="form-label">
+                  <i class="bi bi-telephone"></i> Contato de quem vai receber
+                </label>
+                <input type="text" id="f-delivery-contact" class="form-control"
+                       placeholder="(94) 99999-0000 — deixe em branco se for o mesmo">
+              </div>
+            </div>
+          </div>
+
+          <!-- Alergias + Observações -->
           <div class="col-12">
             <label class="form-label">
               <i class="bi bi-shield-exclamation"></i> Alergias ou restrições
@@ -808,7 +917,8 @@
                       placeholder="Informações adicionais sobre seu pedido..."></textarea>
           </div>
         </div>
-        <div id="form-error" class="alert alert-danger mt-3 d-none"></div>
+
+        <div id="form-error" class="alert alert-danger mt-3 d-none" role="alert"></div>
         <div class="d-flex gap-2 mt-4 justify-content-center flex-wrap">
           <button class="btn btn-pk-outline px-4 py-2" onclick="goStep1()">
             <i class="bi bi-arrow-left me-1"></i> Voltar
@@ -875,10 +985,11 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
 const API = '';
-let categories  = [];
-let selectedCat = null;
-let sacola      = [];
-let bagOpen     = false;
+let categories   = [];
+let selectedCat  = null;
+let sacola       = [];
+let bagOpen      = false;
+let deliveryType = 'retirada';
 
 /* ── Steps ──────────────────────────────────────────────────────────────── */
 function setStep(n) {
@@ -897,7 +1008,7 @@ function setStep(n) {
 function goStep1() { setStep(1); }
 function goStep2() {
   if (!sacola.length) return toast('Adicione pelo menos um item à sacola.', 'warning');
-  // Define data mínima de retirada (amanhã)
+  // Define data mínima como amanhã
   const tomorrow = new Date();
   tomorrow.setDate(tomorrow.getDate() + 1);
   const minDate = tomorrow.toISOString().split('T')[0];
@@ -906,6 +1017,18 @@ function goStep2() {
   if (!fDate.value || fDate.value < minDate) fDate.value = minDate;
   renderSummary();
   setStep(2);
+}
+
+/* ── Tipo de entrega ─────────────────────────────────────────────────────── */
+function setDeliveryType(type) {
+  deliveryType = type;
+  document.getElementById('btn-retirada').classList.toggle('active', type === 'retirada');
+  document.getElementById('btn-entrega').classList.toggle('active',  type === 'entrega');
+  const fields = document.getElementById('delivery-fields');
+  fields.classList.toggle('d-none', type !== 'entrega');
+  document.getElementById('lbl-date').innerHTML = type === 'entrega'
+    ? '<i class="bi bi-calendar-event"></i> Data de entrega <span class="text-danger ms-1">*</span>'
+    : '<i class="bi bi-calendar-event"></i> Data de retirada <span class="text-danger ms-1">*</span>';
 }
 
 /* ── Categories ─────────────────────────────────────────────────────────── */
@@ -1040,13 +1163,14 @@ function renderOptGroup(group, data) {
   if (usePills) {
     const pills = items.map((item, idx) => {
       const skip    = isSkipValue(item.name);
-      const autoSel = idx === 0 && isOpt ? (skip ? ' sel-skip' : ' sel') : '';
+      // Sempre pré-seleciona o primeiro pill para ter valor definido
+      const autoSel = idx === 0 ? (skip ? ' sel-skip' : ' sel') : '';
       return `<button type="button" class="opt-pill${autoSel}"
         data-value="${esc(item.name)}" onclick="selectPill(this)">${item.name}</button>`;
     }).join('');
 
     const opts = items.map((i, idx) =>
-      `<option value="${esc(i.name)}"${idx === 0 && isOpt ? ' selected' : ''}>${i.name}</option>`
+      `<option value="${esc(i.name)}"${idx === 0 ? ' selected' : ''}>${i.name}</option>`
     ).join('');
 
     return `<div class="opt-group" data-pills="1">
@@ -1192,18 +1316,57 @@ async function submitOrder() {
   const btn   = document.getElementById('btn-submit');
   const errEl = document.getElementById('form-error');
   errEl.classList.add('d-none');
+
+  // ── Validação client-side ──────────────────────────────────────────────
+  const name  = document.getElementById('f-name').value.trim();
+  const phone = document.getElementById('f-phone').value.trim();
+  const date  = document.getElementById('f-date').value;
+  const time  = document.getElementById('f-time').value;
+
+  const errs = [];
+  if (!name)  errs.push('Nome completo é obrigatório');
+  if (!phone) errs.push('WhatsApp é obrigatório');
+  if (!date)  errs.push('Data é obrigatória');
+  if (!time)  errs.push('Horário é obrigatório');
+
+  if (deliveryType === 'entrega') {
+    if (!document.getElementById('f-address').value.trim())
+      errs.push('Endereço é obrigatório para entrega');
+    if (!document.getElementById('f-neighborhood').value.trim())
+      errs.push('Bairro é obrigatório para entrega');
+  }
+
+  if (errs.length) {
+    errEl.textContent = '⚠️ ' + errs.join(' • ');
+    errEl.classList.remove('d-none');
+    errEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    return;
+  }
+
+  // ── Monta payload ──────────────────────────────────────────────────────
   const payload = {
-    customer_name:      document.getElementById('f-name').value.trim(),
-    customer_whatsapp:  document.getElementById('f-phone').value.trim(),
+    customer_name:      name,
+    customer_cpf:       document.getElementById('f-cpf').value.trim(),
+    customer_whatsapp:  phone,
     customer_birthdate: document.getElementById('f-birth').value,
-    pickup_date:        document.getElementById('f-date').value,
-    pickup_time:        document.getElementById('f-time').value,
+    delivery_type:      deliveryType,
+    pickup_date:        date,
+    pickup_time:        time,
     allergies:          document.getElementById('f-allergy').value.trim(),
     notes:              document.getElementById('f-notes').value.trim(),
-    items: sacola.map(({ icon, ...rest }) => rest),
+    items:              sacola.map(({ icon, ...rest }) => rest),
   };
+
+  if (deliveryType === 'entrega') {
+    payload.delivery_address      = document.getElementById('f-address').value.trim();
+    payload.delivery_neighborhood = document.getElementById('f-neighborhood').value.trim();
+    payload.delivery_recipient    = document.getElementById('f-recipient').value.trim();
+    payload.delivery_contact      = document.getElementById('f-delivery-contact').value.trim();
+  }
+
   btn.disabled = true;
   btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Enviando...';
+
   try {
     const res  = await fetch(`${API}/api/orders`, {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
@@ -1217,10 +1380,10 @@ async function submitOrder() {
       // Abre o WhatsApp automaticamente com o pedido pré-preenchido
       setTimeout(() => { try { window.open(data.whatsapp_link, '_blank'); } catch(e) {} }, 700);
     } else {
-      // Usa textContent para evitar XSS — mensagens vêm do servidor
       const msgs = data.details ? data.details : [data.error || 'Erro desconhecido'];
-      errEl.textContent = '⚠️ ' + msgs.join(' | ');
+      errEl.textContent = '⚠️ ' + msgs.join(' • ');
       errEl.classList.remove('d-none');
+      errEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }
   } catch (e) {
     errEl.textContent = '⚠️ Falha de conexão. Verifique sua internet e tente novamente.';
@@ -1233,9 +1396,11 @@ async function submitOrder() {
 
 function resetForm() {
   sacola = []; renderBag();
-  ['f-name','f-phone','f-birth','f-date','f-allergy','f-notes']
+  ['f-name','f-cpf','f-phone','f-birth','f-date','f-allergy','f-notes',
+   'f-address','f-neighborhood','f-recipient','f-delivery-contact']
     .forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
   document.getElementById('f-time').value = '09:00';
+  setDeliveryType('retirada');
   selectedCat = null;
   setStep(1);
 }
