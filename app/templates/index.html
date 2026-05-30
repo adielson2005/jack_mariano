@@ -635,6 +635,45 @@
     /* ── Spinner ─────────────────────────────────────────── */
     .spinner-pk { color: var(--pk); }
 
+    /* ── Checkout bar (sticky) ───────────────────────────── */
+    .checkout-bar {
+      position: fixed; bottom: 0; left: 0; right: 0; z-index: 1050;
+      background: var(--surface);
+      border-top: 1.5px solid var(--border);
+      box-shadow: 0 -4px 24px rgba(0,0,0,.10);
+      padding: 12px 20px;
+      display: flex; align-items: center; justify-content: space-between; gap: 14px;
+    }
+    .checkout-bar-info {
+      display: flex; flex-direction: column;
+    }
+    .checkout-bar-label {
+      font-size: .68rem; font-weight: 700; color: var(--muted);
+      text-transform: uppercase; letter-spacing: .1em;
+    }
+    .checkout-bar-count {
+      font-size: .9rem; font-weight: 800; color: var(--text);
+    }
+    .checkout-bar .btn-finalizar {
+      flex-shrink: 0;
+      background: linear-gradient(135deg, var(--pk) 0%, #c0134f 100%);
+      color: #fff; border: none; border-radius: 14px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: .92rem; font-weight: 700;
+      padding: 13px 28px; cursor: pointer;
+      box-shadow: 0 4px 16px rgba(229,25,107,.35);
+      transition: opacity .18s, transform .14s;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .checkout-bar .btn-finalizar:hover  { opacity: .91; transform: translateY(-1px); }
+    .checkout-bar .btn-finalizar:active { transform: translateY(0); }
+    @media (max-width: 400px) {
+      .checkout-bar { padding: 10px 14px; }
+      .checkout-bar .btn-finalizar { padding: 12px 18px; font-size: .84rem; }
+    }
+    /* empurra o FAB do WA para cima quando barra aparece */
+    body.has-checkout-bar .wa-help-fab { bottom: 82px; }
+
     /* ── Delivery toggle ─────────────────────────────────── */
     .delivery-toggle {
       display: flex; gap: 8px;
@@ -751,6 +790,17 @@
   </div>
 </div>
 
+
+<!-- ══ Barra de checkout (aparece quando há itens na sacola) ════════════════ -->
+<div id="checkout-bar" class="checkout-bar d-none" aria-live="polite">
+  <div class="checkout-bar-info">
+    <span class="checkout-bar-label">Sacola</span>
+    <span class="checkout-bar-count" id="checkout-bar-count">0 itens</span>
+  </div>
+  <button class="btn-finalizar" onclick="goStep2()">
+    <i class="bi bi-check2-circle"></i> Finalizar pedido
+  </button>
+</div>
 
 <!-- ══ STEP 1 ════════════════════════════════════════════════════════════════ -->
 <div id="step1">
@@ -1002,6 +1052,13 @@ function setStep(n) {
     const sep = document.getElementById('ss' + i);
     if (sep) sep.style.background = i < n ? '#16a34a' : 'var(--border)';
   });
+  // Barra de checkout só aparece no step 1 quando há itens
+  const bar = document.getElementById('checkout-bar');
+  if (bar) {
+    const show = n === 1 && sacola.length > 0;
+    bar.classList.toggle('d-none', !show);
+    document.body.classList.toggle('has-checkout-bar', show);
+  }
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
@@ -1248,6 +1305,20 @@ function renderBag() {
   const badge  = document.getElementById('bag-badge');
   const items  = document.getElementById('bp-items');
   const footer = document.getElementById('bp-footer');
+
+  // Barra de checkout
+  const bar   = document.getElementById('checkout-bar');
+  const barCt = document.getElementById('checkout-bar-count');
+  if (sacola.length && document.getElementById('step1') && !document.getElementById('step1').classList.contains('d-none')) {
+    bar.classList.remove('d-none');
+    document.body.classList.add('has-checkout-bar');
+    const n = sacola.length;
+    barCt.textContent = `${n} ${n === 1 ? 'item' : 'itens'}`;
+  } else {
+    bar.classList.add('d-none');
+    document.body.classList.remove('has-checkout-bar');
+  }
+
   if (!sacola.length) {
     badge.classList.add('hidden');
     items.innerHTML = '<div class="bp-empty">Sua sacola está vazia.</div>';
