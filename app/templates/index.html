@@ -1011,7 +1011,10 @@
          style="background:#25d366;color:#fff;border-radius:14px;font-family:'Plus Jakarta Sans',sans-serif;font-size:.95rem;box-shadow:0 4px 16px rgba(37,211,102,.35)">
         <i class="bi bi-whatsapp me-2"></i>Abrir WhatsApp &amp; Enviar pedido
       </a>
-      <button class="btn btn-pk-outline w-100 mt-2 py-2" onclick="resetForm()">
+      <button class="btn btn-pk-outline w-100 mt-2 py-2" onclick="voltarCorrigir()">
+        <i class="bi bi-pencil me-1"></i> Corrigir informações
+      </button>
+      <button class="btn btn-link btn-sm text-muted w-100 mt-1 py-1" onclick="resetForm()">
         Fazer novo pedido
       </button>
     </div>
@@ -1609,6 +1612,11 @@ async function submitOrder() {
     btn.disabled = false;
     btn.innerHTML = '<i class="bi bi-send-fill me-1"></i> Enviar pedido';
   }
+}
+
+/** Volta ao formulário (step 2) preservando todos os dados preenchidos. */
+function voltarCorrigir() {
+  setStep(2);
 }
 
 function resetForm() {
