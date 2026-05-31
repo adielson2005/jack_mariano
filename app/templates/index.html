@@ -721,7 +721,7 @@
 
 <!-- ══ Header ══════════════════════════════════════════════════════════════ -->
 <header class="site-header">
-  <a class="brand" href="/">
+  <a class="brand" href="#" onclick="goHome(); return false;" title="Voltar ao início">
     <img src="{{ url_for('static', filename='img/jack_mariano.png') }}"
          alt="Jack Mariano Confeitaria" height="44"
          style="display:block;object-fit:contain">
@@ -778,12 +778,12 @@
 
 <!-- ══ Step bar ════════════════════════════════════════════════════════════ -->
 <div class="step-bar">
-  <div class="step-pill active" id="sp1">
+  <div class="step-pill active" id="sp1" onclick="goHome()" style="cursor:pointer" title="Voltar aos itens">
     <div class="sp-num">1</div>
     <span>Itens</span>
   </div>
   <div class="step-sep" id="ss1"></div>
-  <div class="step-pill pending" id="sp2">
+  <div class="step-pill pending" id="sp2" onclick="stepNavBack(2)" style="cursor:pointer">
     <div class="sp-num">2</div>
     <span>Seus dados</span>
   </div>
@@ -1067,6 +1067,26 @@ function setStep(n) {
 }
 
 function goStep1() { setStep(1); }
+
+/** Clique na logo ou no pill "Itens": volta ao step 1 sem perder a sacola. */
+function goHome() {
+  const s2 = !document.getElementById('step2').classList.contains('d-none');
+  const s3 = !document.getElementById('step3').classList.contains('d-none');
+  if (s2 || s3) { setStep(1); } // mantém sacola, volta para escolha de itens
+  // se já está no step 1, não faz nada
+}
+
+/** Permite clicar em um step anterior na barra de progresso. */
+function stepNavBack(targetStep) {
+  const currentStep = document.getElementById('step2').classList.contains('d-none')
+    ? (document.getElementById('step3').classList.contains('d-none') ? 1 : 3)
+    : 2;
+  if (targetStep < currentStep) {
+    if (targetStep === 1) goHome();
+    else if (targetStep === 2 && currentStep === 3) setStep(2);
+  }
+}
+
 function goStep2() {
   if (!sacola.length) return toast('Adicione pelo menos um item à sacola.', 'warning');
   // Define data mínima como amanhã
