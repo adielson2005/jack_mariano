@@ -712,6 +712,19 @@
     /* ── Recheio groups ──────────────────────────────────── */
     /* Grupos de recheio sempre ocupam largura total */
     .opt-group[data-recheio-type] { grid-column: 1 / -1; }
+
+    /* Botão "Adicionar 2º sabor" */
+    .btn-add-2nd-sabor { grid-column: 1 / -1; }
+    .btn-2nd-sabor {
+      width: 100%; padding: 10px 14px; border-radius: 11px;
+      border: 1.5px dashed var(--border);
+      background: transparent; cursor: pointer;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: .82rem; font-weight: 600; color: var(--muted);
+      transition: border-color .2s, color .2s;
+      display: flex; align-items: center; justify-content: center; gap: 7px;
+    }
+    .btn-2nd-sabor:hover { border-color: var(--pk); color: var(--pk); }
   </style>
 </head>
 <body>
@@ -1270,7 +1283,10 @@ function renderOptGroup(group, data) {
   if (group.startsWith('Recheio Super'))      recheioType = 'super';
   else if (group.startsWith('Recheio Especial')) recheioType = 'especial';
   else if (group.startsWith('Recheio Tradicional')) recheioType = 'tradicional';
-  const recheioAttr = recheioType ? ` data-recheio-type="${recheioType}"` : '';
+  const is2nd       = recheioType && group.includes('2º Sabor');
+  const recheioAttr = recheioType
+    ? ` data-recheio-type="${recheioType}"${is2nd ? ' data-recheio-2nd="1"' : ''}`
+    : '';
 
   // Para grupos de recheio, simplifica o label (retira o prefixo "Recheio X — ")
   let displayGroup = group;
@@ -1341,7 +1357,7 @@ function _injectRecheioTypePicker(slug) {
   // Esconde todos os grupos de recheio e reseta seus selects
   wrap.querySelectorAll('.opt-group[data-recheio-type]').forEach(g => {
     g.style.display = 'none';
-    g.querySelectorAll('select.opt-sel').forEach(s => { s.selectedIndex = 0; s.value = ''; });
+    g.querySelectorAll('select.opt-sel').forEach(s => { s.selectedIndex = 0; });
   });
 
   // Ponto de inserção: antes do primeiro grupo de recheio
@@ -1391,18 +1407,46 @@ function selectRecheioType(btn, type, slug) {
   });
   btn.classList.add(type === 'none' ? 'sel-skip' : 'sel');
 
-  // Mostra apenas os grupos do tipo escolhido, esconde o resto
+  // Esconde todos os grupos de recheio e limpa erros
   wrap.querySelectorAll('.opt-group[data-recheio-type]').forEach(g => {
-    const show = type !== 'none' && g.dataset.recheioType === type;
-    g.style.display = show ? '' : 'none';
-    if (!show) {
-      g.querySelectorAll('select.opt-sel').forEach(s => {
-        s.selectedIndex = 0; s.value = '';
-      });
-      g.classList.remove('is-invalid');
-      const pills = g.querySelector('.opt-pills');
-      if (pills) pills.classList.remove('is-invalid');
-    }
+    g.style.display = 'none';
+    g.querySelectorAll('select.opt-sel').forEach(s => { s.selectedIndex = 0; });
+    g.classList.remove('is-invalid');
+    g.querySelector('.opt-pills')?.classList.remove('is-invalid');
+  });
+
+  // Remove botão "+ Adicionar 2º sabor" se já existia
+  wrap.querySelector('.btn-add-2nd-sabor')?.remove();
+
+  if (type === 'none') return;
+
+  // Mostra apenas os grupos de 1º Sabor do tipo escolhido
+  let last1st = null;
+  wrap.querySelectorAll(`.opt-group[data-recheio-type="${type}"]`).forEach(g => {
+    if (!g.dataset.recheio2nd) { g.style.display = ''; last1st = g; }
+  });
+
+  // Injeta botão opcional de 2º sabor logo abaixo do 1º Sabor
+  if (last1st) {
+    const div = document.createElement('div');
+    div.className = 'btn-add-2nd-sabor';
+    div.innerHTML = `
+      <button type="button" class="btn-2nd-sabor"
+              onclick="show2ndSabor(this,'${type}','${slug}')">
+        <i class="bi bi-plus-circle"></i>
+        Adicionar 2º sabor <span style="opacity:.65;font-weight:500;font-size:.75rem">(opcional)</span>
+      </button>`;
+    last1st.insertAdjacentElement('afterend', div);
+  }
+}
+
+function show2ndSabor(triggerBtn, type, slug) {
+  const wrap = document.getElementById('ow-' + slug);
+  triggerBtn.closest('.btn-add-2nd-sabor').remove();   // remove o botão
+  // Mostra os grupos de 2º Sabor do tipo selecionado
+  wrap.querySelectorAll(`.opt-group[data-recheio-type="${type}"][data-recheio-2nd]`).forEach(g => {
+    g.querySelectorAll('select.opt-sel').forEach(s => { s.selectedIndex = 0; }); // "Sem segundo sabor"
+    g.style.display = '';
   });
 }
 
