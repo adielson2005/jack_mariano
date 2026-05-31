@@ -1240,6 +1240,8 @@ function selectCat(slug, rowEl) {
 
   // Injeta seletor de tipo de recheio para bolo
   if (slug === 'bolo') _injectRecheioTypePicker(slug);
+  // Kit Festa: opções aparecem só após escolher o kit
+  if (slug === 'kit-festa') _setupKitFesta(slug);
 
   wrap.classList.add('open');
   setTimeout(() => rowEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 60);
@@ -1346,6 +1348,53 @@ function selectPill(btn) {
   btn.classList.add(isSkipValue(btn.dataset.value) ? 'sel-skip' : 'sel');
   grp.querySelector('select.opt-sel').value = btn.dataset.value;
   grp.querySelector('.opt-pills').classList.remove('is-invalid');
+}
+
+/* ── Seletor condicional para Kit Festa ─────────────────────────────────── */
+
+function _setupKitFesta(slug) {
+  const wrap = document.getElementById('ow-' + slug);
+  if (!wrap) return;
+
+  // 1. Injeta o seletor de recheio igual ao bolo
+  _injectRecheioTypePicker(slug);
+
+  // 2. Esconde tudo exceto "Escolha o Kit"
+  wrap.querySelectorAll('.opt-group').forEach(g => {
+    const sel = g.querySelector('select.opt-sel');
+    if (sel && sel.dataset.group === 'Escolha o Kit') return;
+    g.setAttribute('data-kit-dep', '1');
+    g.style.display = 'none';
+  });
+
+  // 3. Ao escolher um kit, revela as opções de personalização
+  const kitSel = wrap.querySelector('select.opt-sel[data-group="Escolha o Kit"]');
+  if (!kitSel) return;
+
+  kitSel.addEventListener('change', function () {
+    if (!this.value) return;
+
+    // Mostra todos os grupos dependentes, exceto os de recheio (gerenciados pelo picker)
+    wrap.querySelectorAll('.opt-group[data-kit-dep]').forEach(g => {
+      if (g.dataset.recheioType) return;
+      g.style.display = '';
+    });
+
+    // Garante que o picker de recheio aparece e está resetado para "Sem recheio"
+    const picker = wrap.querySelector('.recheio-type-picker');
+    if (picker) {
+      picker.style.display = '';
+      picker.querySelectorAll('.opt-pill').forEach((p, i) => {
+        p.classList.remove('sel', 'sel-skip');
+        if (i === 0) p.classList.add('sel-skip', 'sel');
+      });
+      wrap.querySelectorAll('.opt-group[data-recheio-type]').forEach(g => {
+        g.style.display = 'none';
+        g.querySelectorAll('select.opt-sel').forEach(s => { s.selectedIndex = 0; });
+      });
+      wrap.querySelector('.btn-add-2nd-sabor')?.remove();
+    }
+  });
 }
 
 /* ── Seletor de tipo de recheio (bolo) ──────────────────────────────────── */
@@ -1460,6 +1509,8 @@ function addToSacola() {
     const grp = sel.closest('.opt-group');
     // Ignora grupos de recheio que estão ocultos (tipo não selecionado)
     if (grp && grp.dataset.recheioType && grp.style.display === 'none') return;
+    // Ignora grupos de kit ainda ocultos (kit não selecionado)
+    if (grp && grp.dataset.kitDep && grp.style.display === 'none') return;
 
     if (!sel.value) {
       if (grp && grp.dataset.pills) {
