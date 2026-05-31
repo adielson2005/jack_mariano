@@ -34,6 +34,7 @@ def _migrate_db():
     from sqlalchemy import text
 
     stmts = [
+        "ALTER TABLE categories ADD COLUMN IF NOT EXISTS catalog_version VARCHAR(10)",
         "ALTER TABLE orders ADD COLUMN IF NOT EXISTS customer_cpf VARCHAR(20)",
         "ALTER TABLE orders ADD COLUMN IF NOT EXISTS customer_birthdate VARCHAR(10)",
         "ALTER TABLE orders ADD COLUMN IF NOT EXISTS delivery_type VARCHAR(10) DEFAULT 'retirada'",
@@ -61,11 +62,69 @@ def _migrate_db():
                 conn.rollback()
 
 
+# Versão do catálogo — suba este número sempre que alterar produtos/opções.
+# O sistema vai apagar e recriar o catálogo automaticamente no próximo deploy.
+_CATALOG_VERSION = "v3"
+
+
 def _seed_data():
     from app.models import Category, Product
 
-    if Category.query.count() > 0:
+    # Verifica se o catálogo já está na versão atual
+    first = Category.query.first()
+    if first and getattr(first, "catalog_version", None) == _CATALOG_VERSION:
         return
+
+    # Apaga catálogo antigo (OrderItem usa category_slug como string — sem FK,
+    # portanto pedidos existentes NÃO são afetados)
+    Product.query.delete()
+    Category.query.delete()
+    db.session.commit()
+
+    _TRAD = [
+        "4 Leites",
+        "Leite Ninho Trufado",
+        "Creme com Abacaxi",
+        "Mousse de Maracujá",
+        "Mousse de Limão",
+        "Creme de Cupuaçu",
+        "Doce de Leite com Abacaxi",
+        "Brigadeiro com Ovomaltine",
+        "Ninho com Ovomaltine",
+        "Ganache ao Leite",
+        "Ganache Meio Amargo",
+        "Ganache Branco",
+        "Amendoim",
+        "Cappuccino",
+        "Doce de Leite com Canela",
+        "Beijinho",
+        "Doce de Leite",
+        "Ninho Oreo",
+        "Brigadeiro e Oreo",
+        "Brigadeiro",
+        "Ganache de Café",
+        "Alpino",
+    ]
+
+    _ESP = [
+        "Creme com Nozes",
+        "Creme com Ameixa",
+        "Creme com Morango Fruta",
+        "Creme com Frutas Vermelhas",
+        "Creme com Geléia de Morango",
+        "Ferreiro Rocher (brigadeiro, nutella e amendoim)",
+        "Creme com Damasco",
+        "Creme com Castanha de Caju",
+        "Sonho de Valsa (brigadeiro ou creme)",
+        "Ouro Branco",
+        "Creme com Pêssego",
+    ]
+
+    _SUPER = [
+        "Pistache",
+        "Pistache com Geléia de Morango",
+        "Creme com Castanha do Pará",
+    ]
 
     categories = [
         {
@@ -74,56 +133,46 @@ def _seed_data():
             "description": "Bolos personalizados com massa, recheio e decoração à sua escolha.",
             "icon": "🎂",
             "price_from": None,
+            "catalog_version": _CATALOG_VERSION,
             "options": {
+                "Quilo": [
+                    "500g",
+                    "700g",
+                    "1kg",
+                    "1,5kg",
+                    "2kg",
+                    "2,5kg",
+                    "3kg",
+                    "4kg",
+                ],
                 "Massa": [
                     "Branca (Baunilha)",
                     "Chocolate",
                     "Red Velvet",
                 ],
-                "Recheio Tradicional": [
+                "Recheio Tradicional — 1º Sabor (a partir de R$90)": [
                     "Sem recheio tradicional",
-                    "4 Leites",
-                    "Leite Ninho Trufado",
-                    "Creme com Abacaxi",
-                    "Mousse de Maracujá",
-                    "Mousse de Limão",
-                    "Creme de Cupuaçu",
-                    "Doce de Leite com Abacaxi",
-                    "Brigadeiro com Ovomaltine",
-                    "Ninho com Ovomaltine",
-                    "Ganache ao Leite",
-                    "Ganache Meio Amargo",
-                    "Ganache Branco",
-                    "Amendoim",
-                    "Cappuccino",
-                    "Doce de Leite com Canela",
-                    "Beijinho",
-                    "Doce de Leite",
-                    "Ninho Oreo",
-                    "Brigadeiro e Oreo",
-                    "Brigadeiro",
-                    "Ganache de Café",
-                    "Alpino",
+                    *_TRAD,
                 ],
-                "Recheio Especial": [
+                "Recheio Tradicional — 2º Sabor": [
+                    "Sem segundo sabor",
+                    *_TRAD,
+                ],
+                "Recheio Especial — 1º Sabor (a partir de R$100)": [
                     "Sem recheio especial",
-                    "Creme com Nozes",
-                    "Creme com Ameixa",
-                    "Creme com Morango Fruta",
-                    "Creme com Frutas Vermelhas",
-                    "Creme com Geléia de Morango",
-                    "Ferreiro Rocher (brigadeiro, nutella e amendoim)",
-                    "Creme com Damasco",
-                    "Creme com Castanha de Caju",
-                    "Sonho de Valsa (brigadeiro ou creme)",
-                    "Ouro Branco",
-                    "Creme com Pêssego",
+                    *_ESP,
                 ],
-                "Recheio Super Especial": [
+                "Recheio Especial — 2º Sabor": [
+                    "Sem segundo sabor",
+                    *_ESP,
+                ],
+                "Recheio Super Especial — 1º Sabor (a partir de R$130)": [
                     "Sem recheio super especial",
-                    "Pistache",
-                    "Pistache com Geléia de Morango",
-                    "Creme com Castanha do Pará",
+                    *_SUPER,
+                ],
+                "Recheio Super Especial — 2º Sabor": [
+                    "Sem segundo sabor",
+                    *_SUPER,
                 ],
                 "Decoração": [
                     "Sem decoração",
@@ -151,9 +200,10 @@ def _seed_data():
             "description": "Doces finos artesanais, brigadeiros gourmet, trufas e muito mais.",
             "icon": "🍬",
             "price_from": None,
+            "catalog_version": _CATALOG_VERSION,
             "options": {
                 "Brigadeiro Gourmet": [
-                    "Não quero",
+                    "Nenhum",
                     "Brigadeiro Tradicional",
                     "Brigadeiro com Amendoim",
                     "Beijinho",
@@ -169,7 +219,7 @@ def _seed_data():
                     "Cajuzinho",
                 ],
                 "Brigadeiro Gourmet Especial": [
-                    "Não quero",
+                    "Nenhum",
                     "Ferreiro Rocher",
                     "Ninho com Nutella",
                     "Brigadeiro M&M",
@@ -181,7 +231,7 @@ def _seed_data():
                     "Surpresa de Uva",
                 ],
                 "Copinho de Chocolate (Branco ou ao Leite)": [
-                    "Não quero",
+                    "Nenhum",
                     "Morango",
                     "Brigadeiro",
                     "Ninho Morango",
@@ -194,7 +244,7 @@ def _seed_data():
                     "Ninho com Nozes",
                 ],
                 "Copinho de Acrílico 30ml": [
-                    "Não quero",
+                    "Nenhum",
                     "Morango",
                     "Brigadeiro",
                     "Ninho Morango",
@@ -206,7 +256,7 @@ def _seed_data():
                     "Napolitano",
                 ],
                 "Mini Brownie": [
-                    "Não quero",
+                    "Nenhum",
                     "Morango",
                     "Brigadeiro",
                     "Ninho Morango",
@@ -216,7 +266,7 @@ def _seed_data():
                     "Ninho Uva",
                 ],
                 "Mini Trufa": [
-                    "Não quero",
+                    "Nenhum",
                     "Castanha Triturada",
                     "Brigadeiro",
                     "Coco",
@@ -224,7 +274,7 @@ def _seed_data():
                     "Ninho",
                 ],
                 "Doce Fino": [
-                    "Não quero",
+                    "Nenhum",
                     "Camafeu Nozes",
                     "Surpresa de Damasco",
                     "Surpresa de Castanha de Caju",
@@ -232,14 +282,14 @@ def _seed_data():
                     "Bem Casado com Tag",
                 ],
                 "Pipoca Gourmet": [
-                    "Não quero",
+                    "Nenhum",
                     "Ninho",
                     "Chocolate",
                     "Oreo",
                     "Ovomaltine",
                 ],
                 "Coloridos ou Carimbados": [
-                    "Não quero",
+                    "Nenhum",
                     "Carimbo Dourado com Sabor Ninho",
                 ],
             },
@@ -250,9 +300,10 @@ def _seed_data():
             "description": "Salgados artesanais fritos ou assados, empadinhas e mini pastéis.",
             "icon": "🥟",
             "price_from": None,
+            "catalog_version": _CATALOG_VERSION,
             "options": {
                 "Salgados Fritos": [
-                    "Não quero",
+                    "Nenhum",
                     "Coxinha de Frango",
                     "Risole de Carne",
                     "Croquete de Milho",
@@ -265,7 +316,7 @@ def _seed_data():
                     "Kibe",
                 ],
                 "Salgados Assados": [
-                    "Não quero",
+                    "Nenhum",
                     "Esfira de Carne",
                     "Esfira de Frango",
                     "Enroladinho de Salsicha",
@@ -278,12 +329,12 @@ def _seed_data():
                     "Mini Pizza (Queijo, Presunto, Frango e Calabresa)",
                 ],
                 "Empadinhas": [
-                    "Não quero",
+                    "Nenhum",
                     "Frango",
                     "Palmito",
                 ],
                 "Mini Pastel de Vento": [
-                    "Não quero",
+                    "Nenhum",
                     "Presunto e Queijo",
                     "Queijo",
                     "Carne",
@@ -296,6 +347,7 @@ def _seed_data():
             "description": "Combos prontos para celebrar com praticidade e sabor.",
             "icon": "🎁",
             "price_from": None,
+            "catalog_version": _CATALOG_VERSION,
             "options": {
                 "Escolha o Combo": [
                     "Combo Surpresinha (1 mini naked cake + 4 docinhos + 10 salgadinhos + 1 coca lata + 1 caixa presenteável)",
@@ -310,6 +362,7 @@ def _seed_data():
             "description": "Kit completo: bolo + doces + salgados + bebida para sua festa.",
             "icon": "🎊",
             "price_from": None,
+            "catalog_version": _CATALOG_VERSION,
             "options": {
                 "Escolha o Kit": [
                     "Kit PP — 3 pessoas (bolo 500g + topo simples + 15 docinhos + 30 salgados fritos + refri 600ml)",

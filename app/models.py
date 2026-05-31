@@ -12,6 +12,7 @@ class Category(db.Model):
     icon = db.Column(db.String(10))
     active = db.Column(db.Boolean, default=True)
     price_from = db.Column(db.String(100), nullable=True)
+    catalog_version = db.Column(db.String(10), nullable=True)
 
     products = db.relationship("Product", backref="category", lazy=True)
 

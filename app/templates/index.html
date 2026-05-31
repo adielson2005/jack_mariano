@@ -1177,7 +1177,7 @@ function selectCat(slug, rowEl) {
 /* ── Option helpers ─────────────────────────────────────────────────────── */
 
 function isSkipValue(v) {
-  return v.startsWith('Não quero') || v.startsWith('Sem ');
+  return v === 'Nenhum' || v.startsWith('Sem ');
 }
 
 function groupIcon(name) {
