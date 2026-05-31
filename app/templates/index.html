@@ -48,7 +48,7 @@
       padding: 0 20px;
       height: 60px;
       display: flex; align-items: center; justify-content: space-between;
-      position: sticky; top: 0; z-index: 900;
+      position: sticky; top: 0; z-index: 1060;
     }
     .brand {
       font-weight: 800; font-size: 1rem; color: var(--text);
@@ -1450,7 +1450,19 @@ function addToSacola() {
 function removeItem(i) { sacola.splice(i, 1); renderBag(); }
 function clearSacola()  { sacola = []; renderBag(); closeBag(); }
 
+function _saveSacola() {
+  try { localStorage.setItem('jm_sacola', JSON.stringify(sacola)); } catch (_) {}
+}
+
+function _loadSacola() {
+  try {
+    const saved = JSON.parse(localStorage.getItem('jm_sacola') || '[]');
+    if (Array.isArray(saved) && saved.length) { sacola = saved; renderBag(); }
+  } catch (_) {}
+}
+
 function renderBag() {
+  _saveSacola();   // persiste a sacola a cada mudança
   const badge  = document.getElementById('bag-badge');
   const items  = document.getElementById('bp-items');
   const footer = document.getElementById('bp-footer');
@@ -1654,7 +1666,13 @@ function esc(s) {
 }
 
 loadCategories();
+_loadSacola();   // restaura sacola salva no navegador
 setStep(1);
+
+// Salva dados do formulário enquanto o cliente digita
+document.addEventListener('input', e => {
+  if (e.target.closest('#step2')) _saveToStorage();
+});
 </script>
 </body>
 </html>
