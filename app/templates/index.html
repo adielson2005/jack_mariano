@@ -1076,8 +1076,36 @@ function goStep2() {
   const fDate = document.getElementById('f-date');
   fDate.min = minDate;
   if (!fDate.value || fDate.value < minDate) fDate.value = minDate;
+  _fillFromStorage();
   renderSummary();
   setStep(2);
+}
+
+/* ── Cadastro automático do cliente (localStorage) ───────────────────────── */
+function _fillFromStorage() {
+  try {
+    const saved = JSON.parse(localStorage.getItem('jm_customer') || 'null');
+    if (!saved) return;
+    const fields = { 'f-name': saved.name, 'f-phone': saved.phone,
+                     'f-cpf': saved.cpf,   'f-birth': saved.birth };
+    let filled = false;
+    Object.entries(fields).forEach(([id, val]) => {
+      const el = document.getElementById(id);
+      if (el && val && !el.value) { el.value = val; filled = true; }
+    });
+    if (filled) toast('✓ Seus dados foram preenchidos automaticamente', 'info');
+  } catch (_) {}
+}
+
+function _saveToStorage() {
+  try {
+    localStorage.setItem('jm_customer', JSON.stringify({
+      name:  document.getElementById('f-name').value.trim(),
+      phone: document.getElementById('f-phone').value.trim(),
+      cpf:   document.getElementById('f-cpf').value.trim(),
+      birth: document.getElementById('f-birth').value,
+    }));
+  } catch (_) {}
 }
 
 /* ── Tipo de entrega ─────────────────────────────────────────────────────── */
@@ -1542,6 +1570,7 @@ async function submitOrder() {
     });
     const data = await res.json();
     if (res.ok) {
+      _saveToStorage();   // salva dados do cliente para próxima visita
       document.getElementById('order-id-display').textContent = '#' + data.order_id;
       document.getElementById('wa-client-btn').href = data.whatsapp_link;
       sacola = []; renderBag(); setStep(3);
