@@ -1492,7 +1492,7 @@ function addToSacola() {
 }
 
 function removeItem(i) { sacola.splice(i, 1); renderBag(); }
-function clearSacola()  { sacola = []; renderBag(); closeBag(); }
+function clearSacola()  { sacola = []; renderBag(); closeBag(); setStep(1); }
 
 function _saveSacola() {
   try { localStorage.setItem('jm_sacola', JSON.stringify(sacola)); } catch (_) {}
