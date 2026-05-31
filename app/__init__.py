@@ -64,7 +64,7 @@ def _migrate_db():
 
 # Versão do catálogo — suba este número sempre que alterar produtos/opções.
 # O sistema vai apagar e recriar o catálogo automaticamente no próximo deploy.
-_CATALOG_VERSION = "v3"
+_CATALOG_VERSION = "v4"
 
 
 def _seed_data():
@@ -150,24 +150,21 @@ def _seed_data():
                     "Chocolate",
                     "Red Velvet",
                 ],
-                "Recheio Tradicional — 1º Sabor (a partir de R$90)": [
-                    "Sem recheio tradicional",
+                "Recheio Tradicional — 1º Sabor": [
                     *_TRAD,
                 ],
                 "Recheio Tradicional — 2º Sabor": [
                     "Sem segundo sabor",
                     *_TRAD,
                 ],
-                "Recheio Especial — 1º Sabor (a partir de R$100)": [
-                    "Sem recheio especial",
+                "Recheio Especial — 1º Sabor": [
                     *_ESP,
                 ],
                 "Recheio Especial — 2º Sabor": [
                     "Sem segundo sabor",
                     *_ESP,
                 ],
-                "Recheio Super Especial — 1º Sabor (a partir de R$130)": [
-                    "Sem recheio super especial",
+                "Recheio Super Especial — 1º Sabor": [
                     *_SUPER,
                 ],
                 "Recheio Super Especial — 2º Sabor": [

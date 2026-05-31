@@ -708,6 +708,10 @@
       display: flex; align-items: flex-start; gap: 8px;
     }
     .delivery-notice i { font-size: .95rem; flex-shrink: 0; margin-top: 1px; color: #f59e0b; }
+
+    /* ── Recheio groups ──────────────────────────────────── */
+    /* Grupos de recheio sempre ocupam largura total */
+    .opt-group[data-recheio-type] { grid-column: 1 / -1; }
   </style>
 </head>
 <body>
@@ -1170,6 +1174,9 @@ function selectCat(slug, rowEl) {
       </button>
     </div>`;
 
+  // Injeta seletor de tipo de recheio para bolo
+  if (slug === 'bolo') _injectRecheioTypePicker(slug);
+
   wrap.classList.add('open');
   setTimeout(() => rowEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 60);
 }
@@ -1207,13 +1214,27 @@ function renderOptGroup(group, data) {
   const items = data.items.filter(i => i.active);
   if (!items.length) return '';
 
+  // Detecta se é grupo de recheio condicional (bolo)
+  let recheioType = null;
+  if (group.startsWith('Recheio Super'))      recheioType = 'super';
+  else if (group.startsWith('Recheio Especial')) recheioType = 'especial';
+  else if (group.startsWith('Recheio Tradicional')) recheioType = 'tradicional';
+  const recheioAttr = recheioType ? ` data-recheio-type="${recheioType}"` : '';
+
+  // Para grupos de recheio, simplifica o label (retira o prefixo "Recheio X — ")
+  let displayGroup = group;
+  if (recheioType) {
+    const dash = group.indexOf('—');
+    if (dash !== -1) displayGroup = group.slice(dash + 2).trim();
+  }
+
   const icon     = groupIcon(group);
   const isOpt    = isSkipValue(items[0].name);
   // Pills quando há ≤ 4 opções e nenhuma é texto longo
   const usePills = items.length <= 4 && items.every(i => i.name.length <= 35);
 
   const label = `<label class="opt-label">
-    <span class="og-icon">${icon}</span> ${group}${isOpt
+    <span class="og-icon">${icon}</span> ${esc(displayGroup)}${isOpt
       ? ' <span class="opt-badge">opcional</span>' : ''}
   </label>`;
 
@@ -1230,7 +1251,7 @@ function renderOptGroup(group, data) {
       `<option value="${esc(i.name)}"${idx === 0 ? ' selected' : ''}>${i.name}</option>`
     ).join('');
 
-    return `<div class="opt-group" data-pills="1">
+    return `<div class="opt-group" data-pills="1"${recheioAttr}>
       ${label}
       <div class="opt-pills">${pills}</div>
       <select class="opt-sel" data-group="${esc(group)}" style="display:none">${opts}</select>
@@ -1242,7 +1263,7 @@ function renderOptGroup(group, data) {
     `<option value="${esc(i.name)}"${idx === 0 && isOpt ? ' selected' : ''}>${i.name}</option>`
   ).join('');
 
-  return `<div class="opt-group">
+  return `<div class="opt-group"${recheioAttr}>
     ${label}
     <select class="opt-sel" data-group="${esc(group)}"
       onchange="this.classList.remove('is-invalid');this.classList.toggle('sel-filled',!!this.value)">
@@ -1260,6 +1281,80 @@ function selectPill(btn) {
   grp.querySelector('.opt-pills').classList.remove('is-invalid');
 }
 
+/* ── Seletor de tipo de recheio (bolo) ──────────────────────────────────── */
+
+function _injectRecheioTypePicker(slug) {
+  const wrap = document.getElementById('ow-' + slug);
+  if (!wrap) return;
+
+  // Esconde todos os grupos de recheio e reseta seus selects
+  wrap.querySelectorAll('.opt-group[data-recheio-type]').forEach(g => {
+    g.style.display = 'none';
+    g.querySelectorAll('select.opt-sel').forEach(s => { s.selectedIndex = 0; s.value = ''; });
+  });
+
+  // Ponto de inserção: antes do primeiro grupo de recheio
+  const firstRecheio = wrap.querySelector('.opt-group[data-recheio-type]');
+  if (!firstRecheio) return;
+
+  const picker = document.createElement('div');
+  picker.className = 'opt-group recheio-type-picker';
+  picker.setAttribute('data-pills', '1');
+  picker.style.gridColumn = '1 / -1';
+  picker.innerHTML = `
+    <label class="opt-label">
+      <span class="og-icon">🎂</span> Recheio
+    </label>
+    <div class="opt-pills" id="recheio-type-pills">
+      <button type="button" class="opt-pill sel-skip sel"
+              onclick="selectRecheioType(this,'none','${slug}')">
+        Sem recheio
+      </button>
+      <button type="button" class="opt-pill"
+              onclick="selectRecheioType(this,'tradicional','${slug}')">
+        Tradicional
+        <small style="display:block;font-size:.63rem;opacity:.75;font-weight:500;margin-top:1px">a partir de R$90</small>
+      </button>
+      <button type="button" class="opt-pill"
+              onclick="selectRecheioType(this,'especial','${slug}')">
+        Especial
+        <small style="display:block;font-size:.63rem;opacity:.75;font-weight:500;margin-top:1px">a partir de R$100</small>
+      </button>
+      <button type="button" class="opt-pill"
+              onclick="selectRecheioType(this,'super','${slug}')">
+        Super Especial
+        <small style="display:block;font-size:.63rem;opacity:.75;font-weight:500;margin-top:1px">a partir de R$130</small>
+      </button>
+    </div>`;
+
+  firstRecheio.insertAdjacentElement('beforebegin', picker);
+}
+
+function selectRecheioType(btn, type, slug) {
+  const wrap = document.getElementById('ow-' + slug);
+  if (!wrap) return;
+
+  // Atualiza pills do seletor de tipo
+  btn.closest('.opt-pills').querySelectorAll('.opt-pill').forEach(p => {
+    p.classList.remove('sel', 'sel-skip');
+  });
+  btn.classList.add(type === 'none' ? 'sel-skip' : 'sel');
+
+  // Mostra apenas os grupos do tipo escolhido, esconde o resto
+  wrap.querySelectorAll('.opt-group[data-recheio-type]').forEach(g => {
+    const show = type !== 'none' && g.dataset.recheioType === type;
+    g.style.display = show ? '' : 'none';
+    if (!show) {
+      g.querySelectorAll('select.opt-sel').forEach(s => {
+        s.selectedIndex = 0; s.value = '';
+      });
+      g.classList.remove('is-invalid');
+      const pills = g.querySelector('.opt-pills');
+      if (pills) pills.classList.remove('is-invalid');
+    }
+  });
+}
+
 /* ── Sacola ─────────────────────────────────────────────────────────────── */
 
 function addToSacola() {
@@ -1267,8 +1362,11 @@ function addToSacola() {
   const selections = {};
   let valid = true;
   document.querySelectorAll('#ow-' + selectedCat.slug + ' .opt-sel').forEach(sel => {
+    const grp = sel.closest('.opt-group');
+    // Ignora grupos de recheio que estão ocultos (tipo não selecionado)
+    if (grp && grp.dataset.recheioType && grp.style.display === 'none') return;
+
     if (!sel.value) {
-      const grp = sel.closest('.opt-group');
       if (grp && grp.dataset.pills) {
         grp.querySelector('.opt-pills').classList.add('is-invalid');
       } else {
@@ -1277,7 +1375,7 @@ function addToSacola() {
       valid = false;
     } else {
       sel.classList.remove('is-invalid');
-      sel.closest('.opt-group')?.querySelector('.opt-pills')?.classList.remove('is-invalid');
+      grp?.querySelector('.opt-pills')?.classList.remove('is-invalid');
       if (!isSkipValue(sel.value)) {
         selections[sel.dataset.group] = sel.value;
       }
