@@ -64,7 +64,7 @@ def _migrate_db():
 
 # Versão do catálogo — suba este número sempre que alterar produtos/opções.
 # O sistema vai apagar e recriar o catálogo automaticamente no próximo deploy.
-_CATALOG_VERSION = "v5"
+_CATALOG_VERSION = "v6"
 
 
 def _seed_data():
@@ -124,6 +124,32 @@ def _seed_data():
         "Pistache",
         "Pistache com Geléia de Morango",
         "Creme com Castanha do Pará",
+    ]
+
+    _FRITOS = [
+        "Coxinha de Frango",
+        "Risole de Carne",
+        "Croquete de Milho",
+        "Maravilha (Presunto, Queijo e Orégano)",
+        "Croquete de Carne Seca",
+        "Bolinha de Queijo",
+        "Pastel de Milho e Requeijão",
+        "Delícia de Calabresa",
+        "Enroladinho de Salsicha",
+        "Kibe",
+    ]
+
+    _ASSADOS = [
+        "Esfira de Carne",
+        "Esfira de Frango",
+        "Enroladinho de Salsicha",
+        "Delícia de Calabresa",
+        "Delícia de Presunto e Queijo",
+        "Delícia de Creme de Milho",
+        "Delícia de Mortadela Defumada",
+        "Delícia de 4 Queijos",
+        "Enroladinho de Queijo",
+        "Mini Pizza (Queijo, Presunto, Frango e Calabresa)",
     ]
 
     categories = [
@@ -294,36 +320,35 @@ def _seed_data():
         {
             "slug": "salgados",
             "name": "Salgados",
-            "description": "Salgados artesanais fritos ou assados, empadinhas e mini pastéis.",
+            "description": "Salgados artesanais fritos, assados e finos — até 5 sabores de fritos.",
             "icon": "🥟",
             "price_from": None,
             "catalog_version": _CATALOG_VERSION,
             "options": {
-                "Salgados Fritos": [
-                    "Nenhum",
-                    "Coxinha de Frango",
-                    "Risole de Carne",
-                    "Croquete de Milho",
-                    "Maravilha (Presunto, Queijo e Orégano)",
-                    "Croquete de Carne Seca",
-                    "Bolinha de Queijo",
-                    "Pastel de Milho e Requeijão",
-                    "Delícia de Calabresa",
-                    "Enroladinho de Salsicha",
-                    "Kibe",
+                # ── Fritos em cima (saem mais) — até 5 sabores ────────────────
+                "Salgados Fritos — 1º Sabor": [
+                    *_FRITOS,
                 ],
+                "Salgados Fritos — 2º Sabor": [
+                    "Nenhum",
+                    *_FRITOS,
+                ],
+                "Salgados Fritos — 3º Sabor": [
+                    "Nenhum",
+                    *_FRITOS,
+                ],
+                "Salgados Fritos — 4º Sabor": [
+                    "Nenhum",
+                    *_FRITOS,
+                ],
+                "Salgados Fritos — 5º Sabor": [
+                    "Nenhum",
+                    *_FRITOS,
+                ],
+                # ── Assados ───────────────────────────────────────────────────
                 "Salgados Assados": [
                     "Nenhum",
-                    "Esfira de Carne",
-                    "Esfira de Frango",
-                    "Enroladinho de Salsicha",
-                    "Delícia de Calabresa",
-                    "Delícia de Presunto e Queijo",
-                    "Delícia de Creme de Milho",
-                    "Delícia de Mortadela Defumada",
-                    "Delícia de 4 Queijos",
-                    "Enroladinho de Queijo",
-                    "Mini Pizza (Queijo, Presunto, Frango e Calabresa)",
+                    *_ASSADOS,
                 ],
                 "Empadinhas": [
                     "Nenhum",
@@ -335,6 +360,13 @@ def _seed_data():
                     "Presunto e Queijo",
                     "Queijo",
                     "Carne",
+                ],
+                # ── Finos (canapés, tortelete, basquete) ─────────────────────
+                "Salgados Finos": [
+                    "Nenhum",
+                    "Canapés",
+                    "Tortelete",
+                    "Basquete",
                 ],
             },
         },
@@ -414,31 +446,28 @@ def _seed_data():
                     "Papel de Arroz",
                 ],
                 # ── Salgados ──────────────────────────────────────────────────
-                "Salgados Fritos": [
+                "Salgados Fritos — 1º Sabor": [
+                    *_FRITOS,
+                ],
+                "Salgados Fritos — 2º Sabor": [
                     "Nenhum",
-                    "Coxinha de Frango",
-                    "Risole de Carne",
-                    "Croquete de Milho",
-                    "Maravilha (Presunto, Queijo e Orégano)",
-                    "Croquete de Carne Seca",
-                    "Bolinha de Queijo",
-                    "Pastel de Milho e Requeijão",
-                    "Delícia de Calabresa",
-                    "Enroladinho de Salsicha",
-                    "Kibe",
+                    *_FRITOS,
+                ],
+                "Salgados Fritos — 3º Sabor": [
+                    "Nenhum",
+                    *_FRITOS,
+                ],
+                "Salgados Fritos — 4º Sabor": [
+                    "Nenhum",
+                    *_FRITOS,
+                ],
+                "Salgados Fritos — 5º Sabor": [
+                    "Nenhum",
+                    *_FRITOS,
                 ],
                 "Salgados Assados": [
                     "Nenhum",
-                    "Esfira de Carne",
-                    "Esfira de Frango",
-                    "Enroladinho de Salsicha",
-                    "Delícia de Calabresa",
-                    "Delícia de Presunto e Queijo",
-                    "Delícia de Creme de Milho",
-                    "Delícia de Mortadela Defumada",
-                    "Delícia de 4 Queijos",
-                    "Enroladinho de Queijo",
-                    "Mini Pizza (Queijo, Presunto, Frango e Calabresa)",
+                    *_ASSADOS,
                 ],
                 "Empadinhas": [
                     "Nenhum",
@@ -450,6 +479,12 @@ def _seed_data():
                     "Presunto e Queijo",
                     "Queijo",
                     "Carne",
+                ],
+                "Salgados Finos": [
+                    "Nenhum",
+                    "Canapés",
+                    "Tortelete",
+                    "Basquete",
                 ],
                 # ── Doces ─────────────────────────────────────────────────────
                 "Brigadeiro Gourmet": [

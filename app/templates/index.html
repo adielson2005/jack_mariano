@@ -1269,6 +1269,7 @@ function groupIcon(name) {
   if (n.includes('assado'))                      return '🥐';
   if (n.includes('empadinha'))                   return '🥧';
   if (n.includes('pastel'))                      return '🫔';
+  if (n.includes('fino'))                        return '🫙';
   if (n.includes('colorido') || n.includes('carimbado')) return '🎨';
   if (n.includes('combo') || n.includes('escolha')) return '🎁';
   if (n.includes('kit'))                         return '🎊';
@@ -1291,8 +1292,10 @@ function renderOptGroup(group, data) {
     : '';
 
   // Para grupos de recheio, simplifica o label (retira o prefixo "Recheio X — ")
+  // Simplifica label: "Salgados Fritos — 1º Sabor" → "1º Sabor"
+  // e "Recheio Tradicional — 1º Sabor" → "1º Sabor"
   let displayGroup = group;
-  if (recheioType) {
+  if (recheioType || group.startsWith('Salgados Fritos —')) {
     const dash = group.indexOf('—');
     if (dash !== -1) displayGroup = group.slice(dash + 2).trim();
   }
