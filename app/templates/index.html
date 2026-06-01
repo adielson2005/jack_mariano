@@ -149,21 +149,28 @@
       background: color-mix(in srgb, var(--accent, var(--pk)) 5%, #fff);
     }
 
-    /* Ícone: círculo suave com fundo pastel */
+    /* Ícone: círculo branco com ilustração Noto Emoji */
     .cat-icon-wrap { flex-shrink: 0; }
     .cat-icon-badge {
-      width: 50px; height: 50px;
+      width: 54px; height: 54px;
       border-radius: 50%;
-      background: color-mix(in srgb, var(--accent, var(--pk)) 12%, #fff);
-      border: 1.5px solid color-mix(in srgb, var(--accent, var(--pk)) 28%, transparent);
+      background: #fff;
+      border: 1.5px solid var(--border);
       display: flex; align-items: center; justify-content: center;
-      font-size: 1.55rem;
-      transition: background .18s, border-color .18s;
+      transition: border-color .18s, box-shadow .18s;
+      overflow: hidden;
     }
+    .cat-icon-badge img {
+      width: 34px; height: 34px;
+      object-fit: contain;
+      display: block;
+    }
+    /* fallback para emoji de texto */
+    .cat-icon-badge span { font-size: 1.55rem; line-height: 1; }
     .cat-row:hover .cat-icon-badge,
     .cat-row.active .cat-icon-badge {
-      background: color-mix(in srgb, var(--accent, var(--pk)) 18%, #fff);
-      border-color: color-mix(in srgb, var(--accent, var(--pk)) 45%, transparent);
+      border-color: var(--accent, var(--pk));
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent, var(--pk)) 14%, transparent);
     }
 
     /* Text area */
@@ -531,7 +538,8 @@
       .step-sep  { width: 14px; }
       .hero-strip { padding: 16px 12px 14px; }
       .hero-strip h1 { font-size: 1.18rem; }
-      .cat-icon-badge { width: 42px; height: 42px; font-size: 1.3rem; }
+      .cat-icon-badge { width: 44px; height: 44px; }
+      .cat-icon-badge img { width: 28px; height: 28px; }
       .cat-row { padding: 10px 12px 10px 10px; gap: 11px; }
       .cat-text { padding: 10px 8px 10px 10px; }
       .cat-name { font-size: .82rem; }
@@ -566,7 +574,8 @@
       .hero-strip { padding: 36px 28px 28px; max-width: 700px; }
       .hero-strip h1 { font-size: 1.7rem; }
       .cat-list { gap: 10px; }
-      .cat-icon-badge { width: 54px; height: 54px; font-size: 1.7rem; }
+      .cat-icon-badge { width: 58px; height: 58px; }
+      .cat-icon-badge img { width: 38px; height: 38px; }
       .cat-text { padding: 16px 14px 16px 18px; }
       .cat-name { font-size: 1rem; }
       .cat-desc { font-size: .8rem; }
@@ -587,7 +596,8 @@
       .hero-strip h1 { font-size: 1.9rem; }
       .hero-strip p { font-size: .92rem; }
       .cat-list { gap: 12px; margin-bottom: 28px; }
-      .cat-icon-badge { width: 56px; height: 56px; font-size: 1.85rem; }
+      .cat-icon-badge { width: 60px; height: 60px; }
+      .cat-icon-badge img { width: 40px; height: 40px; }
       .cat-text { padding: 18px 16px 18px 20px; }
       .cat-name { font-size: 1.02rem; }
       .cat-desc { font-size: .82rem; }
@@ -1141,7 +1151,21 @@ async function loadCategories() {
 
   list.innerHTML = '';
 
+  // Ilustrações Noto Emoji (Google) via Iconify CDN — licença Apache 2.0
+  const CAT_IMGS = {
+    'bolo':      'https://api.iconify.design/noto/birthday-cake.svg',
+    'doces':     'https://api.iconify.design/noto/lollipop.svg',
+    'salgados':  'https://api.iconify.design/noto/dumpling.svg',
+    'combos':    'https://api.iconify.design/noto/bento-box.svg',
+    'kit-festa': 'https://api.iconify.design/noto/party-popper.svg',
+  };
+
   categories.forEach(c => {
+    const imgUrl  = CAT_IMGS[c.slug];
+    const iconHtml = imgUrl
+      ? `<img src="${imgUrl}" width="34" height="34" alt="${esc(c.name)}" loading="lazy" draggable="false">`
+      : `<span>${esc(c.icon)}</span>`;
+
     // Category row
     const row = document.createElement('div');
     row.className = 'cat-row';
@@ -1149,7 +1173,7 @@ async function loadCategories() {
     row.dataset.slug = c.slug;
     row.innerHTML = `
       <div class="cat-icon-wrap">
-        <div class="cat-icon-badge">${esc(c.icon)}</div>
+        <div class="cat-icon-badge">${iconHtml}</div>
       </div>
       <div class="cat-text">
         <div class="cat-name">${esc(c.name)}</div>
