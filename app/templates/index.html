@@ -1240,6 +1240,8 @@ function selectCat(slug, rowEl) {
 
   // Injeta seletor de tipo de recheio para bolo
   if (slug === 'bolo') _injectRecheioTypePicker(slug);
+  // Salgados: seletor de tipo (Fritos | Assados | Finos) sempre em cima
+  if (slug === 'salgados') _injectSalgadoTypePicker(slug);
   // Kit Festa: opções aparecem só após escolher o kit
   if (slug === 'kit-festa') _setupKitFesta(slug);
 
@@ -1281,9 +1283,9 @@ function renderOptGroup(group, data) {
   const items = data.items.filter(i => i.active);
   if (!items.length) return '';
 
-  // Detecta se é grupo de recheio condicional (bolo)
+  // Detecta se é grupo de recheio condicional (bolo / kit-festa)
   let recheioType = null;
-  if (group.startsWith('Recheio Super'))      recheioType = 'super';
+  if (group.startsWith('Recheio Super'))         recheioType = 'super';
   else if (group.startsWith('Recheio Especial')) recheioType = 'especial';
   else if (group.startsWith('Recheio Tradicional')) recheioType = 'tradicional';
   const is2nd       = recheioType && group.includes('2º Sabor');
@@ -1291,9 +1293,16 @@ function renderOptGroup(group, data) {
     ? ` data-recheio-type="${recheioType}"${is2nd ? ' data-recheio-2nd="1"' : ''}`
     : '';
 
-  // Para grupos de recheio, simplifica o label (retira o prefixo "Recheio X — ")
-  // Simplifica label: "Salgados Fritos — 1º Sabor" → "1º Sabor"
-  // e "Recheio Tradicional — 1º Sabor" → "1º Sabor"
+  // Detecta tipo de salgado (salgados / kit-festa)
+  let salgadoType = null;
+  if      (group.startsWith('Salgados Fritos'))                          salgadoType = 'fritos';
+  else if (group === 'Salgados Assados' || group === 'Empadinhas' ||
+           group === 'Mini Pastel de Vento')                             salgadoType = 'assados';
+  else if (group === 'Salgados Finos')                                   salgadoType = 'finos';
+  const salgadoAttr = salgadoType ? ` data-salgado-type="${salgadoType}"` : '';
+
+  // Simplifica labels com "—": "Salgados Fritos — 1º Sabor" → "1º Sabor"
+  //                           "Recheio Tradicional — 1º Sabor" → "1º Sabor"
   let displayGroup = group;
   if (recheioType || group.startsWith('Salgados Fritos —')) {
     const dash = group.indexOf('—');
@@ -1323,7 +1332,7 @@ function renderOptGroup(group, data) {
       `<option value="${esc(i.name)}"${idx === 0 ? ' selected' : ''}>${i.name}</option>`
     ).join('');
 
-    return `<div class="opt-group" data-pills="1"${recheioAttr}>
+    return `<div class="opt-group" data-pills="1"${recheioAttr}${salgadoAttr}>
       ${label}
       <div class="opt-pills">${pills}</div>
       <select class="opt-sel" data-group="${esc(group)}" style="display:none">${opts}</select>
@@ -1335,7 +1344,7 @@ function renderOptGroup(group, data) {
     `<option value="${esc(i.name)}"${idx === 0 && isOpt ? ' selected' : ''}>${i.name}</option>`
   ).join('');
 
-  return `<div class="opt-group"${recheioAttr}>
+  return `<div class="opt-group"${recheioAttr}${salgadoAttr}>
     ${label}
     <select class="opt-sel" data-group="${esc(group)}"
       onchange="this.classList.remove('is-invalid');this.classList.toggle('sel-filled',!!this.value)">
@@ -1397,6 +1406,70 @@ function _setupKitFesta(slug) {
       });
       wrap.querySelector('.btn-add-2nd-sabor')?.remove();
     }
+  });
+}
+
+/* ── Seletor de tipo de salgado ──────────────────────────────────────────── */
+
+function _injectSalgadoTypePicker(slug) {
+  const wrap = document.getElementById('ow-' + slug);
+  if (!wrap) return;
+
+  // Esconde todos os grupos tipados inicialmente
+  wrap.querySelectorAll('.opt-group[data-salgado-type]').forEach(g => {
+    g.style.display = 'none';
+    g.querySelectorAll('select.opt-sel').forEach(s => { s.selectedIndex = 0; });
+  });
+
+  const firstTyped = wrap.querySelector('.opt-group[data-salgado-type]');
+  if (!firstTyped) return;
+
+  const picker = document.createElement('div');
+  picker.className = 'opt-group salgado-type-picker';
+  picker.setAttribute('data-pills', '1');
+  picker.style.gridColumn = '1 / -1';
+  picker.innerHTML = `
+    <label class="opt-label">
+      <span class="og-icon">🥟</span> Tipo de Salgado
+    </label>
+    <div class="opt-pills">
+      <button type="button" class="opt-pill sel"
+              onclick="selectSalgadoType(this,'fritos','${slug}')">🍗 Fritos</button>
+      <button type="button" class="opt-pill"
+              onclick="selectSalgadoType(this,'assados','${slug}')">🥐 Assados</button>
+      <button type="button" class="opt-pill"
+              onclick="selectSalgadoType(this,'finos','${slug}')">🫙 Finos</button>
+    </div>`;
+
+  firstTyped.insertAdjacentElement('beforebegin', picker);
+
+  // Pré-seleciona Fritos (saem mais)
+  wrap.querySelectorAll('.opt-group[data-salgado-type="fritos"]').forEach(g => {
+    g.style.display = '';
+  });
+}
+
+function selectSalgadoType(btn, type, slug) {
+  const wrap = document.getElementById('ow-' + slug);
+  if (!wrap) return;
+
+  // Atualiza pills
+  btn.closest('.opt-pills').querySelectorAll('.opt-pill').forEach(p => {
+    p.classList.remove('sel', 'sel-skip');
+  });
+  btn.classList.add('sel');
+
+  // Esconde todos os grupos tipados e limpa erros
+  wrap.querySelectorAll('.opt-group[data-salgado-type]').forEach(g => {
+    g.style.display = 'none';
+    g.querySelectorAll('select.opt-sel').forEach(s => { s.selectedIndex = 0; });
+    g.classList.remove('is-invalid');
+    g.querySelector('.opt-pills')?.classList.remove('is-invalid');
+  });
+
+  // Mostra só o tipo escolhido
+  wrap.querySelectorAll(`.opt-group[data-salgado-type="${type}"]`).forEach(g => {
+    g.style.display = '';
   });
 }
 
@@ -1512,6 +1585,8 @@ function addToSacola() {
     const grp = sel.closest('.opt-group');
     // Ignora grupos de recheio que estão ocultos (tipo não selecionado)
     if (grp && grp.dataset.recheioType && grp.style.display === 'none') return;
+    // Ignora grupos de salgado que estão ocultos (tipo não selecionado)
+    if (grp && grp.dataset.salgadoType && grp.style.display === 'none') return;
     // Ignora grupos de kit ainda ocultos (kit não selecionado)
     if (grp && grp.dataset.kitDep && grp.style.display === 'none') return;
 
