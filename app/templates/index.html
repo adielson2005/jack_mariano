@@ -1226,26 +1226,26 @@ function isSkipValue(v) {
 
 function groupIcon(name) {
   const n = name.toLowerCase();
-  if (n.includes('quilo'))                               return '⚖️';
-  if (n.includes('massa'))                               return '🌾';
-  if (n.includes('recheio'))                             return '💫';
-  if (n.includes('decoraç'))                             return '🌸';
-  if (n.includes('topo'))                                return '🪄';
-  if (n.includes('brigadeiro'))                          return '🍫';
-  if (n.includes('copinho'))                             return '🥛';
-  if (n.includes('brownie'))                             return '🍩';
-  if (n.includes('trufa'))                               return '💎';
-  if (n.includes('pipoca'))                              return '🎭';
-  if (n.includes('doce'))                                return '🍯';
-  if (n.includes('frito'))                               return '🔥';
-  if (n.includes('assado'))                              return '🫓';
-  if (n.includes('empadinha'))                           return '🥮';
-  if (n.includes('pastel'))                              return '🥙';
-  if (n.includes('fino'))                                return '🌟';
-  if (n.includes('colorido') || n.includes('carimbado')) return '🖌️';
-  if (n.includes('combo') || n.includes('escolha'))      return '🛍️';
-  if (n.includes('kit'))                                 return '🎀';
-  if (n.includes('acréscimo'))                           return '✚';
+  if (n.includes('quilo'))                               return '⚖️';  // balança = peso
+  if (n.includes('massa'))                               return '🍞';  // pão = massa/massa de bolo
+  if (n.includes('recheio'))                             return '🫙';  // pote = recheio guardado
+  if (n.includes('decoraç'))                             return '✨';  // brilho = decoração
+  if (n.includes('topo'))                                return '⭐';  // estrela = topo do bolo
+  if (n.includes('kit'))                                 return '🎈';  // balão = festa/kit
+  if (n.includes('brigadeiro'))                          return '🍫';  // chocolate = brigadeiro
+  if (n.includes('copinho'))                             return '🥤';  // copinho com canudo
+  if (n.includes('brownie'))                             return '🍪';  // biscoito = assado/brownie
+  if (n.includes('trufa'))                               return '🔮';  // bola = trufa redonda
+  if (n.includes('pipoca'))                              return '🍿';  // pipoca
+  if (n.includes('doce'))                                return '👑';  // coroa = doce fino/nobre
+  if (n.includes('frito'))                               return '🔥';  // fogo = frito
+  if (n.includes('assado'))                              return '🫓';  // pão chapado = assado
+  if (n.includes('empadinha'))                           return '🥧';  // torta = empadinha
+  if (n.includes('pastel'))                              return '🥐';  // croissant = massa folhada
+  if (n.includes('fino'))                                return '🌟';  // estrela brilhante = fino/especial
+  if (n.includes('colorido') || n.includes('carimbado')) return '🎨';  // paleta = cor/arte
+  if (n.includes('combo') || n.includes('escolha'))      return '🎁';  // presente = combo/pacote
+  if (n.includes('acréscimo'))                           return '➕';  // mais = acréscimo
   return '📋';
 }
 

@@ -64,7 +64,7 @@ def _migrate_db():
 
 # Versão do catálogo — suba este número sempre que alterar produtos/opções.
 # O sistema vai apagar e recriar o catálogo automaticamente no próximo deploy.
-_CATALOG_VERSION = "v9"
+_CATALOG_VERSION = "v10"
 
 
 def _seed_data():
@@ -157,7 +157,7 @@ def _seed_data():
             "slug": "bolo",
             "name": "Bolos",
             "description": "Bolos personalizados com massa, recheio e decoração à sua escolha.",
-            "icon": "🍰",
+            "icon": "🧁",
             "price_from": None,
             "catalog_version": _CATALOG_VERSION,
             "options": {
@@ -221,7 +221,7 @@ def _seed_data():
             "slug": "doces",
             "name": "Doces",
             "description": "Doces finos artesanais, brigadeiros gourmet, trufas e muito mais.",
-            "icon": "🍭",
+            "icon": "🍫",
             "price_from": None,
             "catalog_version": _CATALOG_VERSION,
             "options": {
@@ -321,7 +321,7 @@ def _seed_data():
             "slug": "salgados",
             "name": "Salgados",
             "description": "Salgados artesanais fritos, assados e finos — até 5 sabores de fritos.",
-            "icon": "🧆",
+            "icon": "🫔",
             "price_from": None,
             "catalog_version": _CATALOG_VERSION,
             "options": {
@@ -374,7 +374,7 @@ def _seed_data():
             "slug": "combos",
             "name": "Combos Especiais",
             "description": "Combos prontos para celebrar com praticidade e sabor.",
-            "icon": "🛍️",
+            "icon": "🎁",
             "price_from": None,
             "catalog_version": _CATALOG_VERSION,
             "options": {
@@ -389,7 +389,7 @@ def _seed_data():
             "slug": "kit-festa",
             "name": "Kits Festa",
             "description": "Kit completo: bolo + doces + salgados + bebida para sua festa.",
-            "icon": "🎀",
+            "icon": "🎈",
             "price_from": None,
             "catalog_version": _CATALOG_VERSION,
             "options": {
