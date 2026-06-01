@@ -64,7 +64,7 @@ def _migrate_db():
 
 # Versão do catálogo — suba este número sempre que alterar produtos/opções.
 # O sistema vai apagar e recriar o catálogo automaticamente no próximo deploy.
-_CATALOG_VERSION = "v7"
+_CATALOG_VERSION = "v8"
 
 
 def _seed_data():
@@ -345,7 +345,13 @@ def _seed_data():
                     "Nenhum",
                     *_FRITOS,
                 ],
-                # ── Assados ───────────────────────────────────────────────────
+                # ── Assados (pastel em primeiro) ──────────────────────────────
+                "Mini Pastel de Vento": [
+                    "Nenhum",
+                    "Presunto e Queijo",
+                    "Queijo",
+                    "Carne",
+                ],
                 "Salgados Assados": [
                     "Nenhum",
                     *_ASSADOS,
@@ -355,13 +361,7 @@ def _seed_data():
                     "Frango",
                     "Palmito",
                 ],
-                "Mini Pastel de Vento": [
-                    "Nenhum",
-                    "Presunto e Queijo",
-                    "Queijo",
-                    "Carne",
-                ],
-                # ── Finos (canapés, tortelete, basquete) ─────────────────────
+                # ── Finos (canapés, tortelete, barquete) ──────────────────────
                 "Salgados Finos": [
                     "Nenhum",
                     "Canapés",
@@ -465,6 +465,12 @@ def _seed_data():
                     "Nenhum",
                     *_FRITOS,
                 ],
+                "Mini Pastel de Vento": [
+                    "Nenhum",
+                    "Presunto e Queijo",
+                    "Queijo",
+                    "Carne",
+                ],
                 "Salgados Assados": [
                     "Nenhum",
                     *_ASSADOS,
@@ -473,12 +479,6 @@ def _seed_data():
                     "Nenhum",
                     "Frango",
                     "Palmito",
-                ],
-                "Mini Pastel de Vento": [
-                    "Nenhum",
-                    "Presunto e Queijo",
-                    "Queijo",
-                    "Carne",
                 ],
                 "Salgados Finos": [
                     "Nenhum",
