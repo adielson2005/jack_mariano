@@ -121,17 +121,17 @@
     }
 
     /* ── Category list ───────────────────────────────────── */
-    .cat-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 32px; }
+    .cat-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 28px; }
 
     .cat-row {
       background: var(--surface);
       border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 0;
-      display: flex; align-items: stretch; gap: 0;
+      border-left: 3px solid transparent;
+      border-radius: 10px;
+      padding: 12px 14px 12px 12px;
+      display: flex; align-items: center; gap: 14px;
       cursor: pointer;
-      overflow: hidden;
-      transition: border-color .18s, box-shadow .18s;
+      transition: border-left-color .18s, box-shadow .15s, background .15s;
       user-select: none;
     }
     .cat-row[data-slug="bolo"]      { --accent: var(--c-bolo); }
@@ -141,57 +141,50 @@
     .cat-row[data-slug="kit-festa"] { --accent: var(--c-kit-festa); }
 
     .cat-row:hover {
-      border-color: var(--accent, var(--pk));
-      box-shadow: 0 2px 12px rgba(0,0,0,.07);
+      border-left-color: var(--accent, var(--pk));
+      background: color-mix(in srgb, var(--accent, var(--pk)) 4%, #fff);
     }
     .cat-row.active {
-      border-color: var(--accent, var(--pk));
-      box-shadow: 0 2px 12px rgba(0,0,0,.07);
+      border-left-color: var(--accent, var(--pk));
+      background: color-mix(in srgb, var(--accent, var(--pk)) 5%, #fff);
     }
 
-    /* Icon badge — estilo ícone de app */
-    .cat-icon-wrap {
-      display: flex; align-items: center; justify-content: center;
-      padding: 14px 6px 14px 14px;
-      flex-shrink: 0;
-    }
+    /* Ícone: círculo suave com fundo pastel */
+    .cat-icon-wrap { flex-shrink: 0; }
     .cat-icon-badge {
-      width: 48px; height: 48px;
-      border-radius: 14px;
-      background: var(--accent, var(--pk));
+      width: 50px; height: 50px;
+      border-radius: 50%;
+      background: color-mix(in srgb, var(--accent, var(--pk)) 12%, #fff);
+      border: 1.5px solid color-mix(in srgb, var(--accent, var(--pk)) 28%, transparent);
       display: flex; align-items: center; justify-content: center;
       font-size: 1.55rem;
-      flex-shrink: 0;
-      transition: border-radius .2s;
+      transition: background .18s, border-color .18s;
     }
-    .cat-row.active .cat-icon-badge { border-radius: 10px; }
+    .cat-row:hover .cat-icon-badge,
+    .cat-row.active .cat-icon-badge {
+      background: color-mix(in srgb, var(--accent, var(--pk)) 18%, #fff);
+      border-color: color-mix(in srgb, var(--accent, var(--pk)) 45%, transparent);
+    }
 
     /* Text area */
-    .cat-text { flex: 1; min-width: 0; padding: 14px 10px 14px 12px; }
-    .cat-name {
-      font-weight: 700; font-size: .95rem; color: var(--text);
-      display: flex; align-items: center; gap: 8px;
-    }
-    .cat-tag { display: none; }
-    .cat-desc { font-size: .77rem; color: var(--muted); margin-top: 3px; font-weight: 500; line-height: 1.4; }
+    .cat-text { flex: 1; min-width: 0; }
+    .cat-name { font-weight: 700; font-size: .93rem; color: var(--text); }
+    .cat-tag  { display: none; }
+    .cat-desc { font-size: .75rem; color: var(--muted); margin-top: 2px; font-weight: 500; line-height: 1.4; }
 
-    /* Right arrow */
-    .cat-arrow-wrap { display: flex; align-items: center; padding: 0 14px 0 6px; flex-shrink: 0; }
+    /* Right arrow — simples, sem círculo */
+    .cat-arrow-wrap { flex-shrink: 0; }
     .cat-arrow {
-      width: 26px; height: 26px; border-radius: 50%;
+      width: 20px; height: 20px;
       display: flex; align-items: center; justify-content: center;
-      background: var(--bg);
-      color: var(--muted);
-      font-size: .75rem;
-      transition: transform .2s, background .18s, color .18s;
-      border: 1px solid var(--border);
+      color: var(--border);
+      font-size: .78rem;
+      transition: transform .2s, color .18s;
     }
     .cat-row:hover .cat-arrow { color: var(--accent, var(--pk)); }
     .cat-row.active .cat-arrow {
       transform: rotate(90deg);
-      background: var(--accent, var(--pk));
-      color: #fff;
-      border-color: transparent;
+      color: var(--accent, var(--pk));
     }
 
     /* ── Options slide-down ──────────────────────────────── */
@@ -538,7 +531,8 @@
       .step-sep  { width: 14px; }
       .hero-strip { padding: 16px 12px 14px; }
       .hero-strip h1 { font-size: 1.18rem; }
-      .cat-icon-badge { width: 40px; height: 40px; font-size: 1.3rem; border-radius: 11px; }
+      .cat-icon-badge { width: 42px; height: 42px; font-size: 1.3rem; }
+      .cat-row { padding: 10px 12px 10px 10px; gap: 11px; }
       .cat-text { padding: 10px 8px 10px 10px; }
       .cat-name { font-size: .82rem; }
       .cat-desc { font-size: .69rem; }
@@ -572,7 +566,7 @@
       .hero-strip { padding: 36px 28px 28px; max-width: 700px; }
       .hero-strip h1 { font-size: 1.7rem; }
       .cat-list { gap: 10px; }
-      .cat-icon-badge { width: 52px; height: 52px; font-size: 1.7rem; }
+      .cat-icon-badge { width: 54px; height: 54px; font-size: 1.7rem; }
       .cat-text { padding: 16px 14px 16px 18px; }
       .cat-name { font-size: 1rem; }
       .cat-desc { font-size: .8rem; }
@@ -593,7 +587,7 @@
       .hero-strip h1 { font-size: 1.9rem; }
       .hero-strip p { font-size: .92rem; }
       .cat-list { gap: 12px; margin-bottom: 28px; }
-      .cat-icon-badge { width: 54px; height: 54px; font-size: 1.8rem; }
+      .cat-icon-badge { width: 56px; height: 56px; font-size: 1.85rem; }
       .cat-text { padding: 18px 16px 18px 20px; }
       .cat-name { font-size: 1.02rem; }
       .cat-desc { font-size: .82rem; }
