@@ -1123,17 +1123,29 @@ function goStep2() {
   setStep(2);
 }
 
+/* ── CPF: máscara de formatação ──────────────────────────────────────────── */
+function maskCPF(v) {
+  v = v.replace(/\D/g, '').slice(0, 11);
+  if      (v.length > 9) return v.replace(/(\d{3})(\d{3})(\d{3})(\d{1,2})/, '$1.$2.$3-$4');
+  else if (v.length > 6) return v.replace(/(\d{3})(\d{3})(\d{1,3})/, '$1.$2.$3');
+  else if (v.length > 3) return v.replace(/(\d{3})(\d{1,3})/, '$1.$2');
+  return v;
+}
+
 /* ── Cadastro automático do cliente (localStorage) ───────────────────────── */
 function _fillFromStorage() {
   try {
     const saved = JSON.parse(localStorage.getItem('jm_customer') || 'null');
     if (!saved) return;
-    const fields = { 'f-name': saved.name, 'f-phone': saved.phone,
-                     'f-cpf': saved.cpf,   'f-birth': saved.birth };
+    const map = { 'f-name': saved.name, 'f-phone': saved.phone,
+                  'f-cpf':  saved.cpf,  'f-birth': saved.birth };
     let filled = false;
-    Object.entries(fields).forEach(([id, val]) => {
+    Object.entries(map).forEach(([id, val]) => {
       const el = document.getElementById(id);
-      if (el && val && !el.value) { el.value = val; filled = true; }
+      if (el && val && !el.value) {
+        el.value = (id === 'f-cpf') ? maskCPF(val) : val;
+        filled = true;
+      }
     });
     if (filled) toast('✓ Seus dados foram preenchidos automaticamente', 'info');
   } catch (_) {}
@@ -1141,12 +1153,38 @@ function _fillFromStorage() {
 
 function _saveToStorage() {
   try {
-    localStorage.setItem('jm_customer', JSON.stringify({
+    const data = {
       name:  document.getElementById('f-name').value.trim(),
       phone: document.getElementById('f-phone').value.trim(),
       cpf:   document.getElementById('f-cpf').value.trim(),
       birth: document.getElementById('f-birth').value,
-    }));
+    };
+    // Último cliente acessado (preenche na próxima visita)
+    localStorage.setItem('jm_customer', JSON.stringify(data));
+    // Também salva indexado por CPF para busca automática
+    const digits = data.cpf.replace(/\D/g, '');
+    if (digits.length === 11) {
+      const db = JSON.parse(localStorage.getItem('jm_customers') || '{}');
+      db[digits] = data;
+      localStorage.setItem('jm_customers', JSON.stringify(db));
+    }
+  } catch (_) {}
+}
+
+/* Busca dados pelo CPF digitado no campo ─────────────────────────────────── */
+function _lookupByCPF(digits) {
+  if (digits.length !== 11) return;
+  try {
+    const db = JSON.parse(localStorage.getItem('jm_customers') || '{}');
+    const found = db[digits];
+    if (!found) return;
+    let filled = false;
+    const map = { 'f-name': found.name, 'f-phone': found.phone, 'f-birth': found.birth };
+    Object.entries(map).forEach(([id, val]) => {
+      const el = document.getElementById(id);
+      if (el && val) { el.value = val; filled = true; }
+    });
+    if (filled) toast('✓ Dados encontrados pelo CPF!', 'success');
   } catch (_) {}
 }
 
@@ -1864,6 +1902,13 @@ function esc(s) {
 loadCategories();
 _loadSacola();   // restaura sacola salva no navegador
 setStep(1);
+
+// CPF: máscara em tempo real + busca ao completar 11 dígitos
+document.getElementById('f-cpf').addEventListener('input', function() {
+  const digits  = this.value.replace(/\D/g, '');
+  this.value    = maskCPF(this.value);
+  _lookupByCPF(digits.slice(0, 11));
+});
 
 // Salva dados do formulário enquanto o cliente digita
 document.addEventListener('input', e => {
