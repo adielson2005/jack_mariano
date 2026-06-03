@@ -5,11 +5,16 @@ SHOP_WHATSAPP = "5594984239253"
 SHOP_NAME     = "Jack Mariano Confeitaria"
 
 _EMOJI = {
-    "bolo":      "🎂",
-    "doces":     "🍬",
-    "salgados":  "🥟",
-    "combos":    "🎁",
-    "kit-festa": "🎊",
+    "bolo-tradicional":  "🎂",
+    "bolo-especial":     "🎂",
+    "bolo-super":        "🎂",
+    "doces":             "🍬",
+    "doces-finos":       "🍫",
+    "salgados-fritos":   "🍗",
+    "salgados-assados":  "🥧",
+    "salgados-finos":    "🥐",
+    "combos":            "🎁",
+    "kit-festa":         "🎊",
 }
 
 
