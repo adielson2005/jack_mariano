@@ -21,11 +21,16 @@
       --text:    #1c1916;    /* escuro quente */
       --muted:   #9a938d;    /* cinza quente */
 
-      --c-bolo:      #e5196b;
-      --c-doces:     #7c3aed;
-      --c-salgados:  #ea580c;
-      --c-combos:    #0284c7;
-      --c-kit-festa: #16a34a;
+      --c-bolo-tradicional:  #e5196b;
+      --c-bolo-especial:     #9333ea;
+      --c-bolo-super:        #d97706;
+      --c-doces:             #7c3aed;
+      --c-doces-finos:       #c026d3;
+      --c-salgados-fritos:   #ea580c;
+      --c-salgados-assados:  #b45309;
+      --c-salgados-finos:    #0d9488;
+      --c-combos:            #0284c7;
+      --c-kit-festa:         #16a34a;
 
       --shadow-sm: 0 1px 3px rgba(0,0,0,.05), 0 2px 8px rgba(0,0,0,.04);
       --shadow-md: 0 4px 16px rgba(0,0,0,.08), 0 1px 4px rgba(0,0,0,.05);
@@ -146,11 +151,16 @@
       transition: border-left-color .18s, box-shadow .15s, background .15s, transform .14s;
       user-select: none;
     }
-    .cat-row[data-slug="bolo"]      { --accent: var(--c-bolo); }
-    .cat-row[data-slug="doces"]     { --accent: var(--c-doces); }
-    .cat-row[data-slug="salgados"]  { --accent: var(--c-salgados); }
-    .cat-row[data-slug="combos"]    { --accent: var(--c-combos); }
-    .cat-row[data-slug="kit-festa"] { --accent: var(--c-kit-festa); }
+    .cat-row[data-slug="bolo-tradicional"]  { --accent: var(--c-bolo-tradicional); }
+    .cat-row[data-slug="bolo-especial"]     { --accent: var(--c-bolo-especial); }
+    .cat-row[data-slug="bolo-super"]        { --accent: var(--c-bolo-super); }
+    .cat-row[data-slug="doces"]             { --accent: var(--c-doces); }
+    .cat-row[data-slug="doces-finos"]       { --accent: var(--c-doces-finos); }
+    .cat-row[data-slug="salgados-fritos"]   { --accent: var(--c-salgados-fritos); }
+    .cat-row[data-slug="salgados-assados"]  { --accent: var(--c-salgados-assados); }
+    .cat-row[data-slug="salgados-finos"]    { --accent: var(--c-salgados-finos); }
+    .cat-row[data-slug="combos"]            { --accent: var(--c-combos); }
+    .cat-row[data-slug="kit-festa"]         { --accent: var(--c-kit-festa); }
 
     .cat-row:hover {
       border-left-color: var(--accent, var(--pk));
@@ -206,17 +216,22 @@
     }
 
     /* ── Options slide-down ──────────────────────────────── */
-    .opts-wrap[data-slug="bolo"]      { --accent: var(--c-bolo); }
-    .opts-wrap[data-slug="doces"]     { --accent: var(--c-doces); }
-    .opts-wrap[data-slug="salgados"]  { --accent: var(--c-salgados); }
-    .opts-wrap[data-slug="combos"]    { --accent: var(--c-combos); }
-    .opts-wrap[data-slug="kit-festa"] { --accent: var(--c-kit-festa); }
+    .opts-wrap[data-slug="bolo-tradicional"]  { --accent: var(--c-bolo-tradicional); }
+    .opts-wrap[data-slug="bolo-especial"]     { --accent: var(--c-bolo-especial); }
+    .opts-wrap[data-slug="bolo-super"]        { --accent: var(--c-bolo-super); }
+    .opts-wrap[data-slug="doces"]             { --accent: var(--c-doces); }
+    .opts-wrap[data-slug="doces-finos"]       { --accent: var(--c-doces-finos); }
+    .opts-wrap[data-slug="salgados-fritos"]   { --accent: var(--c-salgados-fritos); }
+    .opts-wrap[data-slug="salgados-assados"]  { --accent: var(--c-salgados-assados); }
+    .opts-wrap[data-slug="salgados-finos"]    { --accent: var(--c-salgados-finos); }
+    .opts-wrap[data-slug="combos"]            { --accent: var(--c-combos); }
+    .opts-wrap[data-slug="kit-festa"]         { --accent: var(--c-kit-festa); }
 
     .opts-wrap {
       max-height: 0; overflow: hidden;
       transition: max-height .38s cubic-bezier(.4,0,.2,1);
     }
-    .opts-wrap.open { max-height: 1600px; }
+    .opts-wrap.open { max-height: 3200px; }
 
     .opts-inner {
       background: var(--surface);
@@ -1220,11 +1235,16 @@ async function loadCategories() {
 
   // Ilustrações Noto Emoji (Google) via Iconify CDN — licença Apache 2.0
   const CAT_IMGS = {
-    'bolo':      'https://api.iconify.design/noto/birthday-cake.svg',
-    'doces':     'https://api.iconify.design/noto/doughnut.svg',
-    'salgados':  'https://api.iconify.design/noto/dumpling.svg',
-    'combos':    'https://api.iconify.design/noto/bento-box.svg',
-    'kit-festa': 'https://api.iconify.design/noto/party-popper.svg',
+    'bolo-tradicional':  'https://api.iconify.design/noto/birthday-cake.svg',
+    'bolo-especial':     'https://api.iconify.design/noto/shortcake.svg',
+    'bolo-super':        'https://api.iconify.design/noto/cupcake.svg',
+    'doces':             'https://api.iconify.design/noto/doughnut.svg',
+    'doces-finos':       'https://api.iconify.design/noto/chocolate-bar.svg',
+    'salgados-fritos':   'https://api.iconify.design/noto/dumpling.svg',
+    'salgados-assados':  'https://api.iconify.design/noto/flatbread.svg',
+    'salgados-finos':    'https://api.iconify.design/noto/croissant.svg',
+    'combos':            'https://api.iconify.design/noto/bento-box.svg',
+    'kit-festa':         'https://api.iconify.design/noto/party-popper.svg',
   };
 
   categories.forEach(c => {
@@ -1298,11 +1318,7 @@ function selectCat(slug, rowEl) {
       </button>
     </div>`;
 
-  // Injeta seletor de tipo de recheio para bolo
-  if (slug === 'bolo') _injectRecheioTypePicker(slug);
-  // Salgados: seletor de tipo (Fritos | Assados | Finos) sempre em cima
-  if (slug === 'salgados') _injectSalgadoTypePicker(slug);
-  // Kit Festa: opções aparecem só após escolher o kit
+  // Kit Festa: opções aparecem só após escolher o kit (inclui seletor de recheio interno)
   if (slug === 'kit-festa') _setupKitFesta(slug);
 
   wrap.classList.add('open');
@@ -1319,6 +1335,8 @@ function groupIcon(name) {
   const n = name.toLowerCase();
   if (n.includes('quilo'))                               return '⚖️';  // balança = peso
   if (n.includes('massa'))                               return '🍞';  // pão = massa/massa de bolo
+  if (n.includes('sabor'))                               return '🫙';  // pote = sabor/recheio
+  if (n === 'tipo')                                      return '🥟';  // bolinho = tipo de salgado fino
   if (n.includes('recheio'))                             return '🫙';  // pote = recheio guardado
   if (n.includes('decoraç'))                             return '✨';  // brilho = decoração
   if (n.includes('topo'))                                return '⭐';  // estrela = topo do bolo

@@ -64,7 +64,7 @@ def _migrate_db():
 
 # Versão do catálogo — suba este número sempre que alterar produtos/opções.
 # O sistema vai apagar e recriar o catálogo automaticamente no próximo deploy.
-_CATALOG_VERSION = "v10"
+_CATALOG_VERSION = "v11"
 
 
 def _seed_data():
@@ -153,74 +153,78 @@ def _seed_data():
     ]
 
     categories = [
+        # ── Bolos ────────────────────────────────────────────────────────────
         {
-            "slug": "bolo",
-            "name": "Bolos",
-            "description": "Bolos personalizados com massa, recheio e decoração à sua escolha.",
-            "icon": "🧁",
-            "price_from": None,
+            "slug": "bolo-tradicional",
+            "name": "Bolo Tradicional",
+            "description": "Bolo personalizado com recheios tradicionais, massa e decoração à escolha.",
+            "icon": "🎂",
+            "price_from": "a partir de R$90",
             "catalog_version": _CATALOG_VERSION,
             "options": {
-                "Quilo": [
-                    "500g",
-                    "700g",
-                    "1kg",
-                    "1,5kg",
-                    "2kg",
-                    "2,5kg",
-                    "3kg",
-                    "4kg",
-                ],
-                "Massa": [
-                    "Branca (Baunilha)",
-                    "Chocolate",
-                    "Red Velvet",
-                ],
-                "Recheio Tradicional — 1º Sabor": [
-                    *_TRAD,
-                ],
-                "Recheio Tradicional — 2º Sabor": [
-                    "Sem segundo sabor",
-                    *_TRAD,
-                ],
-                "Recheio Especial — 1º Sabor": [
-                    *_ESP,
-                ],
-                "Recheio Especial — 2º Sabor": [
-                    "Sem segundo sabor",
-                    *_ESP,
-                ],
-                "Recheio Super Especial — 1º Sabor": [
-                    *_SUPER,
-                ],
-                "Recheio Super Especial — 2º Sabor": [
-                    "Sem segundo sabor",
-                    *_SUPER,
-                ],
+                "Quilo": ["500g", "700g", "1kg", "1,5kg", "2kg", "2,5kg", "3kg", "4kg"],
+                "Massa": ["Branca (Baunilha)", "Chocolate", "Red Velvet"],
+                "1º Sabor": [*_TRAD],
+                "2º Sabor": ["Sem segundo sabor", *_TRAD],
                 "Decoração": [
-                    "Sem decoração",
-                    "Chantilly",
-                    "Pasta Americana",
-                    "Morangos",
-                    "Brigadeiro Festa Tradicional",
-                    "Macarrons",
-                    "Arte a Mão",
+                    "Sem decoração", "Chantilly", "Pasta Americana", "Morangos",
+                    "Brigadeiro Festa Tradicional", "Macarrons", "Arte a Mão",
                 ],
                 "Topo de Bolo": [
-                    "Sem topo",
-                    "Impresso Simples",
-                    "Impresso Detalhado",
-                    "3D em Camadas Trabalhado",
-                    "Flores Artificiais",
-                    "Bolo de Andar",
-                    "Papel de Arroz",
+                    "Sem topo", "Impresso Simples", "Impresso Detalhado",
+                    "3D em Camadas Trabalhado", "Flores Artificiais", "Bolo de Andar", "Papel de Arroz",
                 ],
             },
         },
         {
+            "slug": "bolo-especial",
+            "name": "Bolo Especial",
+            "description": "Recheios especiais cremosos com frutas e combinações diferenciadas.",
+            "icon": "🎂",
+            "price_from": "a partir de R$100",
+            "catalog_version": _CATALOG_VERSION,
+            "options": {
+                "Quilo": ["500g", "700g", "1kg", "1,5kg", "2kg", "2,5kg", "3kg", "4kg"],
+                "Massa": ["Branca (Baunilha)", "Chocolate", "Red Velvet"],
+                "1º Sabor": [*_ESP],
+                "2º Sabor": ["Sem segundo sabor", *_ESP],
+                "Decoração": [
+                    "Sem decoração", "Chantilly", "Pasta Americana", "Morangos",
+                    "Brigadeiro Festa Tradicional", "Macarrons", "Arte a Mão",
+                ],
+                "Topo de Bolo": [
+                    "Sem topo", "Impresso Simples", "Impresso Detalhado",
+                    "3D em Camadas Trabalhado", "Flores Artificiais", "Bolo de Andar", "Papel de Arroz",
+                ],
+            },
+        },
+        {
+            "slug": "bolo-super",
+            "name": "Bolo Super Especial",
+            "description": "Recheios premium: pistache, castanha do Pará e combinações exclusivas.",
+            "icon": "🎂",
+            "price_from": "a partir de R$130",
+            "catalog_version": _CATALOG_VERSION,
+            "options": {
+                "Quilo": ["500g", "700g", "1kg", "1,5kg", "2kg", "2,5kg", "3kg", "4kg"],
+                "Massa": ["Branca (Baunilha)", "Chocolate", "Red Velvet"],
+                "1º Sabor": [*_SUPER],
+                "2º Sabor": ["Sem segundo sabor", *_SUPER],
+                "Decoração": [
+                    "Sem decoração", "Chantilly", "Pasta Americana", "Morangos",
+                    "Brigadeiro Festa Tradicional", "Macarrons", "Arte a Mão",
+                ],
+                "Topo de Bolo": [
+                    "Sem topo", "Impresso Simples", "Impresso Detalhado",
+                    "3D em Camadas Trabalhado", "Flores Artificiais", "Bolo de Andar", "Papel de Arroz",
+                ],
+            },
+        },
+        # ── Doces ────────────────────────────────────────────────────────────
+        {
             "slug": "doces",
-            "name": "Doces",
-            "description": "Doces finos artesanais, brigadeiros gourmet, trufas e muito mais.",
+            "name": "Doces Tradicionais",
+            "description": "Brigadeiros gourmet, copinhos, brownies, pipoca e coloridos artesanais.",
             "icon": "🍫",
             "price_from": None,
             "catalog_version": _CATALOG_VERSION,
@@ -288,6 +292,27 @@ def _seed_data():
                     "Pistache",
                     "Ninho Uva",
                 ],
+                "Pipoca Gourmet": [
+                    "Nenhum",
+                    "Ninho",
+                    "Chocolate",
+                    "Oreo",
+                    "Ovomaltine",
+                ],
+                "Coloridos ou Carimbados": [
+                    "Nenhum",
+                    "Carimbo Dourado com Sabor Ninho",
+                ],
+            },
+        },
+        {
+            "slug": "doces-finos",
+            "name": "Doces Finos",
+            "description": "Trufas artesanais e doces finos elegantes para eventos especiais.",
+            "icon": "💎",
+            "price_from": None,
+            "catalog_version": _CATALOG_VERSION,
+            "options": {
                 "Mini Trufa": [
                     "Nenhum",
                     "Castanha Triturada",
@@ -304,72 +329,54 @@ def _seed_data():
                     "Macarrom",
                     "Bem Casado com Tag",
                 ],
-                "Pipoca Gourmet": [
-                    "Nenhum",
-                    "Ninho",
-                    "Chocolate",
-                    "Oreo",
-                    "Ovomaltine",
-                ],
-                "Coloridos ou Carimbados": [
-                    "Nenhum",
-                    "Carimbo Dourado com Sabor Ninho",
-                ],
             },
         },
+        # ── Salgados ─────────────────────────────────────────────────────────
         {
-            "slug": "salgados",
-            "name": "Salgados",
-            "description": "Salgados artesanais fritos, assados e finos — até 5 sabores de fritos.",
-            "icon": "🫔",
+            "slug": "salgados-fritos",
+            "name": "Salgados Fritos",
+            "description": "Coxinha, croquete, bolinha, pastel e muito mais — até 5 sabores diferentes.",
+            "icon": "🍗",
             "price_from": None,
             "catalog_version": _CATALOG_VERSION,
             "options": {
-                # ── Fritos em cima (saem mais) — até 5 sabores ────────────────
-                "Salgados Fritos — 1º Sabor": [
-                    *_FRITOS,
-                ],
-                "Salgados Fritos — 2º Sabor": [
-                    "Nenhum",
-                    *_FRITOS,
-                ],
-                "Salgados Fritos — 3º Sabor": [
-                    "Nenhum",
-                    *_FRITOS,
-                ],
-                "Salgados Fritos — 4º Sabor": [
-                    "Nenhum",
-                    *_FRITOS,
-                ],
-                "Salgados Fritos — 5º Sabor": [
-                    "Nenhum",
-                    *_FRITOS,
-                ],
-                # ── Assados (pastel em primeiro) ──────────────────────────────
+                "1º Sabor": [*_FRITOS],
+                "2º Sabor": ["Nenhum", *_FRITOS],
+                "3º Sabor": ["Nenhum", *_FRITOS],
+                "4º Sabor": ["Nenhum", *_FRITOS],
+                "5º Sabor": ["Nenhum", *_FRITOS],
+            },
+        },
+        {
+            "slug": "salgados-assados",
+            "name": "Salgados Assados",
+            "description": "Esfiras, enroladinhos, delícias assadas, mini pizza e empadinhas.",
+            "icon": "🥧",
+            "price_from": None,
+            "catalog_version": _CATALOG_VERSION,
+            "options": {
                 "Mini Pastel de Vento": [
                     "Nenhum",
                     "Presunto e Queijo",
                     "Queijo",
                     "Carne",
                 ],
-                "Salgados Assados": [
-                    "Nenhum",
-                    *_ASSADOS,
-                ],
-                "Empadinhas": [
-                    "Nenhum",
-                    "Frango",
-                    "Palmito",
-                ],
-                # ── Finos (canapés, tortelete, barquete) ──────────────────────
-                "Salgados Finos": [
-                    "Nenhum",
-                    "Canapés",
-                    "Tortelete",
-                    "Barquete",
-                ],
+                "Salgados Assados": ["Nenhum", *_ASSADOS],
+                "Empadinhas": ["Nenhum", "Frango", "Palmito"],
             },
         },
+        {
+            "slug": "salgados-finos",
+            "name": "Salgados Finos",
+            "description": "Canapés, torteletes e barquetes para eventos elegantes.",
+            "icon": "🥂",
+            "price_from": None,
+            "catalog_version": _CATALOG_VERSION,
+            "options": {
+                "Tipo": ["Canapés", "Tortelete", "Barquete"],
+            },
+        },
+        # ── Combos e Kits ────────────────────────────────────────────────────
         {
             "slug": "combos",
             "name": "Combos Especiais",
@@ -393,194 +400,74 @@ def _seed_data():
             "price_from": None,
             "catalog_version": _CATALOG_VERSION,
             "options": {
-                # ── Kit ───────────────────────────────────────────────────────
+                # ── Kit ──────────────────────────────────────────────────────
                 "Escolha o Kit": [
                     "Kit PP — 3 pessoas (bolo 500g + topo simples + 15 docinhos + 30 salgados fritos + refri 600ml)",
                     "Kit P — 10 pessoas (bolo 1kg + topo simples + 25 docinhos + 50 salgados fritos + refri 2L)",
                     "Kit M — 15 pessoas (bolo 1,5kg + topo simples + 30 docinhos + 100 salgados fritos + refri 2L)",
                     "Kit G — 20 pessoas (bolo 2kg + topo simples + 50 docinhos + 100 salgados fritos + 2 refris 2L)",
                 ],
-                # ── Bolo ──────────────────────────────────────────────────────
-                "Massa": [
-                    "Branca (Baunilha)",
-                    "Chocolate",
-                    "Red Velvet",
-                ],
-                "Recheio Tradicional — 1º Sabor": [
-                    *_TRAD,
-                ],
-                "Recheio Tradicional — 2º Sabor": [
-                    "Sem segundo sabor",
-                    *_TRAD,
-                ],
-                "Recheio Especial — 1º Sabor": [
-                    *_ESP,
-                ],
-                "Recheio Especial — 2º Sabor": [
-                    "Sem segundo sabor",
-                    *_ESP,
-                ],
-                "Recheio Super Especial — 1º Sabor": [
-                    *_SUPER,
-                ],
-                "Recheio Super Especial — 2º Sabor": [
-                    "Sem segundo sabor",
-                    *_SUPER,
-                ],
+                # ── Bolo ─────────────────────────────────────────────────────
+                "Massa": ["Branca (Baunilha)", "Chocolate", "Red Velvet"],
+                "Recheio Tradicional — 1º Sabor": [*_TRAD],
+                "Recheio Tradicional — 2º Sabor": ["Sem segundo sabor", *_TRAD],
+                "Recheio Especial — 1º Sabor": [*_ESP],
+                "Recheio Especial — 2º Sabor": ["Sem segundo sabor", *_ESP],
+                "Recheio Super Especial — 1º Sabor": [*_SUPER],
+                "Recheio Super Especial — 2º Sabor": ["Sem segundo sabor", *_SUPER],
                 "Decoração": [
-                    "Sem decoração",
-                    "Chantilly",
-                    "Pasta Americana",
-                    "Morangos",
-                    "Brigadeiro Festa Tradicional",
-                    "Macarrons",
-                    "Arte a Mão",
+                    "Sem decoração", "Chantilly", "Pasta Americana", "Morangos",
+                    "Brigadeiro Festa Tradicional", "Macarrons", "Arte a Mão",
                 ],
                 "Topo de Bolo": [
-                    "Sem topo",
-                    "Impresso Simples",
-                    "Impresso Detalhado",
-                    "3D em Camadas Trabalhado",
-                    "Flores Artificiais",
-                    "Bolo de Andar",
-                    "Papel de Arroz",
+                    "Sem topo", "Impresso Simples", "Impresso Detalhado",
+                    "3D em Camadas Trabalhado", "Flores Artificiais", "Bolo de Andar", "Papel de Arroz",
                 ],
-                # ── Salgados ──────────────────────────────────────────────────
-                "Salgados Fritos — 1º Sabor": [
-                    *_FRITOS,
-                ],
-                "Salgados Fritos — 2º Sabor": [
-                    "Nenhum",
-                    *_FRITOS,
-                ],
-                "Salgados Fritos — 3º Sabor": [
-                    "Nenhum",
-                    *_FRITOS,
-                ],
-                "Salgados Fritos — 4º Sabor": [
-                    "Nenhum",
-                    *_FRITOS,
-                ],
-                "Salgados Fritos — 5º Sabor": [
-                    "Nenhum",
-                    *_FRITOS,
-                ],
-                "Mini Pastel de Vento": [
-                    "Nenhum",
-                    "Presunto e Queijo",
-                    "Queijo",
-                    "Carne",
-                ],
-                "Salgados Assados": [
-                    "Nenhum",
-                    *_ASSADOS,
-                ],
-                "Empadinhas": [
-                    "Nenhum",
-                    "Frango",
-                    "Palmito",
-                ],
-                "Salgados Finos": [
-                    "Nenhum",
-                    "Canapés",
-                    "Tortelete",
-                    "Barquete",
-                ],
-                # ── Doces ─────────────────────────────────────────────────────
+                # ── Salgados ─────────────────────────────────────────────────
+                "Salgados Fritos — 1º Sabor": [*_FRITOS],
+                "Salgados Fritos — 2º Sabor": ["Nenhum", *_FRITOS],
+                "Salgados Fritos — 3º Sabor": ["Nenhum", *_FRITOS],
+                "Salgados Fritos — 4º Sabor": ["Nenhum", *_FRITOS],
+                "Salgados Fritos — 5º Sabor": ["Nenhum", *_FRITOS],
+                "Mini Pastel de Vento": ["Nenhum", "Presunto e Queijo", "Queijo", "Carne"],
+                "Salgados Assados": ["Nenhum", *_ASSADOS],
+                "Empadinhas": ["Nenhum", "Frango", "Palmito"],
+                "Salgados Finos": ["Nenhum", "Canapés", "Tortelete", "Barquete"],
+                # ── Doces ────────────────────────────────────────────────────
                 "Brigadeiro Gourmet": [
-                    "Nenhum",
-                    "Brigadeiro Tradicional",
-                    "Brigadeiro com Amendoim",
-                    "Beijinho",
-                    "Limão",
-                    "Delícia de Amendoim",
-                    "Churros",
-                    "Maracujá",
-                    "Dois Amores",
-                    "Napolitano",
-                    "Olho de Sogra",
-                    "Beijinho Queimado",
-                    "Morango",
-                    "Cajuzinho",
+                    "Nenhum", "Brigadeiro Tradicional", "Brigadeiro com Amendoim",
+                    "Beijinho", "Limão", "Delícia de Amendoim", "Churros", "Maracujá",
+                    "Dois Amores", "Napolitano", "Olho de Sogra", "Beijinho Queimado",
+                    "Morango", "Cajuzinho",
                 ],
                 "Brigadeiro Gourmet Especial": [
-                    "Nenhum",
-                    "Ferreiro Rocher",
-                    "Ninho com Nutella",
-                    "Brigadeiro M&M",
-                    "Brigadeiro com Granulado Meio Amargo",
-                    "Café",
-                    "Cappuccino",
-                    "Ninho M&M",
-                    "Castanha do Pará",
-                    "Surpresa de Uva",
+                    "Nenhum", "Ferreiro Rocher", "Ninho com Nutella", "Brigadeiro M&M",
+                    "Brigadeiro com Granulado Meio Amargo", "Café", "Cappuccino",
+                    "Ninho M&M", "Castanha do Pará", "Surpresa de Uva",
                 ],
                 "Copinho de Chocolate (Branco ou ao Leite)": [
-                    "Nenhum",
-                    "Morango",
-                    "Brigadeiro",
-                    "Ninho Morango",
-                    "Ninho Cereja",
-                    "Ninho Damasco",
-                    "Oreo",
-                    "Pistache",
-                    "Ninho Uva",
-                    "Pedacim do Céu Pêssego",
-                    "Ninho com Nozes",
+                    "Nenhum", "Morango", "Brigadeiro", "Ninho Morango", "Ninho Cereja",
+                    "Ninho Damasco", "Oreo", "Pistache", "Ninho Uva",
+                    "Pedacim do Céu Pêssego", "Ninho com Nozes",
                 ],
                 "Copinho de Acrílico 30ml": [
-                    "Nenhum",
-                    "Morango",
-                    "Brigadeiro",
-                    "Ninho Morango",
-                    "Ninho Cereja",
-                    "Ninho Damasco",
-                    "Oreo",
-                    "Ninho Uva",
-                    "Pedacim do Céu Pêssego",
-                    "Napolitano",
+                    "Nenhum", "Morango", "Brigadeiro", "Ninho Morango", "Ninho Cereja",
+                    "Ninho Damasco", "Oreo", "Ninho Uva", "Pedacim do Céu Pêssego", "Napolitano",
                 ],
                 "Mini Brownie": [
-                    "Nenhum",
-                    "Morango",
-                    "Brigadeiro",
-                    "Ninho Morango",
-                    "Ninho",
-                    "Oreo",
-                    "Pistache",
-                    "Ninho Uva",
+                    "Nenhum", "Morango", "Brigadeiro", "Ninho Morango", "Ninho",
+                    "Oreo", "Pistache", "Ninho Uva",
                 ],
-                "Mini Trufa": [
-                    "Nenhum",
-                    "Castanha Triturada",
-                    "Brigadeiro",
-                    "Coco",
-                    "Cupuaçu",
-                    "Ninho",
-                ],
+                "Mini Trufa": ["Nenhum", "Castanha Triturada", "Brigadeiro", "Coco", "Cupuaçu", "Ninho"],
                 "Doce Fino": [
-                    "Nenhum",
-                    "Camafeu Nozes",
-                    "Surpresa de Damasco",
-                    "Surpresa de Castanha de Caju",
-                    "Macarrom",
-                    "Bem Casado com Tag",
+                    "Nenhum", "Camafeu Nozes", "Surpresa de Damasco",
+                    "Surpresa de Castanha de Caju", "Macarrom", "Bem Casado com Tag",
                 ],
-                "Pipoca Gourmet": [
-                    "Nenhum",
-                    "Ninho",
-                    "Chocolate",
-                    "Oreo",
-                    "Ovomaltine",
-                ],
-                # ── Extras ────────────────────────────────────────────────────
+                "Pipoca Gourmet": ["Nenhum", "Ninho", "Chocolate", "Oreo", "Ovomaltine"],
+                # ── Extras ───────────────────────────────────────────────────
                 "Acréscimos": [
-                    "Sem acréscimos",
-                    "Topo de Bolo Trabalhado",
-                    "Suporte no Bolo de Andar",
-                    "Decoração com Flores Naturais",
-                    "Papel de Arroz",
-                    "Ganache",
+                    "Sem acréscimos", "Topo de Bolo Trabalhado", "Suporte no Bolo de Andar",
+                    "Decoração com Flores Naturais", "Papel de Arroz", "Ganache",
                 ],
             },
         },
