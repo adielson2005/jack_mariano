@@ -105,6 +105,7 @@ class Order(db.Model):
             "status":                self.status,
             "status_label":          STATUS_LABELS.get(self.status, self.status),
         }
+        data["item_count"] = len(self.items)
         if include_items:
             data["items"] = [i.to_dict() for i in self.items]
         return data
