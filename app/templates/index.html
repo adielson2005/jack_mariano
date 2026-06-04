@@ -139,6 +139,63 @@
     /* ── Category list ───────────────────────────────────── */
     .cat-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 28px; }
 
+    /* ── Group tiles (initial menu) ─────────────────────── */
+    .cat-group-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-bottom: 6px;
+    }
+    .cat-group-tile {
+      background: var(--surface);
+      border: 2px solid var(--border);
+      border-radius: 16px;
+      padding: 18px 10px 14px;
+      cursor: pointer; text-align: center;
+      display: flex; flex-direction: column; align-items: center; gap: 8px;
+      transition: border-color .15s, box-shadow .15s, transform .1s;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+    .cat-group-tile:hover {
+      border-color: var(--accent, var(--pk));
+      box-shadow: var(--shadow-sm);
+    }
+    .cat-group-tile:active { transform: scale(.96); }
+    /* last tile alone on a row spans both columns */
+    .cat-group-tile.cgt--full {
+      grid-column: 1 / -1;
+      flex-direction: row; justify-content: center;
+      padding: 14px 24px; gap: 14px;
+    }
+    .cgt-img  { width: 46px; height: 46px; pointer-events: none; }
+    .cgt-label{ font-weight: 800; font-size: .95rem; color: var(--text); line-height: 1.2; }
+    .cgt-sub  { font-size: .7rem; color: var(--muted); font-weight: 500; line-height: 1.3; }
+    /* colour accents per group */
+    .cat-group-tile[data-gid="bolos"]    { --accent: var(--c-bolo-tradicional); }
+    .cat-group-tile[data-gid="doces"]    { --accent: var(--c-doces); }
+    .cat-group-tile[data-gid="salgados"] { --accent: var(--c-salgados-fritos); }
+    .cat-group-tile[data-gid="combos"]   { --accent: var(--c-combos); }
+    .cat-group-tile[data-gid="kit-festa"]{ --accent: var(--c-kit-festa); }
+
+    /* ── Sub-category back header ────────────────────────── */
+    .cat-back-row {
+      display: flex; align-items: center; gap: 10px;
+      padding: 4px 0 14px; flex-wrap: wrap;
+    }
+    .cat-back-btn {
+      display: flex; align-items: center; gap: 6px;
+      background: none; border: 1px solid var(--border);
+      border-radius: 20px; padding: 5px 14px;
+      font-size: .8rem; font-weight: 700; color: var(--muted);
+      cursor: pointer; transition: color .15s, border-color .15s;
+    }
+    .cat-back-btn:hover { color: var(--text); border-color: var(--text); }
+    .cat-group-heading {
+      font-weight: 800; font-size: 1rem; color: var(--text);
+      display: flex; align-items: center; gap: 7px;
+    }
+
     .cat-row {
       background: var(--surface);
       border: 1px solid var(--border);
@@ -1359,6 +1416,45 @@ function setDeliveryType(type) {
 }
 
 /* ── Categories ─────────────────────────────────────────────────────────── */
+
+// Ilustrações Noto Emoji (Google) via Iconify CDN — licença Apache 2.0
+const CAT_IMGS = {
+  'bolo-tradicional':  'https://api.iconify.design/noto/birthday-cake.svg',
+  'bolo-especial':     'https://api.iconify.design/noto/shortcake.svg',
+  'bolo-super':        'https://api.iconify.design/noto/cupcake.svg',
+  'doces':             'https://api.iconify.design/noto/doughnut.svg',
+  'doces-finos':       'https://api.iconify.design/noto/chocolate-bar.svg',
+  'salgados-fritos':   'https://api.iconify.design/noto/dumpling.svg',
+  'salgados-assados':  'https://api.iconify.design/noto/flatbread.svg',
+  'salgados-finos':    'https://api.iconify.design/noto/croissant.svg',
+  'combos':            'https://api.iconify.design/noto/bento-box.svg',
+  'kit-festa':         'https://api.iconify.design/noto/party-popper.svg',
+};
+
+// Top-level category groups
+const GROUPS = [
+  { id:'bolos',    label:'Bolos',           icon:'🎂',
+    img: 'https://api.iconify.design/noto/birthday-cake.svg',
+    sub:'Tradicional · Especial · Super',
+    slugs:['bolo-tradicional','bolo-especial','bolo-super'] },
+  { id:'doces',    label:'Doces',           icon:'🍬',
+    img: 'https://api.iconify.design/noto/doughnut.svg',
+    sub:'Tradicionais · Finos',
+    slugs:['doces','doces-finos'] },
+  { id:'salgados', label:'Salgados',        icon:'🥟',
+    img: 'https://api.iconify.design/noto/dumpling.svg',
+    sub:'Fritos · Assados · Finos',
+    slugs:['salgados-fritos','salgados-assados','salgados-finos'] },
+  { id:'combos',   label:'Combos Especiais',icon:'🎁',
+    img: 'https://api.iconify.design/noto/bento-box.svg',
+    sub:'Montado sob medida',
+    slugs:['combos'] },
+  { id:'kit-festa',label:'Kit Festa',       icon:'🎉',
+    img: 'https://api.iconify.design/noto/party-popper.svg',
+    sub:'Completo para sua festa',
+    slugs:['kit-festa'] },
+];
+
 async function loadCategories() {
   const list = document.getElementById('cat-list');
   try {
@@ -1373,30 +1469,73 @@ async function loadCategories() {
     </div>`;
     return;
   }
+  renderGroupMenu();
+}
 
+/* Renders the top-level 5-group tile grid */
+function renderGroupMenu() {
+  const list = document.getElementById('cat-list');
+  selectedCat = null;
+
+  const tiles = GROUPS.map((g, idx) => {
+    const isLast = idx === GROUPS.length - 1 && GROUPS.length % 2 !== 0;
+    return `<div class="cat-group-tile${isLast ? ' cgt--full' : ''}"
+              data-gid="${g.id}" onclick="selectGroup('${g.id}')">
+      <img src="${g.img}" class="cgt-img" alt="${g.label}" loading="lazy" draggable="false">
+      <div>
+        <div class="cgt-label">${g.label}</div>
+        <div class="cgt-sub">${g.sub}</div>
+      </div>
+    </div>`;
+  }).join('');
+
+  list.innerHTML = `<div class="cat-group-grid">${tiles}</div>`;
+}
+
+/* Called when a top-level group tile is tapped */
+function selectGroup(groupId) {
+  const group = GROUPS.find(g => g.id === groupId);
+  if (!group) return;
+  renderSubcategories(group);
+  // Single-slug groups: auto-open the one category
+  if (group.slugs.length === 1) {
+    const slug = group.slugs[0];
+    setTimeout(() => {
+      const row = document.getElementById('cr-' + slug);
+      if (row) selectCat(slug, row);
+    }, 40);
+  }
+}
+
+/* Renders sub-category rows for the selected group with a back button */
+function renderSubcategories(group) {
+  const list = document.getElementById('cat-list');
+  selectedCat = null;
   list.innerHTML = '';
 
-  // Ilustrações Noto Emoji (Google) via Iconify CDN — licença Apache 2.0
-  const CAT_IMGS = {
-    'bolo-tradicional':  'https://api.iconify.design/noto/birthday-cake.svg',
-    'bolo-especial':     'https://api.iconify.design/noto/shortcake.svg',
-    'bolo-super':        'https://api.iconify.design/noto/cupcake.svg',
-    'doces':             'https://api.iconify.design/noto/doughnut.svg',
-    'doces-finos':       'https://api.iconify.design/noto/chocolate-bar.svg',
-    'salgados-fritos':   'https://api.iconify.design/noto/dumpling.svg',
-    'salgados-assados':  'https://api.iconify.design/noto/flatbread.svg',
-    'salgados-finos':    'https://api.iconify.design/noto/croissant.svg',
-    'combos':            'https://api.iconify.design/noto/bento-box.svg',
-    'kit-festa':         'https://api.iconify.design/noto/party-popper.svg',
-  };
+  // Back button row
+  const header = document.createElement('div');
+  header.className = 'cat-back-row';
+  header.innerHTML = `
+    <button class="cat-back-btn" onclick="renderGroupMenu()">
+      <i class="bi bi-arrow-left"></i> Início
+    </button>
+    <span class="cat-group-heading">${group.icon} ${group.label}</span>`;
+  list.appendChild(header);
 
-  categories.forEach(c => {
-    const imgUrl  = CAT_IMGS[c.slug];
+  // Category rows for each slug in this group
+  const catMap = {};
+  categories.forEach(c => { catMap[c.slug] = c; });
+
+  group.slugs.forEach(slug => {
+    const c = catMap[slug];
+    if (!c) return;
+
+    const imgUrl  = CAT_IMGS[slug];
     const iconHtml = imgUrl
       ? `<img src="${imgUrl}" width="34" height="34" alt="${esc(c.name)}" loading="lazy" draggable="false">`
       : `<span>${esc(c.icon)}</span>`;
 
-    // Category row
     const row = document.createElement('div');
     row.className = 'cat-row';
     row.id = 'cr-' + c.slug;
@@ -1414,7 +1553,6 @@ async function loadCategories() {
       </div>`;
     row.onclick = () => selectCat(c.slug, row);
 
-    // Options slot (injected below each row)
     const slot = document.createElement('div');
     slot.className = 'opts-wrap';
     slot.id = 'ow-' + c.slug;
@@ -2146,6 +2284,7 @@ function resetForm() {
   orderModelPhoto = null;
   document.getElementById('photo-reminder')?.classList.add('d-none');
   selectedCat = null;
+  if (categories.length) renderGroupMenu();
   setStep(1);
 }
 
