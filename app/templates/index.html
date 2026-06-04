@@ -795,6 +795,27 @@
     .recipient-card {
       border-left: 3px solid #0d9488;
     }
+
+    /* ── Quilo pill buttons ──────────────────────────────────── */
+    .opt-group[data-quilo] { grid-column: 1 / -1; }
+    .opt-group[data-quilo] .opt-pills {
+      gap: 6px;
+    }
+    .opt-group[data-quilo] .opt-pill {
+      font-size: .82rem;
+      font-weight: 700;
+      padding: 8px 14px;
+      min-width: 60px;
+      text-align: center;
+      letter-spacing: .01em;
+    }
+
+    /* ── Bolo reference sections ─────────────────────────────── */
+    .bolo-ref-section {
+      border-top: 1px solid var(--border);
+      padding-top: 14px;
+      margin-top: 4px;
+    }
   </style>
 </head>
 <body>
@@ -1065,7 +1086,7 @@
       <div class="form-section-icon">📋</div>
       <div>
         <div class="form-section-title">Detalhes do pedido</div>
-        <div class="form-section-sub">Observações, alergias e foto de referência</div>
+        <div class="form-section-sub">Observações e alergias do pedido</div>
       </div>
     </div>
     <div class="form-card mb-3">
@@ -1086,41 +1107,6 @@
                       placeholder="Informações adicionais sobre seu pedido..."></textarea>
           </div>
 
-          <!-- Upload de foto de referência do modelo -->
-          <div class="col-12">
-            <label class="form-label">
-              <i class="bi bi-image"></i> Foto de referência do modelo
-              <small style="font-weight:400;color:var(--muted)">(opcional)</small>
-            </label>
-            <div class="photo-upload-wrap" id="photo-upload-wrap"
-                 onclick="document.getElementById('f-model-photo').click()">
-              <div id="photo-upload-empty">
-                <i class="bi bi-cloud-upload"
-                   style="font-size:1.9rem;color:var(--muted);display:block;margin-bottom:8px"></i>
-                <span style="font-size:.84rem;font-weight:600;color:var(--muted)">
-                  Toque para escolher uma foto
-                </span>
-                <span style="font-size:.72rem;color:var(--muted);display:block;margin-top:4px">
-                  JPG, PNG ou WEBP
-                </span>
-              </div>
-              <div id="photo-upload-preview" class="d-none" style="text-align:center">
-                <img id="photo-preview-img" src="" alt="Modelo de referência"
-                     style="max-width:100%;max-height:200px;border-radius:10px;
-                            object-fit:contain;display:block;margin:0 auto">
-                <button type="button" class="photo-remove-btn"
-                        onclick="removeModelPhoto(event)">
-                  <i class="bi bi-x-circle-fill"></i> Remover foto
-                </button>
-              </div>
-            </div>
-            <input type="file" id="f-model-photo" accept="image/*" style="display:none"
-                   onchange="previewModelPhoto(this)">
-            <p class="photo-hint">
-              <i class="bi bi-whatsapp" style="color:#25d366"></i>
-              Após o pedido, envie a foto pelo WhatsApp para confirmarmos o modelo
-            </p>
-          </div>
         </div>
       </div>
     </div>
@@ -1429,9 +1415,83 @@ function selectCat(slug, rowEl) {
   // Build options HTML
   const groupsHtml = Object.entries(cat.options).map(([g, d]) => renderOptGroup(g, d)).join('');
 
+  const isBolo = ['bolo-tradicional', 'bolo-especial', 'bolo-super'].includes(slug);
+
+  const gallerySection = isBolo ? `
+    <div id="bolo-gallery-section" style="margin-bottom:14px">
+      <div style="font-size:.6rem;font-weight:700;color:var(--muted);text-transform:uppercase;
+                  letter-spacing:.13em;margin-bottom:9px;display:flex;align-items:center;gap:6px">
+        <span>🖼️</span> Modelos de bolo
+        <span style="font-weight:400;opacity:.7;font-size:.6rem">(toque para selecionar)</span>
+      </div>
+      <div id="bolo-gallery"
+           style="display:flex;gap:8px;overflow-x:auto;padding-bottom:8px;
+                  scroll-snap-type:x mandatory;scrollbar-width:thin;
+                  -webkit-overflow-scrolling:touch">
+        <div style="color:var(--muted);font-size:.78rem;padding:10px 0;display:flex;align-items:center;gap:7px">
+          <span class="spinner-border spinner-border-sm spinner-pk"></span> Carregando...
+        </div>
+      </div>
+    </div>
+    <div id="topo-gallery-section" style="margin-bottom:14px">
+      <div style="font-size:.6rem;font-weight:700;color:var(--muted);text-transform:uppercase;
+                  letter-spacing:.13em;margin-bottom:9px;display:flex;align-items:center;gap:6px">
+        <span>⭐</span> Modelos de topo
+        <span style="font-weight:400;opacity:.7;font-size:.6rem">(toque para selecionar)</span>
+      </div>
+      <div id="topo-gallery"
+           style="display:flex;gap:8px;overflow-x:auto;padding-bottom:8px;
+                  scroll-snap-type:x mandatory;scrollbar-width:thin;
+                  -webkit-overflow-scrolling:touch">
+        <div style="color:var(--muted);font-size:.78rem;padding:10px 0;display:flex;align-items:center;gap:7px">
+          <span class="spinner-border spinner-border-sm spinner-pk"></span> Carregando...
+        </div>
+      </div>
+    </div>` : '';
+
+  const photoUpload = isBolo ? `
+    <div style="margin-bottom:14px">
+      <div style="font-size:.6rem;font-weight:700;color:var(--muted);text-transform:uppercase;
+                  letter-spacing:.13em;margin-bottom:9px;display:flex;align-items:center;gap:6px">
+        <span>📷</span> Sua foto de referência
+        <span style="font-weight:400;opacity:.7;font-size:.6rem">(modelo ou topo — opcional)</span>
+      </div>
+      <div class="photo-upload-wrap" id="bolo-photo-wrap"
+           onclick="document.getElementById('bolo-photo-input').click()"
+           style="padding:16px 12px 14px">
+        <div id="bolo-photo-empty">
+          <i class="bi bi-cloud-upload"
+             style="font-size:1.6rem;color:var(--muted);display:block;margin-bottom:6px"></i>
+          <span style="font-size:.82rem;font-weight:600;color:var(--muted)">
+            Toque para enviar foto do modelo ou do topo desejado
+          </span>
+          <span style="font-size:.7rem;color:var(--muted);display:block;margin-top:3px">
+            JPG, PNG ou WEBP
+          </span>
+        </div>
+        <div id="bolo-photo-preview" class="d-none" style="text-align:center">
+          <img id="bolo-photo-img" src="" alt="Referência"
+               style="max-width:100%;max-height:150px;border-radius:10px;
+                      object-fit:contain;display:block;margin:0 auto">
+          <div id="bolo-photo-label"
+               style="font-size:.72rem;color:var(--muted);font-weight:600;margin-top:5px"></div>
+          <button type="button" class="photo-remove-btn" onclick="removeBoloPhoto(event)">
+            <i class="bi bi-x-circle-fill"></i> Remover
+          </button>
+        </div>
+      </div>
+      <input type="file" id="bolo-photo-input" accept="image/*" style="display:none"
+             onchange="previewBoloPhoto(this)">
+      <p class="photo-hint" style="margin-top:6px">
+        <i class="bi bi-whatsapp" style="color:#25d366"></i>
+        Após o pedido, envie a foto pelo WhatsApp para confirmarmos o modelo/topo
+      </p>
+    </div>` : '';
+
   wrap.innerHTML = `
     <div class="opts-inner">
       <div class="opts-groups-grid">${groupsHtml}</div>
+      ${isBolo ? `<div class="bolo-ref-section">${gallerySection}${photoUpload}</div>` : ''}
       <div class="qty-note-row">
         <div class="qty-col">
           <label><i class="bi bi-hash"></i> Qtd.</label>
@@ -1449,6 +1509,8 @@ function selectCat(slug, rowEl) {
 
   // Kit Festa: opções aparecem só após escolher o kit (inclui seletor de recheio interno)
   if (slug === 'kit-festa') _setupKitFesta(slug);
+  // Bolo: carrega galeria de referências da confeitaria
+  if (isBolo) _loadBoloGallery(slug);
 
   wrap.classList.add('open');
   setTimeout(() => rowEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 60);
@@ -1519,8 +1581,10 @@ function renderOptGroup(group, data) {
 
   const icon     = groupIcon(group);
   const isOpt    = isSkipValue(items[0].name);
-  // Pills quando há ≤ 4 opções e nenhuma é texto longo
-  const usePills = items.length <= 4 && items.every(i => i.name.length <= 35);
+  // Quilo é sempre pills (seletor de peso com botões)
+  // Pills também quando há ≤ 4 opções e nenhuma é texto longo
+  const usePills = group === 'Quilo' ||
+    (items.length <= 4 && items.every(i => i.name.length <= 35));
 
   const label = `<label class="opt-label">
     <span class="og-icon">${icon}</span> ${esc(displayGroup)}${isOpt
@@ -1540,7 +1604,8 @@ function renderOptGroup(group, data) {
       `<option value="${esc(i.name)}"${idx === 0 ? ' selected' : ''}>${i.name}</option>`
     ).join('');
 
-    return `<div class="opt-group" data-pills="1"${recheioAttr}${salgadoAttr}>
+    const quiloAttr = group === 'Quilo' ? ' data-quilo="1"' : '';
+    return `<div class="opt-group" data-pills="1"${quiloAttr}${recheioAttr}${salgadoAttr}>
       ${label}
       <div class="opt-pills">${pills}</div>
       <select class="opt-sel" data-group="${esc(group)}" style="display:none">${opts}</select>
@@ -1958,7 +2023,13 @@ async function submitOrder() {
   // ── Monta payload ──────────────────────────────────────────────────────
   let notesVal = document.getElementById('f-notes').value.trim();
   if (orderModelPhoto) {
-    const photoNote = '📸 Foto do modelo enviada pelo WhatsApp em seguida.';
+    let photoNote;
+    if (orderModelPhoto.type === 'gallery') {
+      const lbl = orderModelPhoto.photoType === 'topo' ? 'Modelo de topo' : 'Modelo de bolo';
+      photoNote = `📸 ${lbl} selecionado: "${orderModelPhoto.title}" — referência enviada pelo WhatsApp.`;
+    } else {
+      photoNote = '📸 Foto de referência (modelo/topo) enviada pelo WhatsApp em seguida.';
+    }
     notesVal = notesVal ? notesVal + '\n' + photoNote : photoNote;
   }
 
@@ -2030,34 +2101,84 @@ function resetForm() {
   setDeliveryType('retirada');
   // Reset foto de referência
   orderModelPhoto = null;
-  const fi = document.getElementById('f-model-photo');
-  if (fi) fi.value = '';
-  document.getElementById('photo-upload-empty')?.classList.remove('d-none');
-  document.getElementById('photo-upload-preview')?.classList.add('d-none');
   document.getElementById('photo-reminder')?.classList.add('d-none');
   selectedCat = null;
   setStep(1);
 }
 
-/* ── Foto de referência do modelo ───────────────────────────────────────── */
-function previewModelPhoto(input) {
-  if (!input.files || !input.files[0]) return;
-  orderModelPhoto = input.files[0];
-  const reader = new FileReader();
-  reader.onload = e => {
-    document.getElementById('photo-preview-img').src = e.target.result;
-    document.getElementById('photo-upload-empty').classList.add('d-none');
-    document.getElementById('photo-upload-preview').classList.remove('d-none');
-  };
-  reader.readAsDataURL(orderModelPhoto);
+/* ── Galeria de referências da confeitaria (bolos + topos) ──────────────── */
+async function _loadBoloGallery(slug) {
+  // Galeria de modelos do bolo (filtrada pelo slug atual)
+  await _loadGallerySection('bolo-gallery', 'bolo-gallery-section', slug, 'modelo');
+  // Galeria de modelos de topo (sempre usa tag fixa 'topo-bolo')
+  await _loadGallerySection('topo-gallery', 'topo-gallery-section', 'topo-bolo', 'topo');
 }
 
-function removeModelPhoto(e) {
+async function _loadGallerySection(galleryId, sectionId, tag, photoType) {
+  const galleryEl = document.getElementById(galleryId);
+  const sectionEl = document.getElementById(sectionId);
+  if (!galleryEl || !sectionEl) return;
+  try {
+    const res  = await fetch(`/api/catalog-images?tag=${encodeURIComponent(tag)}`);
+    const imgs = await res.json();
+    if (!imgs.length) { sectionEl.style.display = 'none'; return; }
+    galleryEl.innerHTML = imgs.map(img => `
+      <div onclick="selectGalleryPhoto('${esc(img.image_url)}','${esc(img.title)}','${photoType}')"
+           style="flex-shrink:0;scroll-snap-align:start;cursor:pointer;text-align:center">
+        <img src="${esc(img.image_url)}" alt="${esc(img.title)}" loading="lazy" draggable="false"
+             style="width:88px;height:88px;object-fit:cover;border-radius:10px;
+                    border:2.5px solid var(--border);display:block;
+                    transition:border-color .16s,transform .16s,box-shadow .16s"
+             onmouseover="this.style.borderColor='var(--accent,#e5196b)';this.style.transform='scale(1.05)';this.style.boxShadow='0 4px 12px rgba(0,0,0,.14)'"
+             onmouseout="this.style.borderColor='var(--border)';this.style.transform='scale(1)';this.style.boxShadow='none'"
+             onerror="this.closest('div').remove()">
+        <div style="font-size:.66rem;color:var(--muted);margin-top:4px;max-width:88px;
+                    overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+                    font-weight:500">${esc(img.title)}</div>
+      </div>`).join('');
+  } catch(e) {
+    sectionEl.style.display = 'none';
+  }
+}
+
+function selectGalleryPhoto(url, title, photoType) {
+  const typeLabel = photoType === 'topo' ? '⭐ Topo: ' : '🖼️ Modelo: ';
+  orderModelPhoto = { type: 'gallery', photoType: photoType || 'modelo', url, title };
+  const img     = document.getElementById('bolo-photo-img');
+  const empty   = document.getElementById('bolo-photo-empty');
+  const preview = document.getElementById('bolo-photo-preview');
+  const label   = document.getElementById('bolo-photo-label');
+  if (img)     img.src = url;
+  if (label)   label.textContent = typeLabel + title;
+  if (empty)   empty.classList.add('d-none');
+  if (preview) preview.classList.remove('d-none');
+  toast(`✓ ${photoType === 'topo' ? 'Topo' : 'Modelo'} selecionado como referência`, 'success');
+}
+
+function previewBoloPhoto(input) {
+  if (!input.files || !input.files[0]) return;
+  orderModelPhoto = { type: 'file', file: input.files[0] };
+  const reader = new FileReader();
+  reader.onload = e => {
+    const img = document.getElementById('bolo-photo-img');
+    const empty = document.getElementById('bolo-photo-empty');
+    const preview = document.getElementById('bolo-photo-preview');
+    if (img) img.src = e.target.result;
+    if (empty) empty.classList.add('d-none');
+    if (preview) preview.classList.remove('d-none');
+  };
+  reader.readAsDataURL(input.files[0]);
+}
+
+function removeBoloPhoto(e) {
   e.stopPropagation();
   orderModelPhoto = null;
-  document.getElementById('f-model-photo').value = '';
-  document.getElementById('photo-upload-empty').classList.remove('d-none');
-  document.getElementById('photo-upload-preview').classList.add('d-none');
+  const inp = document.getElementById('bolo-photo-input');
+  if (inp) inp.value = '';
+  document.getElementById('bolo-photo-empty')?.classList.remove('d-none');
+  document.getElementById('bolo-photo-preview')?.classList.add('d-none');
+  const lbl = document.getElementById('bolo-photo-label');
+  if (lbl) lbl.textContent = '';
 }
 
 /* ── Toast ──────────────────────────────────────────────────────────────── */

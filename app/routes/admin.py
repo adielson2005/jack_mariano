@@ -106,6 +106,64 @@ def whatsapp_links(order_id):
     })
 
 
+# ── Catalog Images ────────────────────────────────────────────────────────────
+
+@admin_bp.get("/catalog-images")
+@login_required
+def list_catalog_images():
+    from app.models import CatalogImage
+    tag   = request.args.get("tag", "").strip()
+    query = CatalogImage.query
+    if tag:
+        query = query.filter_by(category_tag=tag)
+    imgs  = query.order_by(CatalogImage.created_at.desc()).all()
+    return jsonify([img.to_dict() for img in imgs])
+
+
+@admin_bp.post("/catalog-images")
+@login_required
+def create_catalog_image():
+    from app.models import CatalogImage
+    data      = request.get_json(silent=True) or {}
+    title     = str(data.get("title", "")).strip()[:200]
+    image_url = str(data.get("image_url", "")).strip()[:2000]
+    tag       = str(data.get("category_tag", "")).strip()[:50] or None
+
+    if not title or not image_url:
+        return jsonify({"error": "Título e URL da imagem são obrigatórios"}), 422
+
+    img = CatalogImage(title=title, image_url=image_url, category_tag=tag)
+    db.session.add(img)
+    db.session.commit()
+    return jsonify(img.to_dict()), 201
+
+
+@admin_bp.delete("/catalog-images/<int:img_id>")
+@login_required
+def delete_catalog_image(img_id):
+    from app.models import CatalogImage
+    img = CatalogImage.query.get_or_404(img_id)
+    db.session.delete(img)
+    db.session.commit()
+    return jsonify({"message": f"Imagem #{img_id} removida."})
+
+
+@admin_bp.patch("/catalog-images/<int:img_id>")
+@login_required
+def toggle_catalog_image(img_id):
+    from app.models import CatalogImage
+    img  = CatalogImage.query.get_or_404(img_id)
+    data = request.get_json(silent=True) or {}
+    if "active" in data:
+        img.active = bool(data["active"])
+    if "title" in data:
+        img.title = str(data["title"]).strip()[:200] or img.title
+    if "category_tag" in data:
+        img.category_tag = str(data["category_tag"]).strip()[:50] or None
+    db.session.commit()
+    return jsonify(img.to_dict())
+
+
 # ── Stats ─────────────────────────────────────────────────────────────────────
 
 @admin_bp.get("/stats")

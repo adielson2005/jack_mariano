@@ -3,7 +3,7 @@ import re
 from datetime import date as date_type
 from flask import Blueprint, jsonify, request
 from app import db
-from app.models import Category, Order, OrderItem
+from app.models import Category, Order, OrderItem, CatalogImage
 from app.utils import build_client_link, build_help_link
 
 api_bp = Blueprint("api", __name__)
@@ -118,6 +118,18 @@ def create_order():
         "whatsapp_link": build_client_link(order),
         "order_id": order.id,
     }), 201
+
+
+# ── Catalog Images (público — galeria de referências para o cliente) ─────────
+
+@api_bp.get("/catalog-images")
+def get_catalog_images():
+    tag   = request.args.get("tag", "").strip()
+    query = CatalogImage.query.filter_by(active=True)
+    if tag:
+        query = query.filter_by(category_tag=tag)
+    images = query.order_by(CatalogImage.created_at.desc()).all()
+    return jsonify([img.to_dict() for img in images])
 
 
 # ── WhatsApp ajuda (público — somente link de dúvidas para a loja) ───────────

@@ -64,7 +64,7 @@ def _migrate_db():
 
 # Versão do catálogo — suba este número sempre que alterar produtos/opções.
 # O sistema vai apagar e recriar o catálogo automaticamente no próximo deploy.
-_CATALOG_VERSION = "v11"
+_CATALOG_VERSION = "v12"
 
 
 def _seed_data():
@@ -163,9 +163,9 @@ def _seed_data():
             "catalog_version": _CATALOG_VERSION,
             "options": {
                 "Quilo": ["500g", "700g", "1kg", "1,5kg", "2kg", "2,5kg", "3kg", "4kg"],
-                "Massa": ["Branca (Baunilha)", "Chocolate", "Red Velvet"],
                 "1º Sabor": [*_TRAD],
                 "2º Sabor": ["Sem segundo sabor", *_TRAD],
+                "Massa": ["Branca (Baunilha)", "Chocolate", "Red Velvet"],
                 "Decoração": [
                     "Sem decoração", "Chantilly", "Pasta Americana", "Morangos",
                     "Brigadeiro Festa Tradicional", "Macarrons", "Arte a Mão",
@@ -185,9 +185,9 @@ def _seed_data():
             "catalog_version": _CATALOG_VERSION,
             "options": {
                 "Quilo": ["500g", "700g", "1kg", "1,5kg", "2kg", "2,5kg", "3kg", "4kg"],
-                "Massa": ["Branca (Baunilha)", "Chocolate", "Red Velvet"],
                 "1º Sabor": [*_ESP],
                 "2º Sabor": ["Sem segundo sabor", *_ESP],
+                "Massa": ["Branca (Baunilha)", "Chocolate", "Red Velvet"],
                 "Decoração": [
                     "Sem decoração", "Chantilly", "Pasta Americana", "Morangos",
                     "Brigadeiro Festa Tradicional", "Macarrons", "Arte a Mão",
@@ -207,9 +207,9 @@ def _seed_data():
             "catalog_version": _CATALOG_VERSION,
             "options": {
                 "Quilo": ["500g", "700g", "1kg", "1,5kg", "2kg", "2,5kg", "3kg", "4kg"],
-                "Massa": ["Branca (Baunilha)", "Chocolate", "Red Velvet"],
                 "1º Sabor": [*_SUPER],
                 "2º Sabor": ["Sem segundo sabor", *_SUPER],
+                "Massa": ["Branca (Baunilha)", "Chocolate", "Red Velvet"],
                 "Decoração": [
                     "Sem decoração", "Chantilly", "Pasta Americana", "Morangos",
                     "Brigadeiro Festa Tradicional", "Macarrons", "Arte a Mão",

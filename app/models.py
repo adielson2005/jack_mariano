@@ -141,3 +141,24 @@ class OrderItem(db.Model):
             "selections": json.loads(self.selections) if self.selections else {},
             "item_notes": self.item_notes,
         }
+
+
+class CatalogImage(db.Model):
+    __tablename__ = "catalog_images"
+
+    id           = db.Column(db.Integer, primary_key=True)
+    title        = db.Column(db.String(200), nullable=False)
+    image_url    = db.Column(db.Text, nullable=False)
+    category_tag = db.Column(db.String(50))   # e.g. "bolo-tradicional"
+    active       = db.Column(db.Boolean, default=True)
+    created_at   = db.Column(db.DateTime, default=datetime.utcnow)
+
+    def to_dict(self):
+        return {
+            "id":           self.id,
+            "title":        self.title,
+            "image_url":    self.image_url,
+            "category_tag": self.category_tag,
+            "active":       self.active,
+            "created_at":   self.created_at.strftime("%d/%m/%Y %H:%M"),
+        }
