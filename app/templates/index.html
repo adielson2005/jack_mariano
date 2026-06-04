@@ -796,18 +796,46 @@
       border-left: 3px solid #0d9488;
     }
 
-    /* ── Quilo pill buttons ──────────────────────────────────── */
+    /* ── Quilo weight selector (card grid) ──────────────────── */
     .opt-group[data-quilo] { grid-column: 1 / -1; }
     .opt-group[data-quilo] .opt-pills {
-      gap: 6px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
     }
     .opt-group[data-quilo] .opt-pill {
-      font-size: .82rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      padding: 10px 4px;
+      min-height: 58px;
+      border-radius: 10px;
+      font-size: 1rem;
       font-weight: 700;
-      padding: 8px 14px;
-      min-width: 60px;
       text-align: center;
-      letter-spacing: .01em;
+      line-height: 1;
+    }
+    .opt-group[data-quilo] .opt-pill .qp-weight {
+      font-size: .95rem;
+      font-weight: 800;
+    }
+    .opt-group[data-quilo] .opt-pill .qp-hint {
+      font-size: .65rem;
+      font-weight: 500;
+      opacity: .72;
+      line-height: 1.2;
+    }
+    .opt-group[data-quilo] .opt-pill.sel {
+      border-width: 2.5px;
+      box-shadow: 0 0 0 3px rgba(209,120,66,.2);
+    }
+    @media (max-width: 380px) {
+      .opt-group[data-quilo] .opt-pills { grid-template-columns: repeat(4, 1fr); gap: 5px; }
+      .opt-group[data-quilo] .opt-pill { padding: 8px 2px; min-height: 52px; }
+      .opt-group[data-quilo] .opt-pill .qp-weight { font-size: .82rem; }
+      .opt-group[data-quilo] .opt-pill .qp-hint   { font-size: .6rem; }
     }
 
     /* ── Bolo reference sections ─────────────────────────────── */
@@ -1592,10 +1620,25 @@ function renderOptGroup(group, data) {
   </label>`;
 
   if (usePills) {
+    // Dicas de porção para o seletor de quilo
+    const QUILO_HINTS = {
+      '500g':'~4 fatias','700g':'~6 fatias','1kg':'~10 fatias',
+      '1,5kg':'~15 fatias','2kg':'~20 fatias','2,5kg':'~25 fatias',
+      '3kg':'~30 fatias','4kg':'~40 fatias'
+    };
+
     const pills = items.map((item, idx) => {
       const skip    = isSkipValue(item.name);
       // Sempre pré-seleciona o primeiro pill para ter valor definido
       const autoSel = idx === 0 ? (skip ? ' sel-skip' : ' sel') : '';
+      if (group === 'Quilo') {
+        const hint = QUILO_HINTS[item.name] || '';
+        return `<button type="button" class="opt-pill${autoSel}"
+          data-value="${esc(item.name)}" onclick="selectPill(this)">
+          <span class="qp-weight">${item.name}</span>
+          ${hint ? `<span class="qp-hint">${hint}</span>` : ''}
+        </button>`;
+      }
       return `<button type="button" class="opt-pill${autoSel}"
         data-value="${esc(item.name)}" onclick="selectPill(this)">${item.name}</button>`;
     }).join('');
