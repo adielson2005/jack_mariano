@@ -320,6 +320,16 @@
       margin-bottom: 8px;
       box-shadow: 0 4px 14px rgba(0,0,0,.05);
     }
+    .opts-back-btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: none; border: 1px solid var(--border);
+      border-radius: 20px; padding: 5px 14px 5px 10px;
+      font-size: .78rem; font-weight: 700; color: var(--muted);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      cursor: pointer; margin-bottom: 14px;
+      transition: color .15s, border-color .15s, background .15s;
+    }
+    .opts-back-btn:hover { color: var(--text); border-color: #aaa; background: var(--bg); }
 
     .opt-group {
       margin-bottom: 7px;
@@ -1775,6 +1785,9 @@ function selectCat(slug, rowEl) {
 
   wrap.innerHTML = `
     <div class="opts-inner">
+      <button class="opts-back-btn" onclick="_closeCatOptions()">
+        <i class="bi bi-arrow-left"></i> Voltar
+      </button>
       <div class="opts-groups-grid">${groupsHtml}</div>
       ${boloRefCard}
       <div class="qty-note-row">
@@ -1799,6 +1812,13 @@ function selectCat(slug, rowEl) {
 
   wrap.classList.add('open');
   setTimeout(() => rowEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 60);
+}
+
+/* Fecha o painel de opções aberto (botão Voltar dentro do opts-inner) */
+function _closeCatOptions() {
+  document.querySelectorAll('.opts-wrap').forEach(w => w.classList.remove('open'));
+  document.querySelectorAll('.cat-row').forEach(r => r.classList.remove('active'));
+  selectedCat = null;
 }
 
 /* ── Option helpers ─────────────────────────────────────────────────────── */
