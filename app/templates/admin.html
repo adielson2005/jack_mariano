@@ -533,6 +533,70 @@
       background: var(--bg);
     }
 
+    /* ══ MODELOS DE BOLOS ══════════════════════════════════════════════════════ */
+    .bm-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px; overflow: hidden;
+      box-shadow: var(--shadow);
+      margin-bottom: 20px;
+    }
+    .bm-tabs {
+      display: flex; gap: 0;
+      border-bottom: 1px solid var(--border);
+      padding: 0 6px;
+      background: var(--bg);
+      overflow-x: auto;
+    }
+    .bm-tab {
+      padding: 11px 16px;
+      border: none; border-bottom: 3px solid transparent;
+      background: none; font-family: inherit;
+      font-size: .845rem; font-weight: 600;
+      color: var(--muted); cursor: pointer;
+      transition: color .15s, border-color .15s;
+      white-space: nowrap; margin-bottom: -1px;
+    }
+    .bm-tab:hover  { color: var(--text); }
+    .bm-tab.active { color: var(--pk); border-bottom-color: var(--pk); }
+
+    .bm-add-form {
+      padding: 20px;
+    }
+    .bm-add-header {
+      display: flex; align-items: center; gap: 8px;
+      font-size: .88rem; font-weight: 800;
+      margin-bottom: 16px; color: var(--text);
+    }
+    .bm-cat-badge {
+      margin-left: auto;
+      background: var(--pk-soft); color: var(--pk);
+      font-size: .72rem; font-weight: 700;
+      padding: 3px 10px; border-radius: 20px;
+      white-space: nowrap;
+    }
+    .bm-add-form input {
+      width: 100%; border: 1.5px solid var(--border); border-radius: 10px;
+      font-family: inherit; font-size: .855rem; color: var(--text);
+      background: var(--bg); padding: 9px 12px; outline: none;
+      transition: border-color .18s;
+    }
+    .bm-add-form input:focus { border-color: var(--pk); }
+    .bm-add-form input::placeholder { color: #c5c1d4; }
+    .bm-add-form .form-label {
+      font-size: .74rem; font-weight: 700; color: var(--muted);
+      text-transform: uppercase; letter-spacing: .08em;
+      margin-bottom: 6px; display: block;
+    }
+
+    .bm-grid-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 8px;
+    }
+    .bm-count-label {
+      font-size: .78rem; color: var(--muted); font-weight: 500;
+    }
+
     /* ══ MOBILE ═══════════════════════════════════════════════════════════════ */
     @media (max-width: 768px) {
       .sidebar { transform: translateX(-100%); }
@@ -585,6 +649,10 @@
     <a href="#" class="sb-link" id="nav-catalogo"
        onclick="showSection('catalogo',this);closeSidebar()">
       <i class="bi bi-images"></i> Catálogo de fotos
+    </a>
+    <a href="#" class="sb-link" id="nav-bolos"
+       onclick="showSection('bolos',this);closeSidebar()">
+      <i class="bi bi-card-image"></i> Modelos de Bolos
     </a>
 
     <div class="sb-section">Filtrar por status</div>
@@ -818,6 +886,86 @@
 
     </div><!-- /sec-catalogo -->
 
+    <!-- ══ SEÇÃO MODELOS DE BOLOS ══════════════════════════════════════════════ -->
+    <div id="sec-bolos" class="d-none">
+
+      <!-- Tab card: tabs + add form -->
+      <div class="bm-card">
+
+        <!-- Tab bar -->
+        <div class="bm-tabs">
+          <button class="bm-tab active" data-tag="bolo-tradicional"
+                  onclick="switchBoloTab('bolo-tradicional',this)">
+            🎂 Tradicional
+          </button>
+          <button class="bm-tab" data-tag="bolo-especial"
+                  onclick="switchBoloTab('bolo-especial',this)">
+            🎂 Especial
+          </button>
+          <button class="bm-tab" data-tag="bolo-super"
+                  onclick="switchBoloTab('bolo-super',this)">
+            🎂 Super Especial
+          </button>
+          <button class="bm-tab" data-tag="topo-bolo"
+                  onclick="switchBoloTab('topo-bolo',this)">
+            ⭐ Topos de Bolo
+          </button>
+        </div>
+
+        <!-- Add form -->
+        <div class="bm-add-form">
+          <div class="bm-add-header">
+            <i class="bi bi-plus-circle" style="color:var(--pk);font-size:1rem"></i>
+            Adicionar modelo
+            <span id="bm-active-cat" class="bm-cat-badge">🎂 Bolo Tradicional</span>
+          </div>
+          <div class="row g-3">
+            <div class="col-md-5">
+              <label class="form-label">Título do modelo</label>
+              <input type="text" id="bm-title" placeholder="Ex: Bolo Florido Rosa">
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">URL da imagem</label>
+              <input type="url" id="bm-url"
+                     placeholder="https://i.imgur.com/exemplo.jpg"
+                     oninput="previewBoloImg(this.value)">
+            </div>
+            <div class="col-md-3 d-flex align-items-end">
+              <button class="btn-save-status w-100" onclick="saveBoloImage()" id="btn-add-bolo">
+                <i class="bi bi-plus-lg"></i> Adicionar
+              </button>
+            </div>
+            <div class="col-12">
+              <img id="bm-preview" class="img-preview-thumb" alt="Pré-visualização">
+            </div>
+          </div>
+          <p style="font-size:.74rem;color:var(--muted);margin-top:12px;margin-bottom:0;
+                    display:flex;align-items:flex-start;gap:6px;line-height:1.6">
+            <i class="bi bi-info-circle-fill" style="color:var(--pk);flex-shrink:0;margin-top:2px"></i>
+            Cole o link direto de uma imagem hospedada no Imgur, Google Fotos ou WhatsApp Web.
+            A foto ficará disponível para os clientes escolherem como referência para o bolo.
+          </p>
+        </div>
+
+      </div><!-- /bm-card -->
+
+      <!-- Grid header + count -->
+      <div class="bm-grid-header">
+        <div id="bm-count" class="bm-count-label"></div>
+      </div>
+
+      <!-- Image grid -->
+      <div id="bolo-grid" class="catalog-grid">
+        <div class="col-12">
+          <div class="empty-state">
+            <div class="spinner-border spinner-border-sm text-secondary mb-2"></div>
+            <div>Carregando modelos...</div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /sec-bolos -->
+
   </div><!-- /content -->
 </div><!-- /main -->
 
@@ -901,11 +1049,12 @@ function closeSidebar() {
 }
 
 /* ── Section navigation ──────────────────────────────────────────────────── */
-const SECTIONS = ['pedidos', 'stats', 'catalogo'];
+const SECTIONS = ['pedidos', 'stats', 'catalogo', 'bolos'];
 const SECTION_TITLES = {
   pedidos:  '<i class="bi bi-receipt me-1"></i>Pedidos',
   stats:    '<i class="bi bi-bar-chart-line me-1"></i>Estatísticas',
   catalogo: '<i class="bi bi-images me-1"></i>Catálogo de fotos',
+  bolos:    '<i class="bi bi-card-image me-1"></i>Modelos de Bolos',
 };
 
 function showSection(name, el) {
@@ -918,6 +1067,7 @@ function showSection(name, el) {
   document.getElementById('topbar-title').innerHTML = SECTION_TITLES[name] || SECTION_TITLES.pedidos;
   if (name === 'stats') { stopAutoRefresh(); loadStats(); }
   else if (name === 'catalogo') { stopAutoRefresh(); loadCatalogImages(); }
+  else if (name === 'bolos') { stopAutoRefresh(); loadBoloImages(); }
   else startAutoRefresh();
 }
 
@@ -1423,6 +1573,118 @@ async function deleteCatalogImage(id, btn) {
   btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span>';
   const res = await apiFetch(`${API}/admin/catalog-images/${id}`, { method: 'DELETE' });
   if (res && res.ok) { toast('Foto removida.', 'warning'); loadCatalogImages(); }
+  else toast('Erro ao remover.', 'danger');
+}
+
+/* ── Modelos de Bolos ─────────────────────────────────────────────────────── */
+let currentBoloTag = 'bolo-tradicional';
+
+const BOLO_CAT_LABELS = {
+  'bolo-tradicional': '🎂 Bolo Tradicional',
+  'bolo-especial':    '🎂 Bolo Especial',
+  'bolo-super':       '🎂 Bolo Super Especial',
+  'topo-bolo':        '⭐ Topos de Bolo',
+};
+
+function switchBoloTab(tag, btn) {
+  currentBoloTag = tag;
+  document.querySelectorAll('.bm-tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  const badge = document.getElementById('bm-active-cat');
+  if (badge) badge.textContent = BOLO_CAT_LABELS[tag] || tag;
+  loadBoloImages();
+}
+
+async function loadBoloImages() {
+  const grid    = document.getElementById('bolo-grid');
+  const countEl = document.getElementById('bm-count');
+  if (!grid) return;
+  grid.innerHTML = `<div class="col-12"><div class="empty-state">
+    <div class="spinner-border spinner-border-sm text-secondary mb-2"></div>
+    <div>Carregando...</div></div></div>`;
+
+  const res = await apiFetch(`${API}/admin/catalog-images?tag=${encodeURIComponent(currentBoloTag)}`);
+  if (!res) return;
+  const imgs = await res.json();
+
+  if (countEl) countEl.textContent = imgs.length
+    ? `${imgs.length} modelo${imgs.length !== 1 ? 's' : ''} · ${BOLO_CAT_LABELS[currentBoloTag] || currentBoloTag}`
+    : '';
+
+  if (!imgs.length) {
+    grid.innerHTML = `<div class="col-12"><div class="empty-state">
+      <i class="bi bi-card-image" style="font-size:2rem;color:var(--muted)"></i>
+      <div style="margin-top:8px">Nenhum modelo nesta categoria.</div>
+      <small style="color:var(--muted)">Adicione o primeiro usando o formulário acima.</small>
+    </div></div>`;
+    return;
+  }
+
+  grid.innerHTML = imgs.map(img => `
+    <div class="catalog-card">
+      <img src="${esc(img.image_url)}" alt="${esc(img.title)}"
+           loading="lazy"
+           onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%22 height=%22100%22%3E%3Crect fill=%22%23f0eef4%22 width=%22100%22 height=%22100%22/%3E%3Ctext y=%2258%22 x=%2250%22 font-size=%2230%22 text-anchor=%22middle%22%3E🖼️%3C/text%3E%3C/svg%3E'">
+      <button class="catalog-card-del" onclick="deleteBoloImage(${img.id},this)" title="Remover">
+        <i class="bi bi-trash3"></i>
+      </button>
+      <div class="catalog-card-body">
+        <div class="catalog-card-title" title="${esc(img.title)}">${esc(img.title)}</div>
+        <div style="font-size:.65rem;color:var(--muted);margin-top:3px">${img.created_at}</div>
+      </div>
+    </div>`).join('');
+}
+
+function previewBoloImg(url) {
+  const thumb = document.getElementById('bm-preview');
+  if (!thumb) return;
+  if (url && url.startsWith('http')) {
+    thumb.src = url;
+    thumb.style.display = 'block';
+    thumb.onerror = () => { thumb.style.display = 'none'; };
+  } else {
+    thumb.style.display = 'none';
+  }
+}
+
+async function saveBoloImage() {
+  const title = document.getElementById('bm-title').value.trim();
+  const url   = document.getElementById('bm-url').value.trim();
+  const btn   = document.getElementById('btn-add-bolo');
+
+  if (!title) { toast('Preencha o título do modelo.', 'warning'); return; }
+  if (!url)   { toast('Preencha a URL da imagem.', 'warning');  return; }
+
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>Salvando...';
+
+  const res = await apiFetch(`${API}/admin/catalog-images`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ title, image_url: url, category_tag: currentBoloTag }),
+  });
+
+  btn.disabled = false;
+  btn.innerHTML = '<i class="bi bi-plus-lg"></i> Adicionar';
+
+  if (!res) return;
+  if (res.ok) {
+    document.getElementById('bm-title').value = '';
+    document.getElementById('bm-url').value   = '';
+    document.getElementById('bm-preview').style.display = 'none';
+    toast('✓ Modelo adicionado com sucesso!', 'success');
+    loadBoloImages();
+  } else {
+    const d = await res.json().catch(() => ({}));
+    toast(d.error || 'Erro ao salvar.', 'danger');
+  }
+}
+
+async function deleteBoloImage(id, btn) {
+  if (!confirm('Remover este modelo do catálogo?')) return;
+  btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span>';
+  const res = await apiFetch(`${API}/admin/catalog-images/${id}`, { method: 'DELETE' });
+  if (res && res.ok) { toast('Modelo removido.', 'warning'); loadBoloImages(); }
   else toast('Erro ao remover.', 'danger');
 }
 
