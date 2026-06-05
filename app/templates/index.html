@@ -844,174 +844,186 @@
       border-left: 3px solid #0d9488;
     }
 
-    /* ── Quilo weight selector (card grid) ──────────────────── */
+    /* ── Quilo weight selector ───────────────────────────────── */
     .opt-group[data-quilo] {
       grid-column: 1 / -1;
-      background: linear-gradient(135deg,#fffbf5 0%,#fff 100%);
-      border: 1.5px solid #fde68a;
-      border-radius: 14px;
+      background: #fafafa;
+      border: 1px solid var(--border);
+      border-radius: 10px;
       padding: 14px 14px 16px;
     }
-    .opt-group[data-quilo] .opt-label { color: #92400e; margin-bottom: 12px; }
+    .opt-group[data-quilo] .opt-label { font-size: .75rem; color: var(--muted); margin-bottom: 10px; }
     .opt-group[data-quilo] .opt-pills {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 8px;
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px;
+    }
+    .opt-group[data-quilo] .opt-pill {
+      font-size: .82rem; font-weight: 700;
+      padding: 9px 4px; min-height: 36px; text-align: center;
+      border-radius: 6px;
+    }
+    .opt-group[data-quilo] .opt-pill.sel {
+      box-shadow: 0 0 0 2px rgba(229,25,107,.25);
+    }
+    /* Custom weight input row */
+    .quilo-custom-row {
+      grid-column: 1/-1; display: none;
+      align-items: center; gap: 8px;
+      margin-top: 10px; padding-top: 10px;
+      border-top: 1px solid var(--border);
+    }
+    .quilo-custom-row.visible { display: flex; }
+    .quilo-custom-label {
+      font-size: .75rem; font-weight: 600; color: var(--muted); flex-shrink: 0;
+    }
+    .quilo-custom-input {
+      flex: 1; min-width: 0; max-width: 90px;
+      border: 1px solid var(--border); border-radius: 6px;
+      padding: 7px 10px; font-size: .9rem; font-weight: 700;
+      font-family: 'Plus Jakarta Sans', sans-serif; color: var(--text);
+      background: #fff; transition: border-color .15s;
+      -moz-appearance: textfield;
+    }
+    .quilo-custom-input::-webkit-outer-spin-button,
+    .quilo-custom-input::-webkit-inner-spin-button { -webkit-appearance: none; }
+    .quilo-custom-input:focus { outline: none; border-color: var(--pk); }
+    .quilo-custom-unit { font-size: .82rem; font-weight: 600; color: var(--muted); flex-shrink: 0; }
+    .quilo-custom-ok {
+      background: var(--pk); color: #fff; border: none; border-radius: 6px;
+      padding: 7px 14px; font-size: .78rem; font-weight: 700; cursor: pointer;
+      font-family: 'Plus Jakarta Sans', sans-serif; flex-shrink: 0;
+      transition: background .15s;
+    }
+    .quilo-custom-ok:hover { background: var(--pk-dark); }
+    @media (max-width: 380px) {
+      .opt-group[data-quilo] .opt-pills { gap: 4px; }
+      .opt-group[data-quilo] .opt-pill  { padding: 8px 2px; font-size: .76rem; }
     }
 
-    /* ── Bolo reference card (gallery tabs + upload) ─────────── */
+    /* ── Bolo reference selector (professional) ──────────────── */
     .bolo-ref-card {
-      margin-top: 18px;
-      border-radius: 16px;
-      border: 1.5px solid var(--border);
-      background: var(--surface);
+      margin-top: 16px;
+      border: 1px solid #e2e5e9;
+      border-radius: 10px;
+      background: #fff;
       overflow: hidden;
-      box-shadow: var(--shadow-sm);
     }
-    .bolo-ref-card-header {
-      display: flex; align-items: center; gap: 10px;
-      padding: 14px 16px 0;
-    }
-    .brc-header-icon  { font-size: 1.4rem; line-height: 1; flex-shrink: 0; }
-    .brc-header-title { font-size: .88rem; font-weight: 800; color: var(--text); }
-    .brc-header-sub   { font-size: .7rem; color: var(--muted); font-weight: 500; margin-top: 2px; }
-
+    /* Tab bar */
     .bolo-ref-tabs {
-      display: flex; margin: 12px 0 0;
-      border-bottom: 1.5px solid var(--border);
-      padding: 0 4px;
+      display: flex;
+      border-bottom: 1px solid #e2e5e9;
+      background: #f8f9fa;
     }
     .bolo-ref-tab {
-      flex: 1; padding: 9px 4px 10px;
+      flex: 1; padding: 10px 6px;
       background: none; border: none; cursor: pointer;
-      font-size: .75rem; font-weight: 700; color: var(--muted);
+      font-size: .73rem; font-weight: 600; color: #6b7280;
       font-family: 'Plus Jakarta Sans', sans-serif;
-      border-bottom: 2.5px solid transparent;
-      margin-bottom: -1.5px;
-      transition: color .15s, border-color .15s;
-      text-align: center; white-space: nowrap;
+      border-bottom: 2px solid transparent;
+      display: flex; align-items: center; justify-content: center; gap: 5px;
+      transition: color .15s, background .15s, border-color .15s;
+      letter-spacing: .01em;
     }
-    .bolo-ref-tab.active { color: var(--pk); border-bottom-color: var(--pk); }
-    .bolo-ref-tab:hover:not(.active) { color: var(--text); }
-    .bolo-ref-panel { padding: 12px 14px 14px; }
+    .bolo-ref-tab:hover:not(.active) { background: #f1f3f5; color: #374151; }
+    .bolo-ref-tab.active {
+      background: #fff; color: var(--pk);
+      border-bottom-color: var(--pk); font-weight: 700;
+    }
+    .bolo-ref-panel { padding: 14px; }
 
-    /* Gallery grid inside each panel */
+    /* Gallery grid — image cards with overlay title */
     .ref-gallery-grid {
-      display: grid; grid-template-columns: repeat(2, 1fr); gap: 9px;
+      display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px;
     }
     .ref-gallery-card {
-      border-radius: 12px; overflow: hidden;
-      border: 2px solid var(--border); cursor: pointer;
-      position: relative; background: var(--bg);
-      transition: border-color .15s, transform .12s, box-shadow .15s;
+      border-radius: 8px; overflow: hidden;
+      border: 1.5px solid #e2e5e9; cursor: pointer;
+      position: relative; background: #f3f4f6;
+      transition: border-color .15s, box-shadow .15s;
       -webkit-tap-highlight-color: transparent;
     }
-    .ref-gallery-card:active { transform: scale(.96); }
-    .ref-gallery-card:hover  { border-color: var(--pk); box-shadow: 0 4px 14px rgba(229,25,107,.13); }
+    .ref-gallery-card:hover  {
+      border-color: var(--pk);
+      box-shadow: 0 0 0 3px rgba(229,25,107,.1);
+    }
+    .ref-gallery-card:active { opacity: .88; }
     .ref-gallery-card.sel-ref {
-      border-color: var(--pk); border-width: 2.5px;
-      box-shadow: 0 0 0 3px rgba(229,25,107,.16);
+      border-color: var(--pk); border-width: 2px;
+      box-shadow: 0 0 0 3px rgba(229,25,107,.18);
     }
-    .ref-gallery-card img { width:100%; aspect-ratio:1/1; object-fit:cover; display:block; }
-    .ref-gallery-card-name {
-      font-size: .7rem; font-weight: 700; color: var(--text);
-      padding: 5px 8px 7px; text-align: center;
+    .ref-gallery-card img {
+      width: 100%; aspect-ratio: 1/1; object-fit: cover; display: block;
+    }
+    /* dark gradient overlay with title */
+    .ref-card-overlay {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      background: linear-gradient(to top, rgba(0,0,0,.72) 0%, transparent 100%);
+      padding: 18px 8px 7px;
+    }
+    .ref-card-title {
+      font-size: .67rem; font-weight: 600; color: #fff;
       overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-      background: var(--surface);
+      letter-spacing: .01em;
     }
-    .ref-gallery-card-check {
-      position: absolute; top: 7px; right: 7px;
-      width: 24px; height: 24px; border-radius: 50%;
-      background: var(--pk); color: #fff;
+    /* check badge when selected */
+    .ref-card-check {
+      position: absolute; top: 6px; right: 6px;
+      width: 22px; height: 22px; border-radius: 50%;
+      background: var(--pk); color: #fff; border: 2px solid #fff;
       display: none; align-items: center; justify-content: center;
-      font-size: .72rem; box-shadow: 0 2px 6px rgba(0,0,0,.22);
+      font-size: .65rem; font-weight: 700;
+      box-shadow: 0 1px 4px rgba(0,0,0,.3);
     }
-    .ref-gallery-card.sel-ref .ref-gallery-card-check { display: flex; }
+    .ref-gallery-card.sel-ref .ref-card-check { display: flex; }
     .ref-gallery-empty {
       grid-column: 1/-1; text-align: center;
-      padding: 22px 0; color: var(--muted); font-size: .8rem; font-weight: 600;
+      padding: 28px 0; color: #9ca3af;
+      font-size: .8rem; font-weight: 500;
     }
+    .ref-gallery-empty i { display: block; font-size: 1.6rem; margin-bottom: 6px; opacity: .5; }
 
     /* Upload panel */
-    .ref-upload-area {
-      border: 2px dashed var(--border); border-radius: 12px;
-      padding: 22px 14px 18px; text-align: center; cursor: pointer;
-      transition: border-color .18s, background .18s; background: var(--bg);
+    .ref-upload-label {
+      display: flex; flex-direction: column; align-items: center;
+      gap: 6px; padding: 24px 14px 20px;
+      border: 1.5px dashed #d1d5db; border-radius: 8px;
+      cursor: pointer; text-align: center;
+      background: #fafafa;
+      transition: border-color .18s, background .18s;
     }
-    .ref-upload-area:hover { border-color: var(--pk); background: var(--pk-soft); }
-    .ref-up-icon { font-size: 2.1rem; color: var(--muted); display: block; margin-bottom: 8px; }
-    .ref-upload-title { font-size: .84rem; font-weight: 700; color: var(--text); }
-    .ref-upload-sub   { font-size: .7rem; color: var(--muted); margin-top: 3px; }
-    .ref-upload-hint  {
-      font-size: .71rem; color: var(--muted); font-weight: 500;
-      margin: 8px 0 0; display: flex; align-items: center; gap: 5px;
+    .ref-upload-label:hover { border-color: var(--pk); background: var(--pk-soft); }
+    .ref-upload-label i { font-size: 1.8rem; color: #9ca3af; }
+    .ref-upload-label strong { font-size: .84rem; font-weight: 700; color: #111827; }
+    .ref-upload-label span  { font-size: .7rem; color: #9ca3af; }
+    .ref-upload-hint {
+      display: flex; align-items: center; gap: 6px; margin-top: 10px;
+      font-size: .7rem; color: #9ca3af; font-weight: 500;
     }
 
-    /* Selected photo bar */
+    /* Selected bar — shown at bottom when photo/model is chosen */
     .ref-selected-bar {
       margin: 0 14px 14px;
-      background: color-mix(in srgb, var(--pk) 6%, #fff);
-      border: 1.5px solid color-mix(in srgb, var(--pk) 22%, transparent);
-      border-radius: 12px; padding: 10px 12px;
       display: flex; align-items: center; gap: 10px;
-      animation: refSlideIn .22s ease;
-    }
-    @keyframes refSlideIn {
-      from { opacity:0; transform:translateY(-5px); }
-      to   { opacity:1; transform:translateY(0); }
+      padding: 10px 12px; border-radius: 8px;
+      background: #f0fdf4; border: 1px solid #bbf7d0;
     }
     .ref-selected-thumb {
-      width: 48px; height: 48px; border-radius: 9px;
-      object-fit: cover; flex-shrink: 0; border: 2px solid var(--pk);
+      width: 44px; height: 44px; border-radius: 6px;
+      object-fit: cover; flex-shrink: 0; border: 1px solid #d1d5db;
     }
-    .ref-selected-info { flex:1; min-width:0; }
+    .ref-selected-info { flex: 1; min-width: 0; }
     .ref-selected-type {
-      font-size: .62rem; font-weight: 800; color: var(--pk);
-      text-transform: uppercase; letter-spacing: .07em;
+      font-size: .62rem; font-weight: 700; color: #15803d;
+      text-transform: uppercase; letter-spacing: .06em;
     }
     .ref-selected-name {
-      font-size: .8rem; font-weight: 700; color: var(--text);
-      overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-top: 2px;
+      font-size: .79rem; font-weight: 600; color: #111827;
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-top: 1px;
     }
     .ref-remove-btn {
       background: none; border: none; cursor: pointer; flex-shrink: 0;
-      color: var(--muted); font-size: 1rem; padding: 4px; transition: color .15s;
+      color: #9ca3af; font-size: .85rem; padding: 4px; transition: color .15s;
     }
-    .ref-remove-btn:hover { color: var(--pk); }
-    .opt-group[data-quilo] .opt-pill {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 3px;
-      padding: 10px 4px;
-      min-height: 58px;
-      border-radius: 10px;
-      font-size: 1rem;
-      font-weight: 700;
-      text-align: center;
-      line-height: 1;
-    }
-    .opt-group[data-quilo] .opt-pill .qp-weight {
-      font-size: .95rem;
-      font-weight: 800;
-    }
-    .opt-group[data-quilo] .opt-pill .qp-hint {
-      font-size: .65rem;
-      font-weight: 500;
-      opacity: .72;
-      line-height: 1.2;
-    }
-    .opt-group[data-quilo] .opt-pill.sel {
-      border-width: 2.5px;
-      box-shadow: 0 0 0 3px rgba(209,120,66,.2);
-    }
-    @media (max-width: 380px) {
-      .opt-group[data-quilo] .opt-pills { grid-template-columns: repeat(4, 1fr); gap: 5px; }
-      .opt-group[data-quilo] .opt-pill { padding: 8px 2px; min-height: 52px; }
-      .opt-group[data-quilo] .opt-pill .qp-weight { font-size: .82rem; }
-      .opt-group[data-quilo] .opt-pill .qp-hint   { font-size: .6rem; }
-    }
+    .ref-remove-btn:hover { color: #ef4444; }
 
   </style>
 </head>
@@ -1698,23 +1710,24 @@ function selectCat(slug, rowEl) {
 
   const isBolo = ['bolo-tradicional', 'bolo-especial', 'bolo-super'].includes(slug);
 
-  // Bolo: combined gallery-tabs + upload card
+  // Bolo: reference card (professional tab layout)
   const boloRefCard = isBolo ? `
     <div class="bolo-ref-card">
-      <div class="bolo-ref-card-header">
-        <span class="brc-header-icon">📸</span>
-        <div>
-          <div class="brc-header-title">Referência de modelo</div>
-          <div class="brc-header-sub">Escolha do nosso catálogo ou envie sua própria foto</div>
-        </div>
-      </div>
+
+      <!-- Tab bar -->
       <div class="bolo-ref-tabs">
-        <button class="bolo-ref-tab active" onclick="switchRefTab('bolo',this)">🎂 Modelos</button>
-        <button class="bolo-ref-tab"        onclick="switchRefTab('topo',this)">⭐ Topos</button>
-        <button class="bolo-ref-tab"        onclick="switchRefTab('upload',this)">📷 Minha foto</button>
+        <button class="bolo-ref-tab active" onclick="switchRefTab('bolo',this)">
+          <i class="bi bi-grid-3x3-gap-fill"></i> Modelos
+        </button>
+        <button class="bolo-ref-tab" onclick="switchRefTab('topo',this)">
+          <i class="bi bi-stars"></i> Topos
+        </button>
+        <button class="bolo-ref-tab" onclick="switchRefTab('upload',this)">
+          <i class="bi bi-upload"></i> Minha foto
+        </button>
       </div>
 
-      <!-- Panel: Modelos de bolo -->
+      <!-- Panel: Catálogo de modelos de bolo -->
       <div class="bolo-ref-panel" id="ref-panel-bolo">
         <div id="bolo-gallery" class="ref-gallery-grid">
           <div class="ref-gallery-empty">
@@ -1723,7 +1736,7 @@ function selectCat(slug, rowEl) {
         </div>
       </div>
 
-      <!-- Panel: Modelos de topo -->
+      <!-- Panel: Topos de bolo -->
       <div class="bolo-ref-panel" id="ref-panel-topo" style="display:none">
         <div id="topo-gallery" class="ref-gallery-grid">
           <div class="ref-gallery-empty">
@@ -1732,30 +1745,30 @@ function selectCat(slug, rowEl) {
         </div>
       </div>
 
-      <!-- Panel: Upload da foto própria -->
+      <!-- Panel: Upload de foto própria -->
       <div class="bolo-ref-panel" id="ref-panel-upload" style="display:none">
-        <div class="ref-upload-area" onclick="document.getElementById('bolo-photo-input').click()">
-          <i class="bi bi-cloud-arrow-up ref-up-icon"></i>
-          <div class="ref-upload-title">Toque para enviar sua foto</div>
-          <div class="ref-upload-sub">Modelo, topo ou inspiração — JPG, PNG ou WEBP</div>
-        </div>
+        <label class="ref-upload-label" for="bolo-photo-input">
+          <i class="bi bi-cloud-arrow-up"></i>
+          <strong>Selecionar imagem do dispositivo</strong>
+          <span>JPG · PNG · WEBP</span>
+        </label>
         <input type="file" id="bolo-photo-input" accept="image/*" style="display:none"
                onchange="previewBoloPhoto(this)">
         <p class="ref-upload-hint">
           <i class="bi bi-whatsapp" style="color:#25d366"></i>
-          Envie também pelo WhatsApp após o pedido para confirmarmos
+          Você também pode enviar pelo WhatsApp após finalizar o pedido
         </p>
       </div>
 
-      <!-- Barra de selecionado (aparece quando algo é escolhido) -->
+      <!-- Barra de confirmação (aparece ao selecionar qualquer referência) -->
       <div id="ref-selected-bar" class="ref-selected-bar" style="display:none">
         <img id="bolo-photo-img" class="ref-selected-thumb" src="" alt="">
         <div class="ref-selected-info">
           <div id="ref-selected-type" class="ref-selected-type"></div>
           <div id="bolo-photo-label"  class="ref-selected-name"></div>
         </div>
-        <button class="ref-remove-btn" onclick="removeBoloPhoto(event)" title="Remover seleção">
-          <i class="bi bi-x-circle-fill"></i>
+        <button class="ref-remove-btn" onclick="removeBoloPhoto(event)" title="Remover">
+          <i class="bi bi-x-lg"></i>
         </button>
       </div>
     </div>` : '';
@@ -1864,27 +1877,11 @@ function renderOptGroup(group, data) {
   </label>`;
 
   if (usePills) {
-    // Dicas de porção para o seletor de quilo
-    const QUILO_HINTS = {
-      '500g':'~4 fatias','700g':'~6 fatias','1kg':'~10 fatias',
-      '1,5kg':'~15 fatias','2kg':'~20 fatias','2,5kg':'~25 fatias',
-      '3kg':'~30 fatias','4kg':'~40 fatias'
-    };
-
     const pills = items.map((item, idx) => {
       const skip    = isSkipValue(item.name);
-      // Sempre pré-seleciona o primeiro pill para ter valor definido
       const autoSel = idx === 0 ? (skip ? ' sel-skip' : ' sel') : '';
-      if (group === 'Quilo') {
-        const hint = QUILO_HINTS[item.name] || '';
-        return `<button type="button" class="opt-pill${autoSel}"
-          data-value="${esc(item.name)}" onclick="selectPill(this)">
-          <span class="qp-weight">${item.name}</span>
-          ${hint ? `<span class="qp-hint">${hint}</span>` : ''}
-        </button>`;
-      }
       return `<button type="button" class="opt-pill${autoSel}"
-        data-value="${esc(item.name)}" onclick="selectPill(this)">${item.name}</button>`;
+        data-value="${esc(item.name)}" onclick="selectPill(this)">${esc(item.name)}</button>`;
     }).join('');
 
     const opts = items.map((i, idx) =>
@@ -1892,9 +1889,26 @@ function renderOptGroup(group, data) {
     ).join('');
 
     const quiloAttr = group === 'Quilo' ? ' data-quilo="1"' : '';
+
+    // Quilo: adiciona botão "Outro" + campo de peso personalizado
+    const quiloExtra = group === 'Quilo' ? `
+      <button type="button" class="opt-pill" style="grid-column:span 2;font-size:.75rem;font-weight:600;color:var(--muted)"
+        onclick="_toggleQuiloCustom(this)">
+        <i class="bi bi-pencil" style="font-size:.7rem"></i> Outro peso
+      </button>
+      <div class="quilo-custom-row" id="quilo-custom-row">
+        <span class="quilo-custom-label">Peso:</span>
+        <input type="number" step="0.1" min="0.5" max="20"
+               class="quilo-custom-input" id="quilo-custom-input"
+               placeholder="1.2"
+               onkeydown="if(event.key==='Enter')_applyQuiloCustom()">
+        <span class="quilo-custom-unit">kg</span>
+        <button class="quilo-custom-ok" onclick="_applyQuiloCustom()">OK</button>
+      </div>` : '';
+
     return `<div class="opt-group" data-pills="1"${quiloAttr}${recheioAttr}${salgadoAttr}>
       ${label}
-      <div class="opt-pills">${pills}</div>
+      <div class="opt-pills">${pills}${quiloExtra}</div>
       <select class="opt-sel" data-group="${esc(group)}" style="display:none">${opts}</select>
     </div>`;
   }
@@ -2407,7 +2421,8 @@ async function _loadGallerySection(galleryId, panelId, tag, photoType) {
     const res  = await fetch(`/api/catalog-images?tag=${encodeURIComponent(tag)}`);
     const imgs = await res.json();
     if (!imgs.length) {
-      galleryEl.innerHTML = `<div class="ref-gallery-empty">Nenhum modelo cadastrado ainda</div>`;
+      galleryEl.innerHTML = `<div class="ref-gallery-empty">
+        <i class="bi bi-images"></i>Nenhum modelo cadastrado ainda</div>`;
       return;
     }
     galleryEl.innerHTML = imgs.map(img => `
@@ -2415,12 +2430,50 @@ async function _loadGallerySection(galleryId, panelId, tag, photoType) {
            onclick="selectGalleryPhoto('${esc(img.image_url)}','${esc(img.title)}','${photoType}',this)">
         <img src="${esc(img.image_url)}" alt="${esc(img.title)}" loading="lazy" draggable="false"
              onerror="this.closest('.ref-gallery-card').remove()">
-        <div class="ref-gallery-card-name">${esc(img.title)}</div>
-        <div class="ref-gallery-card-check"><i class="bi bi-check2"></i></div>
+        <div class="ref-card-overlay">
+          <div class="ref-card-title">${esc(img.title)}</div>
+        </div>
+        <div class="ref-card-check"><i class="bi bi-check-lg"></i></div>
       </div>`).join('');
   } catch(e) {
     galleryEl.innerHTML = `<div class="ref-gallery-empty">Erro ao carregar modelos</div>`;
   }
+}
+
+/* ── Quilo custom weight ────────────────────────────────────────────────── */
+function _toggleQuiloCustom(triggerBtn) {
+  const row = document.getElementById('quilo-custom-row');
+  if (!row) return;
+  const visible = row.classList.toggle('visible');
+  if (visible) {
+    const inp = document.getElementById('quilo-custom-input');
+    if (inp) inp.focus();
+  }
+}
+
+function _applyQuiloCustom() {
+  const inp = document.getElementById('quilo-custom-input');
+  const row = document.getElementById('quilo-custom-row');
+  const grp = document.querySelector('.opt-group[data-quilo]');
+  if (!inp || !grp) return;
+  const raw = parseFloat(String(inp.value).replace(',', '.'));
+  if (isNaN(raw) || raw < 0.1 || raw > 20) { inp.focus(); return; }
+  // Formata o label
+  const label = raw < 1
+    ? `${Math.round(raw * 1000)}g`
+    : `${String(raw).replace('.', ',')}kg`;
+  // Desmarca todos os pills e marca o "Outro"
+  grp.querySelectorAll('.opt-pill').forEach(p => p.classList.remove('sel', 'sel-skip'));
+  const trigger = grp.querySelector('.opt-pill[onclick*="_toggleQuiloCustom"]');
+  if (trigger) { trigger.classList.add('sel'); trigger.innerHTML = `<i class="bi bi-pencil" style="font-size:.7rem"></i> ${label}`; }
+  // Atualiza o select oculto
+  const sel = grp.querySelector('.opt-sel');
+  if (sel) {
+    let opt = sel.querySelector('option[data-custom]');
+    if (!opt) { opt = document.createElement('option'); opt.dataset.custom = '1'; sel.appendChild(opt); }
+    opt.value = label; opt.textContent = label; sel.value = label;
+  }
+  if (row) row.classList.remove('visible');
 }
 
 /* Tab switcher inside bolo-ref-card */
