@@ -646,13 +646,9 @@
       <i class="bi bi-bar-chart-line"></i> Estatísticas
     </a>
 
-    <a href="#" class="sb-link" id="nav-catalogo"
-       onclick="showSection('catalogo',this);closeSidebar()">
-      <i class="bi bi-images"></i> Catálogo de fotos
-    </a>
     <a href="#" class="sb-link" id="nav-bolos"
        onclick="showSection('bolos',this);closeSidebar()">
-      <i class="bi bi-card-image"></i> Modelos de Bolos
+      <i class="bi bi-card-image"></i> Modelos de Bolos clientes
     </a>
 
     <div class="sb-section">Filtrar por status</div>
@@ -806,85 +802,6 @@
         </div>
       </div>
     </div><!-- /sec-stats -->
-
-    <!-- ══ SEÇÃO CATÁLOGO ════════════════════════════════════════════════ -->
-    <div id="sec-catalogo" class="d-none">
-
-      <!-- Formulário para adicionar imagem -->
-      <div class="add-image-form">
-        <h6 style="font-weight:800;font-size:.9rem;margin-bottom:16px">
-          <i class="bi bi-plus-circle me-2" style="color:var(--pk)"></i>Adicionar foto ao catálogo
-        </h6>
-        <div class="row g-3">
-          <div class="col-md-5">
-            <label class="form-label">Título do modelo</label>
-            <input type="text" id="ci-title" placeholder="Ex: Bolo Florido Rosa">
-          </div>
-          <div class="col-md-4">
-            <label class="form-label">Categoria</label>
-            <select id="ci-tag">
-              <option value="">— Todas as categorias —</option>
-              <option value="bolo-tradicional">Bolo Tradicional</option>
-              <option value="bolo-especial">Bolo Especial</option>
-              <option value="bolo-super">Bolo Super Especial</option>
-              <option value="doces">Doces Tradicionais</option>
-              <option value="doces-finos">Doces Finos</option>
-              <option value="salgados-fritos">Salgados Fritos</option>
-              <option value="salgados-assados">Salgados Assados</option>
-              <option value="salgados-finos">Salgados Finos</option>
-              <option value="combos">Combos</option>
-              <option value="kit-festa">Kits Festa</option>
-              <option value="topo-bolo">⭐ Modelos de Topo</option>
-            </select>
-          </div>
-          <div class="col-md-3 d-flex align-items-end">
-            <button class="btn-save-status w-100" onclick="saveCatalogImage()" id="btn-add-img">
-              <i class="bi bi-cloud-upload"></i> Adicionar
-            </button>
-          </div>
-          <div class="col-12">
-            <label class="form-label">URL da imagem</label>
-            <input type="url" id="ci-url"
-                   placeholder="https://i.imgur.com/exemplo.jpg"
-                   oninput="previewCatalogImg(this.value)">
-            <img id="ci-preview" class="img-preview-thumb" alt="Pré-visualização">
-          </div>
-        </div>
-        <p style="font-size:.74rem;color:var(--muted);margin-top:12px;margin-bottom:0;
-                  display:flex;align-items:flex-start;gap:6px;line-height:1.6">
-          <i class="bi bi-info-circle-fill" style="color:var(--pk);flex-shrink:0;margin-top:2px"></i>
-          Hospede a foto em um serviço de imagens (Imgur, Google Fotos, WhatsApp Web) e cole o link direto aqui.
-          A foto ficará visível para os clientes ao abrir a categoria correspondente.
-        </p>
-      </div>
-
-      <!-- Filtros por categoria -->
-      <div class="cat-tag-filter" id="catalog-tag-filter">
-        <button class="cat-tag-pill sel" data-tag="" onclick="filterCatalog('',this)">Todas</button>
-        <button class="cat-tag-pill" data-tag="bolo-tradicional" onclick="filterCatalog('bolo-tradicional',this)">🎂 Bolo Tradicional</button>
-        <button class="cat-tag-pill" data-tag="bolo-especial"    onclick="filterCatalog('bolo-especial',this)">🎂 Bolo Especial</button>
-        <button class="cat-tag-pill" data-tag="bolo-super"       onclick="filterCatalog('bolo-super',this)">🎂 Bolo Super</button>
-        <button class="cat-tag-pill" data-tag="doces"            onclick="filterCatalog('doces',this)">🍬 Doces</button>
-        <button class="cat-tag-pill" data-tag="doces-finos"      onclick="filterCatalog('doces-finos',this)">💎 Doces Finos</button>
-        <button class="cat-tag-pill" data-tag="salgados-fritos"  onclick="filterCatalog('salgados-fritos',this)">🍗 Salgados Fritos</button>
-        <button class="cat-tag-pill" data-tag="salgados-assados" onclick="filterCatalog('salgados-assados',this)">🥧 Salgados Assados</button>
-        <button class="cat-tag-pill" data-tag="salgados-finos"   onclick="filterCatalog('salgados-finos',this)">🥐 Salgados Finos</button>
-        <button class="cat-tag-pill" data-tag="combos"           onclick="filterCatalog('combos',this)">🎁 Combos</button>
-        <button class="cat-tag-pill" data-tag="kit-festa"        onclick="filterCatalog('kit-festa',this)">🎊 Kits Festa</button>
-        <button class="cat-tag-pill" data-tag="topo-bolo"        onclick="filterCatalog('topo-bolo',this)">⭐ Modelos de Topo</button>
-      </div>
-
-      <!-- Grid de imagens -->
-      <div id="catalog-grid" class="catalog-grid">
-        <div class="col-12">
-          <div class="empty-state">
-            <div class="spinner-border spinner-border-sm text-secondary mb-2"></div>
-            <div>Carregando catálogo...</div>
-          </div>
-        </div>
-      </div>
-
-    </div><!-- /sec-catalogo -->
 
     <!-- ══ SEÇÃO MODELOS DE BOLOS ══════════════════════════════════════════════ -->
     <div id="sec-bolos" class="d-none">
@@ -1049,12 +966,11 @@ function closeSidebar() {
 }
 
 /* ── Section navigation ──────────────────────────────────────────────────── */
-const SECTIONS = ['pedidos', 'stats', 'catalogo', 'bolos'];
+const SECTIONS = ['pedidos', 'stats', 'bolos'];
 const SECTION_TITLES = {
-  pedidos:  '<i class="bi bi-receipt me-1"></i>Pedidos',
-  stats:    '<i class="bi bi-bar-chart-line me-1"></i>Estatísticas',
-  catalogo: '<i class="bi bi-images me-1"></i>Catálogo de fotos',
-  bolos:    '<i class="bi bi-card-image me-1"></i>Modelos de Bolos',
+  pedidos: '<i class="bi bi-receipt me-1"></i>Pedidos',
+  stats:   '<i class="bi bi-bar-chart-line me-1"></i>Estatísticas',
+  bolos:   '<i class="bi bi-card-image me-1"></i>Modelos de Bolos clientes',
 };
 
 function showSection(name, el) {
@@ -1066,7 +982,6 @@ function showSection(name, el) {
   });
   document.getElementById('topbar-title').innerHTML = SECTION_TITLES[name] || SECTION_TITLES.pedidos;
   if (name === 'stats') { stopAutoRefresh(); loadStats(); }
-  else if (name === 'catalogo') { stopAutoRefresh(); loadCatalogImages(); }
   else if (name === 'bolos') { stopAutoRefresh(); loadBoloImages(); }
   else startAutoRefresh();
 }
@@ -1458,122 +1373,6 @@ function toast(msg, type = 'info') {
   div.textContent = msg;
   document.body.appendChild(div);
   setTimeout(() => div.remove(), 2800);
-}
-
-/* ── Catalog management ──────────────────────────────────────────────────── */
-let currentCatalogTag = '';
-
-async function loadCatalogImages() {
-  const grid = document.getElementById('catalog-grid');
-  if (!grid) return;
-  grid.innerHTML = `<div class="col-12"><div class="empty-state">
-    <div class="spinner-border spinner-border-sm text-secondary mb-2"></div>
-    <div>Carregando...</div></div></div>`;
-
-  let url = `${API}/admin/catalog-images`;
-  if (currentCatalogTag) url += `?tag=${encodeURIComponent(currentCatalogTag)}`;
-
-  const res = await apiFetch(url);
-  if (!res) return;
-  const imgs = await res.json();
-
-  if (!imgs.length) {
-    grid.innerHTML = `<div class="col-12"><div class="empty-state">
-      <i class="bi bi-images"></i>Nenhuma foto no catálogo.<br>
-      <small>Adicione imagens acima.</small></div></div>`;
-    return;
-  }
-
-  const CAT_LABELS = {
-    'bolo-tradicional':  '🎂 Bolo Tradicional',
-    'bolo-especial':     '🎂 Bolo Especial',
-    'bolo-super':        '🎂 Bolo Super',
-    'doces':             '🍬 Doces',
-    'doces-finos':       '💎 Doces Finos',
-    'salgados-fritos':   '🍗 Salgados Fritos',
-    'salgados-assados':  '🥧 Salgados Assados',
-    'salgados-finos':    '🥐 Salgados Finos',
-    'combos':            '🎁 Combos',
-    'kit-festa':         '🎊 Kits Festa',
-    'topo-bolo':         '⭐ Modelos de Topo',
-  };
-
-  grid.innerHTML = imgs.map(img => `
-    <div class="catalog-card${img.active ? '' : ' catalog-card-inactive'}">
-      <img src="${esc(img.image_url)}" alt="${esc(img.title)}"
-           loading="lazy"
-           onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%22 height=%22100%22%3E%3Crect fill=%22%23f0eef4%22 width=%22100%22 height=%22100%22/%3E%3Ctext y=%2258%22 x=%2250%22 font-size=%2230%22 text-anchor=%22middle%22%3E🖼️%3C/text%3E%3C/svg%3E'">
-      <button class="catalog-card-del" onclick="deleteCatalogImage(${img.id},this)" title="Remover">
-        <i class="bi bi-trash3"></i>
-      </button>
-      <div class="catalog-card-body">
-        <div class="catalog-card-title" title="${esc(img.title)}">${esc(img.title)}</div>
-        <div class="catalog-card-tag">${img.category_tag ? CAT_LABELS[img.category_tag] || img.category_tag : '—'}</div>
-        <div style="font-size:.65rem;color:var(--muted);margin-top:3px">${img.created_at}</div>
-      </div>
-    </div>`).join('');
-}
-
-function filterCatalog(tag, btn) {
-  currentCatalogTag = tag;
-  document.querySelectorAll('.cat-tag-pill').forEach(p => p.classList.remove('sel'));
-  btn.classList.add('sel');
-  loadCatalogImages();
-}
-
-function previewCatalogImg(url) {
-  const thumb = document.getElementById('ci-preview');
-  if (!thumb) return;
-  if (url && url.startsWith('http')) {
-    thumb.src = url;
-    thumb.style.display = 'block';
-    thumb.onerror = () => { thumb.style.display = 'none'; };
-  } else {
-    thumb.style.display = 'none';
-  }
-}
-
-async function saveCatalogImage() {
-  const title = document.getElementById('ci-title').value.trim();
-  const url   = document.getElementById('ci-url').value.trim();
-  const tag   = document.getElementById('ci-tag').value;
-  const btn   = document.getElementById('btn-add-img');
-
-  if (!title) { toast('Preencha o título da foto.', 'warning'); return; }
-  if (!url)   { toast('Preencha a URL da imagem.', 'warning');  return; }
-
-  btn.disabled = true;
-  btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>Salvando...';
-
-  const res = await apiFetch(`${API}/admin/catalog-images`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ title, image_url: url, category_tag: tag || null }),
-  });
-
-  btn.disabled = false;
-  btn.innerHTML = '<i class="bi bi-cloud-upload"></i> Adicionar';
-
-  if (!res) return;
-  if (res.ok) {
-    document.getElementById('ci-title').value = '';
-    document.getElementById('ci-url').value   = '';
-    document.getElementById('ci-tag').value   = '';
-    document.getElementById('ci-preview').style.display = 'none';
-    toast('✓ Foto adicionada ao catálogo!', 'success');
-    loadCatalogImages();
-  } else {
-    const d = await res.json().catch(() => ({}));
-    toast(d.error || 'Erro ao salvar.', 'danger');
-  }
-}
-
-async function deleteCatalogImage(id, btn) {
-  if (!confirm('Remover esta foto do catálogo?')) return;
-  btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span>';
-  const res = await apiFetch(`${API}/admin/catalog-images/${id}`, { method: 'DELETE' });
-  if (res && res.ok) { toast('Foto removida.', 'warning'); loadCatalogImages(); }
-  else toast('Erro ao remover.', 'danger');
 }
 
 /* ── Modelos de Bolos ─────────────────────────────────────────────────────── */
