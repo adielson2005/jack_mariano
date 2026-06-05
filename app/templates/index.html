@@ -839,47 +839,145 @@
       font-size: .73rem; color: var(--muted); font-weight: 500; margin-top: 2px;
     }
 
-    /* ── Photo upload ────────────────────────────────────────── */
-    .photo-upload-wrap {
-      border: 2px dashed var(--border);
-      border-radius: 12px;
-      padding: 26px 16px 22px;
-      text-align: center;
-      cursor: pointer;
-      transition: border-color .18s, background .18s;
-      background: var(--bg);
-    }
-    .photo-upload-wrap:hover {
-      border-color: var(--pk);
-      background: var(--pk-soft);
-    }
-    .photo-remove-btn {
-      display: inline-flex; align-items: center; gap: 5px;
-      margin: 12px auto 0;
-      background: none; border: 1.5px solid #fecdd9;
-      color: #be123c; font-size: .78rem; font-weight: 600;
-      border-radius: 8px; padding: 5px 14px; cursor: pointer;
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      transition: background .15s;
-    }
-    .photo-remove-btn:hover { background: #fff1f5; }
-    .photo-hint {
-      font-size: .72rem; color: var(--muted); font-weight: 500;
-      margin: 7px 0 0; display: flex; align-items: center; gap: 5px;
-    }
-
     /* ── Recipient card (delivery) ───────────────────────────── */
     .recipient-card {
       border-left: 3px solid #0d9488;
     }
 
     /* ── Quilo weight selector (card grid) ──────────────────── */
-    .opt-group[data-quilo] { grid-column: 1 / -1; }
+    .opt-group[data-quilo] {
+      grid-column: 1 / -1;
+      background: linear-gradient(135deg,#fffbf5 0%,#fff 100%);
+      border: 1.5px solid #fde68a;
+      border-radius: 14px;
+      padding: 14px 14px 16px;
+    }
+    .opt-group[data-quilo] .opt-label { color: #92400e; margin-bottom: 12px; }
     .opt-group[data-quilo] .opt-pills {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
       gap: 8px;
     }
+
+    /* ── Bolo reference card (gallery tabs + upload) ─────────── */
+    .bolo-ref-card {
+      margin-top: 18px;
+      border-radius: 16px;
+      border: 1.5px solid var(--border);
+      background: var(--surface);
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+    }
+    .bolo-ref-card-header {
+      display: flex; align-items: center; gap: 10px;
+      padding: 14px 16px 0;
+    }
+    .brc-header-icon  { font-size: 1.4rem; line-height: 1; flex-shrink: 0; }
+    .brc-header-title { font-size: .88rem; font-weight: 800; color: var(--text); }
+    .brc-header-sub   { font-size: .7rem; color: var(--muted); font-weight: 500; margin-top: 2px; }
+
+    .bolo-ref-tabs {
+      display: flex; margin: 12px 0 0;
+      border-bottom: 1.5px solid var(--border);
+      padding: 0 4px;
+    }
+    .bolo-ref-tab {
+      flex: 1; padding: 9px 4px 10px;
+      background: none; border: none; cursor: pointer;
+      font-size: .75rem; font-weight: 700; color: var(--muted);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      border-bottom: 2.5px solid transparent;
+      margin-bottom: -1.5px;
+      transition: color .15s, border-color .15s;
+      text-align: center; white-space: nowrap;
+    }
+    .bolo-ref-tab.active { color: var(--pk); border-bottom-color: var(--pk); }
+    .bolo-ref-tab:hover:not(.active) { color: var(--text); }
+    .bolo-ref-panel { padding: 12px 14px 14px; }
+
+    /* Gallery grid inside each panel */
+    .ref-gallery-grid {
+      display: grid; grid-template-columns: repeat(2, 1fr); gap: 9px;
+    }
+    .ref-gallery-card {
+      border-radius: 12px; overflow: hidden;
+      border: 2px solid var(--border); cursor: pointer;
+      position: relative; background: var(--bg);
+      transition: border-color .15s, transform .12s, box-shadow .15s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .ref-gallery-card:active { transform: scale(.96); }
+    .ref-gallery-card:hover  { border-color: var(--pk); box-shadow: 0 4px 14px rgba(229,25,107,.13); }
+    .ref-gallery-card.sel-ref {
+      border-color: var(--pk); border-width: 2.5px;
+      box-shadow: 0 0 0 3px rgba(229,25,107,.16);
+    }
+    .ref-gallery-card img { width:100%; aspect-ratio:1/1; object-fit:cover; display:block; }
+    .ref-gallery-card-name {
+      font-size: .7rem; font-weight: 700; color: var(--text);
+      padding: 5px 8px 7px; text-align: center;
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+      background: var(--surface);
+    }
+    .ref-gallery-card-check {
+      position: absolute; top: 7px; right: 7px;
+      width: 24px; height: 24px; border-radius: 50%;
+      background: var(--pk); color: #fff;
+      display: none; align-items: center; justify-content: center;
+      font-size: .72rem; box-shadow: 0 2px 6px rgba(0,0,0,.22);
+    }
+    .ref-gallery-card.sel-ref .ref-gallery-card-check { display: flex; }
+    .ref-gallery-empty {
+      grid-column: 1/-1; text-align: center;
+      padding: 22px 0; color: var(--muted); font-size: .8rem; font-weight: 600;
+    }
+
+    /* Upload panel */
+    .ref-upload-area {
+      border: 2px dashed var(--border); border-radius: 12px;
+      padding: 22px 14px 18px; text-align: center; cursor: pointer;
+      transition: border-color .18s, background .18s; background: var(--bg);
+    }
+    .ref-upload-area:hover { border-color: var(--pk); background: var(--pk-soft); }
+    .ref-up-icon { font-size: 2.1rem; color: var(--muted); display: block; margin-bottom: 8px; }
+    .ref-upload-title { font-size: .84rem; font-weight: 700; color: var(--text); }
+    .ref-upload-sub   { font-size: .7rem; color: var(--muted); margin-top: 3px; }
+    .ref-upload-hint  {
+      font-size: .71rem; color: var(--muted); font-weight: 500;
+      margin: 8px 0 0; display: flex; align-items: center; gap: 5px;
+    }
+
+    /* Selected photo bar */
+    .ref-selected-bar {
+      margin: 0 14px 14px;
+      background: color-mix(in srgb, var(--pk) 6%, #fff);
+      border: 1.5px solid color-mix(in srgb, var(--pk) 22%, transparent);
+      border-radius: 12px; padding: 10px 12px;
+      display: flex; align-items: center; gap: 10px;
+      animation: refSlideIn .22s ease;
+    }
+    @keyframes refSlideIn {
+      from { opacity:0; transform:translateY(-5px); }
+      to   { opacity:1; transform:translateY(0); }
+    }
+    .ref-selected-thumb {
+      width: 48px; height: 48px; border-radius: 9px;
+      object-fit: cover; flex-shrink: 0; border: 2px solid var(--pk);
+    }
+    .ref-selected-info { flex:1; min-width:0; }
+    .ref-selected-type {
+      font-size: .62rem; font-weight: 800; color: var(--pk);
+      text-transform: uppercase; letter-spacing: .07em;
+    }
+    .ref-selected-name {
+      font-size: .8rem; font-weight: 700; color: var(--text);
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-top: 2px;
+    }
+    .ref-remove-btn {
+      background: none; border: none; cursor: pointer; flex-shrink: 0;
+      color: var(--muted); font-size: 1rem; padding: 4px; transition: color .15s;
+    }
+    .ref-remove-btn:hover { color: var(--pk); }
     .opt-group[data-quilo] .opt-pill {
       display: flex;
       flex-direction: column;
@@ -915,12 +1013,6 @@
       .opt-group[data-quilo] .opt-pill .qp-hint   { font-size: .6rem; }
     }
 
-    /* ── Bolo reference sections ─────────────────────────────── */
-    .bolo-ref-section {
-      border-top: 1px solid var(--border);
-      padding-top: 14px;
-      margin-top: 4px;
-    }
   </style>
 </head>
 <body>
@@ -1606,81 +1698,72 @@ function selectCat(slug, rowEl) {
 
   const isBolo = ['bolo-tradicional', 'bolo-especial', 'bolo-super'].includes(slug);
 
-  const gallerySection = isBolo ? `
-    <div id="bolo-gallery-section" style="margin-bottom:14px">
-      <div style="font-size:.6rem;font-weight:700;color:var(--muted);text-transform:uppercase;
-                  letter-spacing:.13em;margin-bottom:9px;display:flex;align-items:center;gap:6px">
-        <span>🖼️</span> Modelos de bolo
-        <span style="font-weight:400;opacity:.7;font-size:.6rem">(toque para selecionar)</span>
-      </div>
-      <div id="bolo-gallery"
-           style="display:flex;gap:8px;overflow-x:auto;padding-bottom:8px;
-                  scroll-snap-type:x mandatory;scrollbar-width:thin;
-                  -webkit-overflow-scrolling:touch">
-        <div style="color:var(--muted);font-size:.78rem;padding:10px 0;display:flex;align-items:center;gap:7px">
-          <span class="spinner-border spinner-border-sm spinner-pk"></span> Carregando...
+  // Bolo: combined gallery-tabs + upload card
+  const boloRefCard = isBolo ? `
+    <div class="bolo-ref-card">
+      <div class="bolo-ref-card-header">
+        <span class="brc-header-icon">📸</span>
+        <div>
+          <div class="brc-header-title">Referência de modelo</div>
+          <div class="brc-header-sub">Escolha do nosso catálogo ou envie sua própria foto</div>
         </div>
       </div>
-    </div>
-    <div id="topo-gallery-section" style="margin-bottom:14px">
-      <div style="font-size:.6rem;font-weight:700;color:var(--muted);text-transform:uppercase;
-                  letter-spacing:.13em;margin-bottom:9px;display:flex;align-items:center;gap:6px">
-        <span>⭐</span> Modelos de topo
-        <span style="font-weight:400;opacity:.7;font-size:.6rem">(toque para selecionar)</span>
+      <div class="bolo-ref-tabs">
+        <button class="bolo-ref-tab active" onclick="switchRefTab('bolo',this)">🎂 Modelos</button>
+        <button class="bolo-ref-tab"        onclick="switchRefTab('topo',this)">⭐ Topos</button>
+        <button class="bolo-ref-tab"        onclick="switchRefTab('upload',this)">📷 Minha foto</button>
       </div>
-      <div id="topo-gallery"
-           style="display:flex;gap:8px;overflow-x:auto;padding-bottom:8px;
-                  scroll-snap-type:x mandatory;scrollbar-width:thin;
-                  -webkit-overflow-scrolling:touch">
-        <div style="color:var(--muted);font-size:.78rem;padding:10px 0;display:flex;align-items:center;gap:7px">
-          <span class="spinner-border spinner-border-sm spinner-pk"></span> Carregando...
-        </div>
-      </div>
-    </div>` : '';
 
-  const photoUpload = isBolo ? `
-    <div style="margin-bottom:14px">
-      <div style="font-size:.6rem;font-weight:700;color:var(--muted);text-transform:uppercase;
-                  letter-spacing:.13em;margin-bottom:9px;display:flex;align-items:center;gap:6px">
-        <span>📷</span> Sua foto de referência
-        <span style="font-weight:400;opacity:.7;font-size:.6rem">(modelo ou topo — opcional)</span>
-      </div>
-      <div class="photo-upload-wrap" id="bolo-photo-wrap"
-           onclick="document.getElementById('bolo-photo-input').click()"
-           style="padding:16px 12px 14px">
-        <div id="bolo-photo-empty">
-          <i class="bi bi-cloud-upload"
-             style="font-size:1.6rem;color:var(--muted);display:block;margin-bottom:6px"></i>
-          <span style="font-size:.82rem;font-weight:600;color:var(--muted)">
-            Toque para enviar foto do modelo ou do topo desejado
-          </span>
-          <span style="font-size:.7rem;color:var(--muted);display:block;margin-top:3px">
-            JPG, PNG ou WEBP
-          </span>
-        </div>
-        <div id="bolo-photo-preview" class="d-none" style="text-align:center">
-          <img id="bolo-photo-img" src="" alt="Referência"
-               style="max-width:100%;max-height:150px;border-radius:10px;
-                      object-fit:contain;display:block;margin:0 auto">
-          <div id="bolo-photo-label"
-               style="font-size:.72rem;color:var(--muted);font-weight:600;margin-top:5px"></div>
-          <button type="button" class="photo-remove-btn" onclick="removeBoloPhoto(event)">
-            <i class="bi bi-x-circle-fill"></i> Remover
-          </button>
+      <!-- Panel: Modelos de bolo -->
+      <div class="bolo-ref-panel" id="ref-panel-bolo">
+        <div id="bolo-gallery" class="ref-gallery-grid">
+          <div class="ref-gallery-empty">
+            <span class="spinner-border spinner-border-sm spinner-pk me-2"></span>Carregando...
+          </div>
         </div>
       </div>
-      <input type="file" id="bolo-photo-input" accept="image/*" style="display:none"
-             onchange="previewBoloPhoto(this)">
-      <p class="photo-hint" style="margin-top:6px">
-        <i class="bi bi-whatsapp" style="color:#25d366"></i>
-        Após o pedido, envie a foto pelo WhatsApp para confirmarmos o modelo/topo
-      </p>
+
+      <!-- Panel: Modelos de topo -->
+      <div class="bolo-ref-panel" id="ref-panel-topo" style="display:none">
+        <div id="topo-gallery" class="ref-gallery-grid">
+          <div class="ref-gallery-empty">
+            <span class="spinner-border spinner-border-sm spinner-pk me-2"></span>Carregando...
+          </div>
+        </div>
+      </div>
+
+      <!-- Panel: Upload da foto própria -->
+      <div class="bolo-ref-panel" id="ref-panel-upload" style="display:none">
+        <div class="ref-upload-area" onclick="document.getElementById('bolo-photo-input').click()">
+          <i class="bi bi-cloud-arrow-up ref-up-icon"></i>
+          <div class="ref-upload-title">Toque para enviar sua foto</div>
+          <div class="ref-upload-sub">Modelo, topo ou inspiração — JPG, PNG ou WEBP</div>
+        </div>
+        <input type="file" id="bolo-photo-input" accept="image/*" style="display:none"
+               onchange="previewBoloPhoto(this)">
+        <p class="ref-upload-hint">
+          <i class="bi bi-whatsapp" style="color:#25d366"></i>
+          Envie também pelo WhatsApp após o pedido para confirmarmos
+        </p>
+      </div>
+
+      <!-- Barra de selecionado (aparece quando algo é escolhido) -->
+      <div id="ref-selected-bar" class="ref-selected-bar" style="display:none">
+        <img id="bolo-photo-img" class="ref-selected-thumb" src="" alt="">
+        <div class="ref-selected-info">
+          <div id="ref-selected-type" class="ref-selected-type"></div>
+          <div id="bolo-photo-label"  class="ref-selected-name"></div>
+        </div>
+        <button class="ref-remove-btn" onclick="removeBoloPhoto(event)" title="Remover seleção">
+          <i class="bi bi-x-circle-fill"></i>
+        </button>
+      </div>
     </div>` : '';
 
   wrap.innerHTML = `
     <div class="opts-inner">
       <div class="opts-groups-grid">${groupsHtml}</div>
-      ${isBolo ? `<div class="bolo-ref-section">${gallerySection}${photoUpload}</div>` : ''}
+      ${boloRefCard}
       <div class="qty-note-row">
         <div class="qty-col">
           <label><i class="bi bi-hash"></i> Qtd.</label>
@@ -2313,50 +2396,64 @@ function resetForm() {
 
 /* ── Galeria de referências da confeitaria (bolos + topos) ──────────────── */
 async function _loadBoloGallery(slug) {
-  // Galeria de modelos do bolo (filtrada pelo slug atual)
-  await _loadGallerySection('bolo-gallery', 'bolo-gallery-section', slug, 'modelo');
-  // Galeria de modelos de topo (sempre usa tag fixa 'topo-bolo')
-  await _loadGallerySection('topo-gallery', 'topo-gallery-section', 'topo-bolo', 'topo');
+  await _loadGallerySection('bolo-gallery', 'ref-panel-bolo', slug,      'modelo');
+  await _loadGallerySection('topo-gallery', 'ref-panel-topo', 'topo-bolo','topo');
 }
 
-async function _loadGallerySection(galleryId, sectionId, tag, photoType) {
+async function _loadGallerySection(galleryId, panelId, tag, photoType) {
   const galleryEl = document.getElementById(galleryId);
-  const sectionEl = document.getElementById(sectionId);
-  if (!galleryEl || !sectionEl) return;
+  if (!galleryEl) return;
   try {
     const res  = await fetch(`/api/catalog-images?tag=${encodeURIComponent(tag)}`);
     const imgs = await res.json();
-    if (!imgs.length) { sectionEl.style.display = 'none'; return; }
+    if (!imgs.length) {
+      galleryEl.innerHTML = `<div class="ref-gallery-empty">Nenhum modelo cadastrado ainda</div>`;
+      return;
+    }
     galleryEl.innerHTML = imgs.map(img => `
-      <div onclick="selectGalleryPhoto('${esc(img.image_url)}','${esc(img.title)}','${photoType}')"
-           style="flex-shrink:0;scroll-snap-align:start;cursor:pointer;text-align:center">
+      <div class="ref-gallery-card"
+           onclick="selectGalleryPhoto('${esc(img.image_url)}','${esc(img.title)}','${photoType}',this)">
         <img src="${esc(img.image_url)}" alt="${esc(img.title)}" loading="lazy" draggable="false"
-             style="width:88px;height:88px;object-fit:cover;border-radius:10px;
-                    border:2.5px solid var(--border);display:block;
-                    transition:border-color .16s,transform .16s,box-shadow .16s"
-             onmouseover="this.style.borderColor='var(--accent,#e5196b)';this.style.transform='scale(1.05)';this.style.boxShadow='0 4px 12px rgba(0,0,0,.14)'"
-             onmouseout="this.style.borderColor='var(--border)';this.style.transform='scale(1)';this.style.boxShadow='none'"
-             onerror="this.closest('div').remove()">
-        <div style="font-size:.66rem;color:var(--muted);margin-top:4px;max-width:88px;
-                    overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
-                    font-weight:500">${esc(img.title)}</div>
+             onerror="this.closest('.ref-gallery-card').remove()">
+        <div class="ref-gallery-card-name">${esc(img.title)}</div>
+        <div class="ref-gallery-card-check"><i class="bi bi-check2"></i></div>
       </div>`).join('');
   } catch(e) {
-    sectionEl.style.display = 'none';
+    galleryEl.innerHTML = `<div class="ref-gallery-empty">Erro ao carregar modelos</div>`;
   }
 }
 
-function selectGalleryPhoto(url, title, photoType) {
-  const typeLabel = photoType === 'topo' ? '⭐ Topo: ' : '🖼️ Modelo: ';
+/* Tab switcher inside bolo-ref-card */
+function switchRefTab(tab, btn) {
+  document.querySelectorAll('.bolo-ref-tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  ['bolo','topo','upload'].forEach(id => {
+    const p = document.getElementById('ref-panel-' + id);
+    if (p) p.style.display = id === tab ? '' : 'none';
+  });
+}
+
+/* Show the selected-bar with thumb + label */
+function _showRefSelectedBar(url, title, typeLabel) {
+  const bar  = document.getElementById('ref-selected-bar');
+  const img  = document.getElementById('bolo-photo-img');
+  const type = document.getElementById('ref-selected-type');
+  const lbl  = document.getElementById('bolo-photo-label');
+  if (!bar) return;
+  if (img)  img.src = url;
+  if (type) type.textContent = typeLabel;
+  if (lbl)  lbl.textContent  = title;
+  bar.style.display = 'flex';
+}
+
+function selectGalleryPhoto(url, title, photoType, cardEl) {
   orderModelPhoto = { type: 'gallery', photoType: photoType || 'modelo', url, title };
-  const img     = document.getElementById('bolo-photo-img');
-  const empty   = document.getElementById('bolo-photo-empty');
-  const preview = document.getElementById('bolo-photo-preview');
-  const label   = document.getElementById('bolo-photo-label');
-  if (img)     img.src = url;
-  if (label)   label.textContent = typeLabel + title;
-  if (empty)   empty.classList.add('d-none');
-  if (preview) preview.classList.remove('d-none');
+  // Marca visual na galeria
+  document.querySelectorAll('.ref-gallery-card').forEach(c => c.classList.remove('sel-ref'));
+  if (cardEl) cardEl.classList.add('sel-ref');
+  // Barra de selecionado
+  const typeLabel = photoType === 'topo' ? '⭐ Topo selecionado' : '🎂 Modelo selecionado';
+  _showRefSelectedBar(url, title, typeLabel);
   toast(`✓ ${photoType === 'topo' ? 'Topo' : 'Modelo'} selecionado como referência`, 'success');
 }
 
@@ -2365,25 +2462,19 @@ function previewBoloPhoto(input) {
   orderModelPhoto = { type: 'file', file: input.files[0] };
   const reader = new FileReader();
   reader.onload = e => {
-    const img = document.getElementById('bolo-photo-img');
-    const empty = document.getElementById('bolo-photo-empty');
-    const preview = document.getElementById('bolo-photo-preview');
-    if (img) img.src = e.target.result;
-    if (empty) empty.classList.add('d-none');
-    if (preview) preview.classList.remove('d-none');
+    _showRefSelectedBar(e.target.result, input.files[0].name || 'Minha foto', '📷 Sua foto enviada');
   };
   reader.readAsDataURL(input.files[0]);
 }
 
 function removeBoloPhoto(e) {
-  e.stopPropagation();
+  if (e) e.stopPropagation();
   orderModelPhoto = null;
   const inp = document.getElementById('bolo-photo-input');
   if (inp) inp.value = '';
-  document.getElementById('bolo-photo-empty')?.classList.remove('d-none');
-  document.getElementById('bolo-photo-preview')?.classList.add('d-none');
-  const lbl = document.getElementById('bolo-photo-label');
-  if (lbl) lbl.textContent = '';
+  document.querySelectorAll('.ref-gallery-card').forEach(c => c.classList.remove('sel-ref'));
+  const bar = document.getElementById('ref-selected-bar');
+  if (bar) bar.style.display = 'none';
 }
 
 /* ── Toast ──────────────────────────────────────────────────────────────── */
