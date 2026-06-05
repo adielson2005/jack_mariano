@@ -648,7 +648,7 @@
 
     <a href="#" class="sb-link" id="nav-bolos"
        onclick="showSection('bolos',this);closeSidebar()">
-      <i class="bi bi-card-image"></i> Modelos de Bolos clientes
+      <i class="bi bi-card-image"></i> Catálogo de Modelos
     </a>
 
     <div class="sb-section">Filtrar por status</div>
@@ -809,24 +809,30 @@
       <!-- Tab card: tabs + add form -->
       <div class="bm-card">
 
-        <!-- Tab bar -->
+        <!-- Tab bar (todas as categorias) -->
         <div class="bm-tabs">
           <button class="bm-tab active" data-tag="bolo-tradicional"
-                  onclick="switchBoloTab('bolo-tradicional',this)">
-            🎂 Tradicional
-          </button>
+                  onclick="switchBoloTab('bolo-tradicional',this)">🎂 Bolo Tradicional</button>
           <button class="bm-tab" data-tag="bolo-especial"
-                  onclick="switchBoloTab('bolo-especial',this)">
-            🎂 Especial
-          </button>
+                  onclick="switchBoloTab('bolo-especial',this)">🎂 Bolo Especial</button>
           <button class="bm-tab" data-tag="bolo-super"
-                  onclick="switchBoloTab('bolo-super',this)">
-            🎂 Super Especial
-          </button>
+                  onclick="switchBoloTab('bolo-super',this)">🎂 Super Especial</button>
           <button class="bm-tab" data-tag="topo-bolo"
-                  onclick="switchBoloTab('topo-bolo',this)">
-            ⭐ Topos de Bolo
-          </button>
+                  onclick="switchBoloTab('topo-bolo',this)">⭐ Topos de Bolo</button>
+          <button class="bm-tab" data-tag="doces"
+                  onclick="switchBoloTab('doces',this)">🍬 Doces</button>
+          <button class="bm-tab" data-tag="doces-finos"
+                  onclick="switchBoloTab('doces-finos',this)">💎 Doces Finos</button>
+          <button class="bm-tab" data-tag="salgados-fritos"
+                  onclick="switchBoloTab('salgados-fritos',this)">🍗 Fritos</button>
+          <button class="bm-tab" data-tag="salgados-assados"
+                  onclick="switchBoloTab('salgados-assados',this)">🥧 Assados</button>
+          <button class="bm-tab" data-tag="salgados-finos"
+                  onclick="switchBoloTab('salgados-finos',this)">🥐 Finos</button>
+          <button class="bm-tab" data-tag="combos"
+                  onclick="switchBoloTab('combos',this)">🎁 Combos</button>
+          <button class="bm-tab" data-tag="kit-festa"
+                  onclick="switchBoloTab('kit-festa',this)">🎊 Kit Festa</button>
         </div>
 
         <!-- Add form -->
@@ -835,6 +841,7 @@
             <i class="bi bi-plus-circle" style="color:var(--pk);font-size:1rem"></i>
             Adicionar modelo
             <span id="bm-active-cat" class="bm-cat-badge">🎂 Bolo Tradicional</span>
+            <small style="color:var(--muted);font-weight:400;font-size:.72rem;margin-left:4px">A foto será adicionada na aba selecionada acima</small>
           </div>
           <div class="row g-3">
             <div class="col-md-5">
@@ -970,7 +977,7 @@ const SECTIONS = ['pedidos', 'stats', 'bolos'];
 const SECTION_TITLES = {
   pedidos: '<i class="bi bi-receipt me-1"></i>Pedidos',
   stats:   '<i class="bi bi-bar-chart-line me-1"></i>Estatísticas',
-  bolos:   '<i class="bi bi-card-image me-1"></i>Modelos de Bolos clientes',
+  bolos:   '<i class="bi bi-card-image me-1"></i>Catálogo de Modelos',
 };
 
 function showSection(name, el) {
@@ -1379,10 +1386,17 @@ function toast(msg, type = 'info') {
 let currentBoloTag = 'bolo-tradicional';
 
 const BOLO_CAT_LABELS = {
-  'bolo-tradicional': '🎂 Bolo Tradicional',
-  'bolo-especial':    '🎂 Bolo Especial',
-  'bolo-super':       '🎂 Bolo Super Especial',
-  'topo-bolo':        '⭐ Topos de Bolo',
+  'bolo-tradicional':  '🎂 Bolo Tradicional',
+  'bolo-especial':     '🎂 Bolo Especial',
+  'bolo-super':        '🎂 Super Especial',
+  'topo-bolo':         '⭐ Topos de Bolo',
+  'doces':             '🍬 Doces',
+  'doces-finos':       '💎 Doces Finos',
+  'salgados-fritos':   '🍗 Salgados Fritos',
+  'salgados-assados':  '🥧 Salgados Assados',
+  'salgados-finos':    '🥐 Salgados Finos',
+  'combos':            '🎁 Combos',
+  'kit-festa':         '🎊 Kit Festa',
 };
 
 function switchBoloTab(tag, btn) {

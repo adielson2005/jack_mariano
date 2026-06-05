@@ -909,6 +909,22 @@
       .opt-group[data-quilo] .opt-pill  { padding: 8px 2px; font-size: .76rem; }
     }
 
+    /* ── Galeria de referência genérica (doces, salgados, etc) ──── */
+    .cat-ref-card {
+      margin-top: 14px;
+      border: 1px solid #e2e5e9;
+      border-radius: 10px;
+      background: #fff;
+      overflow: hidden;
+    }
+    .cat-ref-header {
+      padding: 10px 14px 9px;
+      font-size: .76rem; font-weight: 700; color: #555;
+      border-bottom: 1px solid #eee;
+      background: #f8f9fa;
+      display: flex; align-items: center; gap: 6px;
+    }
+
     /* ── Bolo reference selector (professional) ──────────────── */
     .bolo-ref-card {
       margin-top: 16px;
@@ -1729,6 +1745,15 @@ function selectCat(slug, rowEl) {
 
   const isBolo = ['bolo-tradicional', 'bolo-especial', 'bolo-super'].includes(slug);
 
+  // Categorias não-bolo: galeria de referência simples (fotos de exemplo)
+  const catRefCard = !isBolo ? `
+    <div class="cat-ref-card" id="cat-ref-${slug}" style="display:none">
+      <div class="cat-ref-header">
+        <i class="bi bi-images"></i> Fotos de referência disponíveis
+      </div>
+      <div id="cat-ref-gallery-${slug}" class="ref-gallery-grid" style="padding:10px 10px 6px"></div>
+    </div>` : '';
+
   // Bolo: reference card (professional tab layout)
   const boloRefCard = isBolo ? `
     <div class="bolo-ref-card">
@@ -1798,7 +1823,7 @@ function selectCat(slug, rowEl) {
         <i class="bi bi-arrow-left"></i> Voltar
       </button>
       <div class="opts-groups-grid">${groupsHtml}</div>
-      ${boloRefCard}
+      ${boloRefCard}${catRefCard}
       <div class="qty-note-row">
         <div class="qty-col">
           <label><i class="bi bi-hash"></i> Qtd.</label>
@@ -1816,8 +1841,10 @@ function selectCat(slug, rowEl) {
 
   // Kit Festa: opções aparecem só após escolher o kit (inclui seletor de recheio interno)
   if (slug === 'kit-festa') _setupKitFesta(slug);
-  // Bolo: carrega galeria de referências da confeitaria
+  // Bolo: carrega galeria de referências (modelos + topos)
   if (isBolo) _loadBoloGallery(slug);
+  // Outras categorias: carrega galeria de referência simples
+  else _loadCatGallery(slug);
 
   wrap.classList.add('open');
   setTimeout(() => rowEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 60);
@@ -2467,6 +2494,28 @@ async function _loadGallerySection(galleryId, panelId, tag, photoType) {
   } catch(e) {
     galleryEl.innerHTML = `<div class="ref-gallery-empty">Erro ao carregar modelos</div>`;
   }
+}
+
+/* ── Galeria de referência genérica (doces, salgados, etc.) ───────────── */
+async function _loadCatGallery(slug) {
+  const card    = document.getElementById('cat-ref-' + slug);
+  const gallery = document.getElementById('cat-ref-gallery-' + slug);
+  if (!card || !gallery) return;
+  try {
+    const res  = await fetch(`/api/catalog-images?tag=${encodeURIComponent(slug)}`);
+    const imgs = await res.json();
+    if (!imgs.length) return; // sem fotos → mantém card oculto
+    card.style.display = 'block';
+    gallery.innerHTML = imgs.map(img => `
+      <div class="ref-gallery-card ref-gallery-card--view"
+           onclick="this.classList.toggle('sel-ref')">
+        <img src="${esc(img.image_url)}" alt="${esc(img.title)}" loading="lazy" draggable="false"
+             onerror="this.closest('.ref-gallery-card').remove()">
+        <div class="ref-card-overlay">
+          <div class="ref-card-title">${esc(img.title)}</div>
+        </div>
+      </div>`).join('');
+  } catch(e) {}
 }
 
 /* ── Quilo custom weight ────────────────────────────────────────────────── */
