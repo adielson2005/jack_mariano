@@ -919,10 +919,13 @@
     }
     .cat-ref-header {
       padding: 10px 14px 9px;
-      font-size: .76rem; font-weight: 700; color: #555;
+      font-size: .75rem; font-weight: 700; color: #555;
       border-bottom: 1px solid #eee;
       background: #f8f9fa;
       display: flex; align-items: center; gap: 6px;
+    }
+    .cat-ref-hint {
+      font-size: .7rem; color: #999; font-weight: 400; margin-left: auto;
     }
 
     /* ── Bolo reference selector (professional) ──────────────── */
@@ -1749,9 +1752,11 @@ function selectCat(slug, rowEl) {
   const catRefCard = !isBolo ? `
     <div class="cat-ref-card" id="cat-ref-${slug}" style="display:none">
       <div class="cat-ref-header">
-        <i class="bi bi-images"></i> Fotos de referência disponíveis
+        <i class="bi bi-images" style="color:var(--accent,var(--pk))"></i>
+        Modelos disponíveis
+        <span class="cat-ref-hint">Toque para visualizar</span>
       </div>
-      <div id="cat-ref-gallery-${slug}" class="ref-gallery-grid" style="padding:10px 10px 6px"></div>
+      <div id="cat-ref-gallery-${slug}" class="ref-gallery-grid" style="padding:10px 10px 8px"></div>
     </div>` : '';
 
   // Bolo: reference card (professional tab layout)

@@ -126,7 +126,7 @@ def create_catalog_image():
     from app.models import CatalogImage
     data      = request.get_json(silent=True) or {}
     title     = str(data.get("title", "")).strip()[:200]
-    image_url = str(data.get("image_url", "")).strip()[:2000]
+    image_url = str(data.get("image_url", "")).strip()   # base64 data URL — sem limite
     tag       = str(data.get("category_tag", "")).strip()[:50] or None
 
     if not title or not image_url:

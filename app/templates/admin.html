@@ -575,18 +575,43 @@
       padding: 3px 10px; border-radius: 20px;
       white-space: nowrap;
     }
-    .bm-add-form input {
+    .bm-add-form input[type="text"] {
       width: 100%; border: 1.5px solid var(--border); border-radius: 10px;
       font-family: inherit; font-size: .855rem; color: var(--text);
       background: var(--bg); padding: 9px 12px; outline: none;
       transition: border-color .18s;
     }
-    .bm-add-form input:focus { border-color: var(--pk); }
-    .bm-add-form input::placeholder { color: #c5c1d4; }
+    .bm-add-form input[type="text"]:focus { border-color: var(--pk); }
+    .bm-add-form input[type="text"]::placeholder { color: #c5c1d4; }
     .bm-add-form .form-label {
       font-size: .74rem; font-weight: 700; color: var(--muted);
       text-transform: uppercase; letter-spacing: .08em;
       margin-bottom: 6px; display: block;
+    }
+
+    /* Upload area */
+    .bm-upload-area {
+      border: 2px dashed var(--border);
+      border-radius: 10px; padding: 18px 14px;
+      text-align: center; cursor: pointer;
+      transition: border-color .15s, background .15s;
+      background: var(--bg);
+      display: flex; flex-direction: column; align-items: center; gap: 4px;
+      color: var(--muted); font-size: .845rem; user-select: none;
+    }
+    .bm-upload-area:hover { border-color: var(--pk); color: var(--text); background: var(--pk-soft); }
+    .bm-upload-area i { font-size: 1.7rem; margin-bottom: 2px; }
+    .bm-upload-hint { font-size: .7rem; color: var(--muted); }
+
+    /* Tab group separators */
+    .bm-tab-sep {
+      width: 1px; background: var(--border);
+      margin: 8px 4px; flex-shrink: 0; align-self: stretch;
+    }
+    .bm-tab-grp {
+      font-size: .6rem; text-transform: uppercase; letter-spacing: .1em;
+      color: var(--muted); padding: 14px 8px 0 6px; flex-shrink: 0;
+      align-self: flex-start; font-weight: 700;
     }
 
     .bm-grid-header {
@@ -809,66 +834,74 @@
       <!-- Tab card: tabs + add form -->
       <div class="bm-card">
 
-        <!-- Tab bar (todas as categorias) -->
+        <!-- Tab bar — agrupada por categoria -->
         <div class="bm-tabs">
+          <span class="bm-tab-grp">Bolos</span>
           <button class="bm-tab active" data-tag="bolo-tradicional"
-                  onclick="switchBoloTab('bolo-tradicional',this)">🎂 Bolo Tradicional</button>
+                  onclick="switchBoloTab('bolo-tradicional',this)">🎂 Tradicional</button>
           <button class="bm-tab" data-tag="bolo-especial"
-                  onclick="switchBoloTab('bolo-especial',this)">🎂 Bolo Especial</button>
+                  onclick="switchBoloTab('bolo-especial',this)">🎂 Especial</button>
           <button class="bm-tab" data-tag="bolo-super"
                   onclick="switchBoloTab('bolo-super',this)">🎂 Super Especial</button>
           <button class="bm-tab" data-tag="topo-bolo"
-                  onclick="switchBoloTab('topo-bolo',this)">⭐ Topos de Bolo</button>
+                  onclick="switchBoloTab('topo-bolo',this)">⭐ Topos</button>
+
+          <div class="bm-tab-sep"></div>
+          <span class="bm-tab-grp">Doces</span>
           <button class="bm-tab" data-tag="doces"
-                  onclick="switchBoloTab('doces',this)">🍬 Doces</button>
+                  onclick="switchBoloTab('doces',this)">🍬 Tradicionais</button>
           <button class="bm-tab" data-tag="doces-finos"
-                  onclick="switchBoloTab('doces-finos',this)">💎 Doces Finos</button>
+                  onclick="switchBoloTab('doces-finos',this)">💎 Finos</button>
+
+          <div class="bm-tab-sep"></div>
+          <span class="bm-tab-grp">Salgados</span>
           <button class="bm-tab" data-tag="salgados-fritos"
                   onclick="switchBoloTab('salgados-fritos',this)">🍗 Fritos</button>
           <button class="bm-tab" data-tag="salgados-assados"
                   onclick="switchBoloTab('salgados-assados',this)">🥧 Assados</button>
           <button class="bm-tab" data-tag="salgados-finos"
                   onclick="switchBoloTab('salgados-finos',this)">🥐 Finos</button>
+
+          <div class="bm-tab-sep"></div>
+          <span class="bm-tab-grp">Outros</span>
           <button class="bm-tab" data-tag="combos"
                   onclick="switchBoloTab('combos',this)">🎁 Combos</button>
           <button class="bm-tab" data-tag="kit-festa"
                   onclick="switchBoloTab('kit-festa',this)">🎊 Kit Festa</button>
         </div>
 
-        <!-- Add form -->
+        <!-- Formulário de upload -->
         <div class="bm-add-form">
           <div class="bm-add-header">
             <i class="bi bi-plus-circle" style="color:var(--pk);font-size:1rem"></i>
-            Adicionar modelo
+            Adicionar foto
             <span id="bm-active-cat" class="bm-cat-badge">🎂 Bolo Tradicional</span>
-            <small style="color:var(--muted);font-weight:400;font-size:.72rem;margin-left:4px">A foto será adicionada na aba selecionada acima</small>
           </div>
-          <div class="row g-3">
+          <div class="row g-3 align-items-start">
             <div class="col-md-5">
-              <label class="form-label">Título do modelo</label>
+              <label class="form-label">Nome / título da foto</label>
               <input type="text" id="bm-title" placeholder="Ex: Bolo Florido Rosa">
             </div>
             <div class="col-md-4">
-              <label class="form-label">URL da imagem</label>
-              <input type="url" id="bm-url"
-                     placeholder="https://i.imgur.com/exemplo.jpg"
-                     oninput="previewBoloImg(this.value)">
+              <label class="form-label">Imagem</label>
+              <div class="bm-upload-area" id="bm-upload-area"
+                   onclick="document.getElementById('bm-file-input').click()">
+                <i class="bi bi-cloud-arrow-up"></i>
+                <div>Clique para selecionar</div>
+                <div class="bm-upload-hint">JPG · PNG · WEBP — máx. 8 MB</div>
+              </div>
+              <input type="file" id="bm-file-input" accept="image/jpeg,image/png,image/webp"
+                     style="display:none" onchange="onBoloFileChange(this)">
             </div>
             <div class="col-md-3 d-flex align-items-end">
               <button class="btn-save-status w-100" onclick="saveBoloImage()" id="btn-add-bolo">
                 <i class="bi bi-plus-lg"></i> Adicionar
               </button>
             </div>
-            <div class="col-12">
-              <img id="bm-preview" class="img-preview-thumb" alt="Pré-visualização">
+            <div class="col-12" id="bm-preview-wrap" style="display:none">
+              <img id="bm-preview" class="img-preview-thumb" alt="Pré-visualização" style="display:block">
             </div>
           </div>
-          <p style="font-size:.74rem;color:var(--muted);margin-top:12px;margin-bottom:0;
-                    display:flex;align-items:flex-start;gap:6px;line-height:1.6">
-            <i class="bi bi-info-circle-fill" style="color:var(--pk);flex-shrink:0;margin-top:2px"></i>
-            Cole o link direto de uma imagem hospedada no Imgur, Google Fotos ou WhatsApp Web.
-            A foto ficará disponível para os clientes escolherem como referência para o bolo.
-          </p>
         </div>
 
       </div><!-- /bm-card -->
@@ -1448,33 +1481,76 @@ async function loadBoloImages() {
     </div>`).join('');
 }
 
-function previewBoloImg(url) {
-  const thumb = document.getElementById('bm-preview');
-  if (!thumb) return;
-  if (url && url.startsWith('http')) {
-    thumb.src = url;
-    thumb.style.display = 'block';
-    thumb.onerror = () => { thumb.style.display = 'none'; };
-  } else {
-    thumb.style.display = 'none';
-  }
+/* imagem escolhida (base64 comprimida via Canvas) */
+let _boloImageBase64 = null;
+
+function onBoloFileChange(input) {
+  const file = input.files[0];
+  if (!file) return;
+  if (!file.type.startsWith('image/')) { toast('Selecione um arquivo de imagem.', 'warning'); return; }
+  if (file.size > 8 * 1024 * 1024)    { toast('Imagem muito grande. Máximo 8 MB.', 'warning'); return; }
+
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const img = new Image();
+    img.onload = function() {
+      /* Redimensiona para no máximo 900px, converte para JPEG 82% */
+      const MAX = 900;
+      let w = img.width, h = img.height;
+      if (w > MAX || h > MAX) {
+        if (w >= h) { h = Math.round(h * MAX / w); w = MAX; }
+        else        { w = Math.round(w * MAX / h); h = MAX; }
+      }
+      const canvas = document.createElement('canvas');
+      canvas.width = w; canvas.height = h;
+      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+      _boloImageBase64 = canvas.toDataURL('image/jpeg', 0.82);
+
+      /* Mostra preview */
+      const preview = document.getElementById('bm-preview');
+      const wrap    = document.getElementById('bm-preview-wrap');
+      if (preview) preview.src = _boloImageBase64;
+      if (wrap)    wrap.style.display = 'block';
+
+      /* Atualiza área de upload */
+      const area = document.getElementById('bm-upload-area');
+      if (area) area.innerHTML = `
+        <i class="bi bi-check-circle-fill" style="color:#22c55e;font-size:1.5rem"></i>
+        <div style="font-weight:700;font-size:.82rem;color:var(--text)">${esc(file.name)}</div>
+        <div class="bm-upload-hint">${w}×${h}px &nbsp;·&nbsp; Clique para trocar</div>`;
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+function _resetBoloUploadArea() {
+  _boloImageBase64 = null;
+  const area = document.getElementById('bm-upload-area');
+  if (area) area.innerHTML = `
+    <i class="bi bi-cloud-arrow-up"></i>
+    <div>Clique para selecionar</div>
+    <div class="bm-upload-hint">JPG · PNG · WEBP — máx. 8 MB</div>`;
+  const wrap = document.getElementById('bm-preview-wrap');
+  if (wrap) wrap.style.display = 'none';
+  const fi = document.getElementById('bm-file-input');
+  if (fi) fi.value = '';
 }
 
 async function saveBoloImage() {
   const title = document.getElementById('bm-title').value.trim();
-  const url   = document.getElementById('bm-url').value.trim();
   const btn   = document.getElementById('btn-add-bolo');
 
-  if (!title) { toast('Preencha o título do modelo.', 'warning'); return; }
-  if (!url)   { toast('Preencha a URL da imagem.', 'warning');  return; }
+  if (!title)            { toast('Preencha o nome/título da foto.', 'warning'); return; }
+  if (!_boloImageBase64) { toast('Selecione uma imagem antes de adicionar.', 'warning'); return; }
 
   btn.disabled = true;
-  btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>Salvando...';
+  btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>Enviando...';
 
   const res = await apiFetch(`${API}/admin/catalog-images`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ title, image_url: url, category_tag: currentBoloTag }),
+    body: JSON.stringify({ title, image_url: _boloImageBase64, category_tag: currentBoloTag }),
   });
 
   btn.disabled = false;
@@ -1483,9 +1559,8 @@ async function saveBoloImage() {
   if (!res) return;
   if (res.ok) {
     document.getElementById('bm-title').value = '';
-    document.getElementById('bm-url').value   = '';
-    document.getElementById('bm-preview').style.display = 'none';
-    toast('✓ Modelo adicionado com sucesso!', 'success');
+    _resetBoloUploadArea();
+    toast('✓ Foto adicionada com sucesso!', 'success');
     loadBoloImages();
   } else {
     const d = await res.json().catch(() => ({}));
