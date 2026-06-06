@@ -1465,31 +1465,6 @@
       </div>
     </div>
 
-    <!-- ── Bloco 5: Forma de pagamento ──────────────────────────── -->
-    <div class="form-section-head">
-      <div class="form-section-icon">💳</div>
-      <div>
-        <div class="form-section-title">Forma de pagamento</div>
-        <div class="form-section-sub">Como você prefere pagar seu pedido</div>
-      </div>
-    </div>
-    <div class="form-card mb-4">
-      <div class="form-card-body">
-        <div class="payment-toggle">
-          <button type="button" id="btn-pix" class="pay-btn active" onclick="setPayment('pix')">
-            <i class="bi bi-qr-code"></i>
-            <span>PIX</span>
-            <small>Pagamento na hora</small>
-          </button>
-          <button type="button" id="btn-cartao" class="pay-btn" onclick="setPayment('cartao')">
-            <i class="bi bi-credit-card"></i>
-            <span>Cartão</span>
-            <small>Na retirada / entrega</small>
-          </button>
-        </div>
-      </div>
-    </div>
-
     <div id="form-error" class="alert alert-danger mt-3 d-none" role="alert"></div>
     <button class="btn btn-pk w-100 py-3 mt-1 mb-2" onclick="submitOrder()" id="btn-submit"
             style="font-size:1rem;border-radius:14px;font-weight:800;letter-spacing:.01em">
@@ -1519,54 +1494,6 @@
         </p>
       </div>
 
-      <!-- Progresso de passos -->
-      <div class="confirm-steps">
-        <div class="cs-step done">
-          <div class="cs-dot"><i class="bi bi-check-lg"></i></div>
-          <div class="cs-label">Pedido<br>enviado</div>
-        </div>
-        <div class="cs-connector done"></div>
-        <div class="cs-step active">
-          <div class="cs-dot">2</div>
-          <div class="cs-label" id="cs-pay-label">Pagamento</div>
-        </div>
-        <div class="cs-connector"></div>
-        <div class="cs-step pending">
-          <div class="cs-dot">3</div>
-          <div class="cs-label">Confirmação<br>pela loja</div>
-        </div>
-      </div>
-
-      <!-- Bloco PIX -->
-      <div id="pix-block">
-        <div class="pix-info-card">
-          <div class="pix-info-title"><i class="bi bi-qr-code me-2"></i>Pague via PIX</div>
-          <div class="pix-label-tag">Chave PIX — Telefone</div>
-          <div class="pix-key-value" id="pix-key-display">(94) 98423-9253</div>
-          <button class="btn-copy-pix" id="btn-copy-pix" onclick="copyPixKey()">
-            <i class="bi bi-clipboard me-1"></i> Copiar chave PIX
-          </button>
-          <p class="pix-hint">
-            <i class="bi bi-info-circle-fill me-1"></i>
-            Após pagar, envie o comprovante pelo WhatsApp para agilizar a confirmação
-          </p>
-        </div>
-      </div>
-
-      <!-- Bloco Cartão -->
-      <div id="cartao-block" style="display:none">
-        <div class="cartao-info-card">
-          <i class="bi bi-credit-card-fill" style="font-size:1.8rem;color:#3b82f6;margin-bottom:8px;display:block"></i>
-          <div class="cartao-title">Pagamento no cartão</div>
-          <div class="cartao-sub">Pague na hora da retirada ou na entrega</div>
-          <div class="cartao-flags">
-            <span>💳 Débito</span>
-            <span>💳 Crédito</span>
-            <span>🍽️ Vale</span>
-          </div>
-        </div>
-      </div>
-
       <!-- Lembrete de foto -->
       <div id="photo-reminder" class="photo-reminder-card d-none">
         <i class="bi bi-image-fill"></i>
@@ -1580,7 +1507,7 @@
       </a>
       <p class="wa-hint">
         <i class="bi bi-info-circle me-1"></i>
-        Toque no botão acima — seu pedido já está pré-preenchido, só enviar
+        Seu pedido já está pré-preenchido — só enviar para a loja
       </p>
 
       <!-- Ações secundárias -->
@@ -1623,29 +1550,7 @@ let selectedCat     = null;
 let sacola          = [];
 let bagOpen         = false;
 let deliveryType    = 'retirada';
-let paymentMethod   = 'pix';              // 'pix' | 'cartao'
 let orderModelPhoto = null;               // foto de referência selecionada pelo cliente
-
-const PIX_KEY = '(94) 98423-9253';       // chave PIX da loja
-
-function setPayment(method) {
-  paymentMethod = method;
-  document.getElementById('btn-pix').classList.toggle('active', method === 'pix');
-  document.getElementById('btn-cartao').classList.toggle('active', method === 'cartao');
-}
-
-function copyPixKey() {
-  const key = document.getElementById('pix-key-display')?.textContent?.trim() || PIX_KEY;
-  navigator.clipboard.writeText(key).then(() => {
-    const btn = document.getElementById('btn-copy-pix');
-    if (btn) {
-      btn.innerHTML = '<i class="bi bi-check-lg me-1"></i> Chave copiada!';
-      setTimeout(() => {
-        btn.innerHTML = '<i class="bi bi-clipboard me-1"></i> Copiar chave PIX';
-      }, 2500);
-    }
-  }).catch(() => toast('Não foi possível copiar. Copie manualmente: ' + PIX_KEY, 'warning'));
-}
 
 /* ── Steps ──────────────────────────────────────────────────────────────── */
 function setStep(n) {
@@ -2588,9 +2493,6 @@ async function submitOrder() {
 
   // ── Monta payload ──────────────────────────────────────────────────────
   let notesVal = document.getElementById('f-notes').value.trim();
-  // Inclui a forma de pagamento nas notas para o admin
-  const payLabel = paymentMethod === 'pix' ? '💰 Pagamento: PIX' : '💳 Pagamento: Cartão';
-  notesVal = notesVal ? payLabel + '\n' + notesVal : payLabel;
 
   if (orderModelPhoto) {
     let photoNote;
@@ -2636,14 +2538,6 @@ async function submitOrder() {
       _saveToStorage();   // salva dados do cliente para próxima visita
       document.getElementById('order-id-display').textContent = '#' + data.order_id;
       document.getElementById('wa-client-btn').href = data.whatsapp_link;
-
-      // Bloco de pagamento correto no step 3
-      const pixBlock    = document.getElementById('pix-block');
-      const cartaoBlock = document.getElementById('cartao-block');
-      const csPayLabel  = document.getElementById('cs-pay-label');
-      if (pixBlock)    pixBlock.style.display    = paymentMethod === 'pix'    ? '' : 'none';
-      if (cartaoBlock) cartaoBlock.style.display = paymentMethod === 'cartao' ? '' : 'none';
-      if (csPayLabel)  csPayLabel.textContent    = paymentMethod === 'pix' ? 'Pague via PIX' : 'Pague no cartão';
 
       // Lembrete de foto
       const photoReminder = document.getElementById('photo-reminder');
