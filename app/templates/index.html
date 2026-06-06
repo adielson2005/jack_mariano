@@ -547,21 +547,133 @@
       border-radius: 20px; margin: 3px 3px 0 0;
     }
 
-    /* ── Success ─────────────────────────────────────────── */
-    .success-card {
+    /* ── Pagamento (step 2) ──────────────────────────────── */
+    .payment-toggle {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+    }
+    .pay-btn {
+      display: flex; flex-direction: column; align-items: center; gap: 4px;
+      padding: 14px 10px; border: 2px solid var(--border);
+      border-radius: 12px; background: var(--bg);
+      cursor: pointer; transition: all .15s; font-family: inherit;
+    }
+    .pay-btn i    { font-size: 1.5rem; color: var(--muted); }
+    .pay-btn span { font-size: .88rem; font-weight: 700; color: var(--text); }
+    .pay-btn small{ font-size: .68rem; color: var(--muted); }
+    .pay-btn.active                { border-color: var(--pk); background: var(--pk-soft); }
+    .pay-btn.active i, .pay-btn.active span { color: var(--pk); }
+
+    /* ── Confirmação (step 3) ────────────────────────────── */
+    .confirm-card {
       background: var(--surface); border: 1px solid var(--border);
-      border-radius: 16px; padding: 44px 30px; text-align: center;
-      max-width: 440px; margin: 0 auto;
-      box-shadow: var(--shadow-md);
+      border-radius: 18px; padding: 26px 20px 22px;
+      box-shadow: var(--shadow-md); max-width: 460px; margin: 0 auto;
     }
-    .success-icon-wrap {
-      width: 72px; height: 72px; border-radius: 50%;
-      background: var(--pk-soft);
-      border: 1px solid rgba(229,25,107,.2);
-      margin: 0 auto 18px;
+    .confirm-header { text-align: center; margin-bottom: 22px; }
+    .confirm-emoji  { font-size: 2.4rem; line-height: 1; margin-bottom: 8px; }
+    .confirm-title  { font-size: 1.15rem; font-weight: 800; letter-spacing: -.015em; margin-bottom: 4px; }
+    .confirm-sub    { font-size: .84rem; color: var(--muted); font-weight: 500; margin: 0; }
+
+    /* Barra de progresso de passos */
+    .confirm-steps {
+      display: flex; align-items: flex-start;
+      justify-content: center; margin-bottom: 20px;
+    }
+    .cs-step {
+      display: flex; flex-direction: column; align-items: center;
+      gap: 5px; flex: 0 0 76px; text-align: center;
+    }
+    .cs-dot {
+      width: 34px; height: 34px; border-radius: 50%;
       display: flex; align-items: center; justify-content: center;
+      font-size: .82rem; font-weight: 800;
+      border: 2.5px solid var(--border); background: var(--surface); color: var(--muted);
     }
-    .success-emoji { font-size: 2.6rem; line-height: 1; display: block; }
+    .cs-step.done .cs-dot   { background:#22c55e; border-color:#22c55e; color:#fff; }
+    .cs-step.active .cs-dot { background:var(--pk); border-color:var(--pk); color:#fff; }
+    .cs-label { font-size: .64rem; font-weight: 600; color: var(--muted); line-height: 1.35; }
+    .cs-step.done .cs-label   { color: #16a34a; }
+    .cs-step.active .cs-label { color: var(--pk); }
+    .cs-connector {
+      flex: 1; height: 2.5px; background: var(--border); margin-top: 16px;
+    }
+    .cs-connector.done { background: #22c55e; }
+
+    /* Bloco PIX */
+    .pix-info-card {
+      background: linear-gradient(135deg,#f0fdf4,#dcfce7);
+      border: 1.5px solid #86efac; border-radius: 14px;
+      padding: 18px 16px 14px; margin-bottom: 14px; text-align: center;
+    }
+    .pix-info-title { font-size: .82rem; font-weight: 700; color: #15803d; margin-bottom: 10px; }
+    .pix-label-tag  {
+      font-size: .65rem; font-weight: 700; color: #16a34a;
+      text-transform: uppercase; letter-spacing: .12em; margin-bottom: 5px;
+    }
+    .pix-key-value {
+      font-size: 1.12rem; font-weight: 800; color: #14532d;
+      letter-spacing: .03em; margin-bottom: 12px;
+      background: #fff; border-radius: 8px;
+      padding: 8px 16px; display: inline-block; border: 1px solid #bbf7d0;
+    }
+    .btn-copy-pix {
+      background: #16a34a; color: #fff; border: none; border-radius: 9px;
+      padding: 10px 20px; font-family: inherit;
+      font-size: .82rem; font-weight: 700; cursor: pointer;
+      transition: opacity .15s; display: block; width: 100%;
+    }
+    .btn-copy-pix:hover { opacity: .88; }
+    .pix-hint {
+      font-size: .7rem; color: #16a34a; margin-top: 10px; margin-bottom: 0;
+      font-weight: 500; line-height: 1.55;
+    }
+
+    /* Bloco Cartão */
+    .cartao-info-card {
+      background: linear-gradient(135deg,#eff6ff,#dbeafe);
+      border: 1.5px solid #93c5fd; border-radius: 14px;
+      padding: 18px 16px 14px; margin-bottom: 14px; text-align: center;
+    }
+    .cartao-title { font-size: .92rem; font-weight: 800; color: #1d4ed8; margin-bottom: 4px; }
+    .cartao-sub   { font-size: .78rem; color: #3b82f6; font-weight: 500; margin-bottom: 10px; }
+    .cartao-flags {
+      display: flex; justify-content: center; gap: 6px;
+      font-size: .71rem; font-weight: 700; color: #1e40af; flex-wrap: wrap;
+    }
+    .cartao-flags span {
+      background: #fff; border-radius: 6px;
+      padding: 3px 8px; border: 1px solid #bfdbfe;
+    }
+
+    /* Botão WhatsApp grande */
+    .btn-wa-confirm {
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+      background: #25d366; color: #fff !important;
+      border-radius: 13px; padding: 15px 20px;
+      font-family: inherit; font-size: .96rem; font-weight: 800;
+      text-decoration: none; margin-bottom: 6px;
+      box-shadow: 0 4px 18px rgba(37,211,102,.3);
+      transition: opacity .15s;
+    }
+    .btn-wa-confirm:hover { opacity: .9; }
+    .btn-wa-confirm i { font-size: 1.25rem; }
+    .wa-hint { font-size: .7rem; color: var(--muted); text-align: center;
+               font-weight: 500; margin-bottom: 14px; line-height: 1.5; }
+
+    /* Lembrete de foto */
+    .photo-reminder-card {
+      background: #f0fdfa; border: 1.5px solid #99f6e4; border-radius: 10px;
+      padding: 10px 14px; margin-bottom: 12px; font-size: .8rem;
+      font-weight: 600; color: #0f766e;
+      display: flex; align-items: center; gap: 9px;
+    }
+    .photo-reminder-card i { font-size: 1rem; flex-shrink: 0; }
+
+    /* Ações finais */
+    .confirm-actions {
+      display: flex; justify-content: center; align-items: center;
+      gap: 12px; flex-wrap: wrap; margin-top: 6px;
+    }
 
     /* ── Bag no header ───────────────────────────────────── */
     .bag-fab { position: relative; }
@@ -1353,19 +1465,39 @@
       </div>
     </div>
 
-    <div id="form-error" class="alert alert-danger mt-3 d-none" role="alert"></div>
-    <div class="d-flex gap-2 mt-4 mb-2 justify-content-center flex-wrap">
-      <button class="btn btn-pk-outline px-4 py-2" onclick="goStep1()">
-        <i class="bi bi-arrow-left me-1"></i> Voltar
-      </button>
-      <button class="btn btn-pk px-5 py-2" onclick="submitOrder()" id="btn-submit">
-        <i class="bi bi-send-fill me-1"></i> Enviar pedido
-      </button>
+    <!-- ── Bloco 5: Forma de pagamento ──────────────────────────── -->
+    <div class="form-section-head">
+      <div class="form-section-icon">💳</div>
+      <div>
+        <div class="form-section-title">Forma de pagamento</div>
+        <div class="form-section-sub">Como você prefere pagar seu pedido</div>
+      </div>
+    </div>
+    <div class="form-card mb-4">
+      <div class="form-card-body">
+        <div class="payment-toggle">
+          <button type="button" id="btn-pix" class="pay-btn active" onclick="setPayment('pix')">
+            <i class="bi bi-qr-code"></i>
+            <span>PIX</span>
+            <small>Pagamento na hora</small>
+          </button>
+          <button type="button" id="btn-cartao" class="pay-btn" onclick="setPayment('cartao')">
+            <i class="bi bi-credit-card"></i>
+            <span>Cartão</span>
+            <small>Na retirada / entrega</small>
+          </button>
+        </div>
+      </div>
     </div>
 
-    <p class="text-center mt-3" style="font-size:.74rem;color:var(--muted);max-width:400px;margin:12px auto 0;line-height:1.65;font-weight:500">
+    <div id="form-error" class="alert alert-danger mt-3 d-none" role="alert"></div>
+    <button class="btn btn-pk w-100 py-3 mt-1 mb-2" onclick="submitOrder()" id="btn-submit"
+            style="font-size:1rem;border-radius:14px;font-weight:800;letter-spacing:.01em">
+      <i class="bi bi-send-fill me-2"></i> Enviar pedido
+    </button>
+    <p class="text-center" style="font-size:.72rem;color:var(--muted);line-height:1.65;font-weight:500">
       <i class="bi bi-info-circle" style="color:var(--pk);opacity:.7;margin-right:4px"></i>
-      O pedido <strong style="color:var(--text)">não é confirmado automaticamente</strong>. Nossa equipe entrará em contato pelo WhatsApp.
+      Nossa equipe confirmará o pedido pelo WhatsApp após o envio.
     </p>
 
   </div>
@@ -1376,42 +1508,92 @@
 <div id="step3" class="d-none">
   <div class="page">
 
-    <button class="cat-back-btn mb-3" onclick="voltarCorrigir()">
-      <i class="bi bi-arrow-left"></i> Voltar e corrigir
-    </button>
+    <div class="confirm-card">
 
-    <div class="success-card">
-      <div class="success-icon-wrap">
-        <span class="success-emoji">🎉</span>
+      <!-- Cabeçalho -->
+      <div class="confirm-header">
+        <div class="confirm-emoji">🎉</div>
+        <h4 class="confirm-title">Pedido enviado!</h4>
+        <p class="confirm-sub">
+          Pedido <strong id="order-id-display" style="color:var(--pk)">#</strong>
+        </p>
       </div>
-      <h4 style="font-weight:800;font-size:1.15rem;margin-bottom:8px;letter-spacing:-.01em">Pedido enviado!</h4>
-      <p style="font-size:.87rem;color:var(--muted);font-weight:500;line-height:1.7;margin-bottom:20px">
-        O WhatsApp foi aberto com seu pedido completo pré-preenchido.<br>
-        <strong style="color:var(--text)">Só toque em Enviar</strong> para notificar a loja! 📲
-      </p>
-      <div style="background:var(--bg);border-radius:10px;padding:11px 16px;margin-bottom:22px;font-weight:700;font-size:.9rem;border:1px solid var(--border)">
-        Pedido <span id="order-id-display" style="color:var(--pk)">#</span>
+
+      <!-- Progresso de passos -->
+      <div class="confirm-steps">
+        <div class="cs-step done">
+          <div class="cs-dot"><i class="bi bi-check-lg"></i></div>
+          <div class="cs-label">Pedido<br>enviado</div>
+        </div>
+        <div class="cs-connector done"></div>
+        <div class="cs-step active">
+          <div class="cs-dot">2</div>
+          <div class="cs-label" id="cs-pay-label">Pagamento</div>
+        </div>
+        <div class="cs-connector"></div>
+        <div class="cs-step pending">
+          <div class="cs-dot">3</div>
+          <div class="cs-label">Confirmação<br>pela loja</div>
+        </div>
       </div>
-      <a id="wa-client-btn" href="#" target="_blank" rel="noopener"
-         class="btn w-100 fw-bold mb-2"
-         style="background:#25d366;color:#fff;border-radius:12px;font-family:'Plus Jakarta Sans',sans-serif;font-size:.95rem;padding:14px;box-shadow:0 4px 18px rgba(37,211,102,.3)">
-        <i class="bi bi-whatsapp me-2"></i>Abrir WhatsApp &amp; Enviar pedido
+
+      <!-- Bloco PIX -->
+      <div id="pix-block">
+        <div class="pix-info-card">
+          <div class="pix-info-title"><i class="bi bi-qr-code me-2"></i>Pague via PIX</div>
+          <div class="pix-label-tag">Chave PIX — Telefone</div>
+          <div class="pix-key-value" id="pix-key-display">(94) 98423-9253</div>
+          <button class="btn-copy-pix" id="btn-copy-pix" onclick="copyPixKey()">
+            <i class="bi bi-clipboard me-1"></i> Copiar chave PIX
+          </button>
+          <p class="pix-hint">
+            <i class="bi bi-info-circle-fill me-1"></i>
+            Após pagar, envie o comprovante pelo WhatsApp para agilizar a confirmação
+          </p>
+        </div>
+      </div>
+
+      <!-- Bloco Cartão -->
+      <div id="cartao-block" style="display:none">
+        <div class="cartao-info-card">
+          <i class="bi bi-credit-card-fill" style="font-size:1.8rem;color:#3b82f6;margin-bottom:8px;display:block"></i>
+          <div class="cartao-title">Pagamento no cartão</div>
+          <div class="cartao-sub">Pague na hora da retirada ou na entrega</div>
+          <div class="cartao-flags">
+            <span>💳 Débito</span>
+            <span>💳 Crédito</span>
+            <span>🍽️ Vale</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Lembrete de foto -->
+      <div id="photo-reminder" class="photo-reminder-card d-none">
+        <i class="bi bi-image-fill"></i>
+        <span>Você escolheu uma foto de referência — envie pelo WhatsApp após confirmar! 📸</span>
+      </div>
+
+      <!-- Botão WhatsApp -->
+      <a id="wa-client-btn" href="#" target="_blank" rel="noopener" class="btn-wa-confirm">
+        <i class="bi bi-whatsapp"></i>
+        <span>Confirmar pedido pelo WhatsApp</span>
       </a>
-      <!-- Lembrete de foto (visível apenas quando cliente selecionou uma foto) -->
-      <div id="photo-reminder" class="d-none"
-           style="background:#f0fdfa;border:1.5px solid #99f6e4;border-radius:12px;
-                  padding:12px 16px;margin-bottom:14px;
-                  font-size:.82rem;font-weight:600;color:#0f766e;
-                  display:flex;align-items:center;gap:9px">
-        <i class="bi bi-image" style="font-size:1.1rem;flex-shrink:0"></i>
-        <span>Você selecionou uma foto de referência! Envie-a pelo WhatsApp agora mesmo. 📸</span>
+      <p class="wa-hint">
+        <i class="bi bi-info-circle me-1"></i>
+        Toque no botão acima — seu pedido já está pré-preenchido, só enviar
+      </p>
+
+      <!-- Ações secundárias -->
+      <div class="confirm-actions">
+        <button class="btn btn-pk-outline px-4 py-2" onclick="voltarCorrigir()">
+          <i class="bi bi-arrow-left me-1"></i> Corrigir pedido
+        </button>
+        <button class="btn btn-link py-2" style="color:var(--muted);font-size:.82rem;font-weight:600"
+                onclick="resetForm()">
+          Fazer novo pedido
+        </button>
       </div>
-      <button class="btn btn-pk-outline w-100 mt-2 py-2" onclick="voltarCorrigir()">
-        <i class="bi bi-arrow-left me-1"></i> Voltar e corrigir
-      </button>
-      <button class="btn btn-link btn-sm w-100 mt-2 py-1" style="color:var(--muted);font-size:.8rem;font-weight:600" onclick="resetForm()">
-        Fazer novo pedido
-      </button>
+
     </div>
   </div>
 </div>
@@ -1441,7 +1623,29 @@ let selectedCat     = null;
 let sacola          = [];
 let bagOpen         = false;
 let deliveryType    = 'retirada';
-let orderModelPhoto = null;   // arquivo de foto de referência selecionado pelo cliente
+let paymentMethod   = 'pix';              // 'pix' | 'cartao'
+let orderModelPhoto = null;               // foto de referência selecionada pelo cliente
+
+const PIX_KEY = '(94) 98423-9253';       // chave PIX da loja
+
+function setPayment(method) {
+  paymentMethod = method;
+  document.getElementById('btn-pix').classList.toggle('active', method === 'pix');
+  document.getElementById('btn-cartao').classList.toggle('active', method === 'cartao');
+}
+
+function copyPixKey() {
+  const key = document.getElementById('pix-key-display')?.textContent?.trim() || PIX_KEY;
+  navigator.clipboard.writeText(key).then(() => {
+    const btn = document.getElementById('btn-copy-pix');
+    if (btn) {
+      btn.innerHTML = '<i class="bi bi-check-lg me-1"></i> Chave copiada!';
+      setTimeout(() => {
+        btn.innerHTML = '<i class="bi bi-clipboard me-1"></i> Copiar chave PIX';
+      }, 2500);
+    }
+  }).catch(() => toast('Não foi possível copiar. Copie manualmente: ' + PIX_KEY, 'warning'));
+}
 
 /* ── Steps ──────────────────────────────────────────────────────────────── */
 function setStep(n) {
@@ -2384,6 +2588,10 @@ async function submitOrder() {
 
   // ── Monta payload ──────────────────────────────────────────────────────
   let notesVal = document.getElementById('f-notes').value.trim();
+  // Inclui a forma de pagamento nas notas para o admin
+  const payLabel = paymentMethod === 'pix' ? '💰 Pagamento: PIX' : '💳 Pagamento: Cartão';
+  notesVal = notesVal ? payLabel + '\n' + notesVal : payLabel;
+
   if (orderModelPhoto) {
     let photoNote;
     if (orderModelPhoto.type === 'gallery') {
@@ -2428,9 +2636,19 @@ async function submitOrder() {
       _saveToStorage();   // salva dados do cliente para próxima visita
       document.getElementById('order-id-display').textContent = '#' + data.order_id;
       document.getElementById('wa-client-btn').href = data.whatsapp_link;
-      // Mostra lembrete de foto se o cliente selecionou uma imagem
+
+      // Bloco de pagamento correto no step 3
+      const pixBlock    = document.getElementById('pix-block');
+      const cartaoBlock = document.getElementById('cartao-block');
+      const csPayLabel  = document.getElementById('cs-pay-label');
+      if (pixBlock)    pixBlock.style.display    = paymentMethod === 'pix'    ? '' : 'none';
+      if (cartaoBlock) cartaoBlock.style.display = paymentMethod === 'cartao' ? '' : 'none';
+      if (csPayLabel)  csPayLabel.textContent    = paymentMethod === 'pix' ? 'Pague via PIX' : 'Pague no cartão';
+
+      // Lembrete de foto
       const photoReminder = document.getElementById('photo-reminder');
       if (photoReminder) photoReminder.classList.toggle('d-none', !orderModelPhoto);
+
       sacola = []; renderBag(); setStep(3);
       // Abre o WhatsApp automaticamente com o pedido pré-preenchido
       setTimeout(() => { try { window.open(data.whatsapp_link, '_blank'); } catch(e) {} }, 700);
