@@ -341,13 +341,8 @@
     .opt-label {
       font-size: .61rem; font-weight: 700; color: var(--muted);
       text-transform: uppercase; letter-spacing: .13em;
-      margin-bottom: 7px;
+      margin-bottom: 4px;
       display: flex; align-items: center; gap: 6px;
-      flex-wrap: wrap;
-    }
-    .og-label-main {
-      display: flex; align-items: center; gap: 4px;
-      flex: 1 1 0; min-width: 0;
     }
     .opt-label::before {
       content: '';
@@ -398,8 +393,8 @@
       margin-left: 5px; vertical-align: middle;
     }
     .opt-price-tag {
-      flex: 0 0 auto;
-      margin-left: auto;
+      display: inline-block;
+      margin: 0 0 6px 0;
       font-size: .67rem; font-weight: 700;
       color: #b5006e; background: #fce4f0;
       padding: 2px 9px; border-radius: 20px;
@@ -1969,6 +1964,8 @@ function selectCat(slug, rowEl) {
 
   // Kit Festa: opções aparecem só após escolher o kit (inclui seletor de recheio interno)
   if (slug === 'kit-festa') _setupKitFesta(slug);
+  // Salgados Finos: seletor de subtipo (Canudinho / Canapés / Tortelete / Barquete)
+  if (slug === 'salgados-finos') _injectFinoTypePicker(slug);
   // Bolo: carrega galeria de referências (modelos + topos)
   if (isBolo) _loadBoloGallery(slug);
   // Outras categorias: carrega galeria de referência simples
@@ -2044,6 +2041,14 @@ function renderOptGroup(group, data) {
   else if (group === 'Salgados Finos')                                   salgadoType = 'finos';
   const salgadoAttr = salgadoType ? ` data-salgado-type="${salgadoType}"` : '';
 
+  // Detecta subtipo de salgado fino (salgados-finos)
+  let finoType = null;
+  if      (group === 'Canudinho')  finoType = 'canudinho';
+  else if (group === 'Canapés')    finoType = 'canapes';
+  else if (group === 'Tortelete')  finoType = 'tortelete';
+  else if (group === 'Barquete')   finoType = 'barquete';
+  const finoAttr = finoType ? ` data-fino-type="${finoType}"` : '';
+
   // Simplifica labels com "—": "Salgados Fritos — 1º Sabor" → "1º Sabor"
   //                           "Recheio Tradicional — 1º Sabor" → "1º Sabor"
   let displayGroup = group;
@@ -2059,13 +2064,14 @@ function renderOptGroup(group, data) {
   const usePills = group === 'Quilo' ||
     (items.length <= 4 && items.every(i => i.name.length <= 35));
 
+  // Badge de preço — fica FORA do label (elemento irmão, abaixo do nome)
   const priceTag = data.price_info
     ? `<span class="opt-price-tag">${esc(data.price_info)}</span>` : '';
 
   const label = `<label class="opt-label">
-    <span class="og-label-main"><span class="og-icon">${icon}</span> ${esc(displayGroup)}${isOpt
-      ? ' <span class="opt-badge">opcional</span>' : ''}</span>${priceTag}
-  </label>`;
+    <span class="og-icon">${icon}</span> ${esc(displayGroup)}${isOpt
+      ? ' <span class="opt-badge">opcional</span>' : ''}
+  </label>${priceTag}`;
 
   if (usePills) {
     const pills = items.map((item, idx) => {
@@ -2097,7 +2103,7 @@ function renderOptGroup(group, data) {
         <button class="quilo-custom-ok" onclick="_applyQuiloCustom()">OK</button>
       </div>` : '';
 
-    return `<div class="opt-group" data-pills="1"${quiloAttr}${recheioAttr}${salgadoAttr}>
+    return `<div class="opt-group" data-pills="1"${quiloAttr}${recheioAttr}${salgadoAttr}${finoAttr}>
       ${label}
       <div class="opt-pills">${pills}${quiloExtra}</div>
       <select class="opt-sel" data-group="${esc(group)}" style="display:none">${opts}</select>
@@ -2109,7 +2115,7 @@ function renderOptGroup(group, data) {
     `<option value="${esc(i.name)}"${idx === 0 && isOpt ? ' selected' : ''}>${i.name}</option>`
   ).join('');
 
-  return `<div class="opt-group"${recheioAttr}${salgadoAttr}>
+  return `<div class="opt-group"${recheioAttr}${salgadoAttr}${finoAttr}>
     ${label}
     <select class="opt-sel" data-group="${esc(group)}"
       onchange="this.classList.remove('is-invalid');this.classList.toggle('sel-filled',!!this.value)">
@@ -2238,6 +2244,68 @@ function selectSalgadoType(btn, type, slug) {
   });
 }
 
+/* ── Seletor de subtipo de salgado fino (salgados-finos) ─────────────────── */
+
+function _injectFinoTypePicker(slug) {
+  const wrap = document.getElementById('ow-' + slug);
+  if (!wrap) return;
+
+  // Esconde todos os grupos de subtipo inicialmente
+  wrap.querySelectorAll('.opt-group[data-fino-type]').forEach(g => {
+    g.style.display = 'none';
+    g.querySelectorAll('select.opt-sel').forEach(s => { s.selectedIndex = 0; });
+  });
+
+  const firstTyped = wrap.querySelector('.opt-group[data-fino-type]');
+  if (!firstTyped) return;
+
+  const picker = document.createElement('div');
+  picker.className = 'opt-group fino-type-picker';
+  picker.setAttribute('data-pills', '1');
+  picker.style.gridColumn = '1 / -1';
+  picker.innerHTML = `
+    <label class="opt-label">
+      <span class="og-icon">🥂</span> Tipo
+    </label>
+    <div class="opt-pills">
+      <button type="button" class="opt-pill sel"
+              onclick="selectFinoType(this,'canudinho','${slug}')">🥢 Canudinho</button>
+      <button type="button" class="opt-pill"
+              onclick="selectFinoType(this,'canapes','${slug}')">🍞 Canapés</button>
+      <button type="button" class="opt-pill"
+              onclick="selectFinoType(this,'tortelete','${slug}')">🥧 Tortelete</button>
+      <button type="button" class="opt-pill"
+              onclick="selectFinoType(this,'barquete','${slug}')">⛵ Barquete</button>
+    </div>`;
+
+  firstTyped.insertAdjacentElement('beforebegin', picker);
+
+  // Pré-seleciona Canudinho
+  wrap.querySelectorAll('.opt-group[data-fino-type="canudinho"]').forEach(g => {
+    g.style.display = '';
+  });
+}
+
+function selectFinoType(btn, type, slug) {
+  const wrap = document.getElementById('ow-' + slug);
+  if (!wrap) return;
+
+  btn.closest('.opt-pills').querySelectorAll('.opt-pill').forEach(p => {
+    p.classList.remove('sel', 'sel-skip');
+  });
+  btn.classList.add('sel');
+
+  wrap.querySelectorAll('.opt-group[data-fino-type]').forEach(g => {
+    g.style.display = 'none';
+    g.querySelectorAll('select.opt-sel').forEach(s => { s.selectedIndex = 0; });
+    g.classList.remove('is-invalid');
+  });
+
+  wrap.querySelectorAll(`.opt-group[data-fino-type="${type}"]`).forEach(g => {
+    g.style.display = '';
+  });
+}
+
 /* ── Seletor de tipo de recheio (bolo) ──────────────────────────────────── */
 
 function _injectRecheioTypePicker(slug) {
@@ -2352,6 +2420,8 @@ function addToSacola() {
     if (grp && grp.dataset.recheioType && grp.style.display === 'none') return;
     // Ignora grupos de salgado que estão ocultos (tipo não selecionado)
     if (grp && grp.dataset.salgadoType && grp.style.display === 'none') return;
+    // Ignora subtipos de salgado fino ocultos (subtipo não selecionado)
+    if (grp && grp.dataset.finoType && grp.style.display === 'none') return;
     // Ignora grupos de kit ainda ocultos (kit não selecionado)
     if (grp && grp.dataset.kitDep && grp.style.display === 'none') return;
 
