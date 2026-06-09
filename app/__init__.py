@@ -64,7 +64,7 @@ def _migrate_db():
 
 # Versão do catálogo — suba este número sempre que alterar produtos/opções.
 # O sistema vai apagar e recriar o catálogo automaticamente no próximo deploy.
-_CATALOG_VERSION = "v16"
+_CATALOG_VERSION = "v17"
 
 
 def _seed_data():
@@ -377,7 +377,11 @@ def _seed_data():
                     "Queijo",
                     "Carne",
                 ],
-                "Salgados Assados": ["Nenhum", *_ASSADOS],
+                "1º Sabor": [*_ASSADOS],
+                "2º Sabor": ["Nenhum", *_ASSADOS],
+                "3º Sabor": ["Nenhum", *_ASSADOS],
+                "4º Sabor": ["Nenhum", *_ASSADOS],
+                "5º Sabor": ["Nenhum", *_ASSADOS],
                 "Empadinhas": ["Nenhum", "Frango", "Palmito"],
             },
         },
