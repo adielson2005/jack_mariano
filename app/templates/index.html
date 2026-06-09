@@ -29,6 +29,8 @@
       --c-salgados-fritos:   #ea580c;
       --c-salgados-assados:  #b45309;
       --c-salgados-finos:    #0d9488;
+      --c-canapes:           #2563eb;
+      --c-tortelete:         #9333ea;
       --c-combos:            #0284c7;
       --c-kit-festa:         #16a34a;
 
@@ -236,6 +238,8 @@
     .cat-row[data-slug="salgados-fritos"]   { --accent: var(--c-salgados-fritos); }
     .cat-row[data-slug="salgados-assados"]  { --accent: var(--c-salgados-assados); }
     .cat-row[data-slug="salgados-finos"]    { --accent: var(--c-salgados-finos); }
+    .cat-row[data-slug="canapes"]           { --accent: var(--c-canapes); }
+    .cat-row[data-slug="tortelete"]         { --accent: var(--c-tortelete); }
     .cat-row[data-slug="combos"]            { --accent: var(--c-combos); }
     .cat-row[data-slug="kit-festa"]         { --accent: var(--c-kit-festa); }
 
@@ -301,6 +305,8 @@
     .opts-wrap[data-slug="salgados-fritos"]   { --accent: var(--c-salgados-fritos); }
     .opts-wrap[data-slug="salgados-assados"]  { --accent: var(--c-salgados-assados); }
     .opts-wrap[data-slug="salgados-finos"]    { --accent: var(--c-salgados-finos); }
+    .opts-wrap[data-slug="canapes"]           { --accent: var(--c-canapes); }
+    .opts-wrap[data-slug="tortelete"]         { --accent: var(--c-tortelete); }
     .opts-wrap[data-slug="combos"]            { --accent: var(--c-combos); }
     .opts-wrap[data-slug="kit-festa"]         { --accent: var(--c-kit-festa); }
 
@@ -1706,6 +1712,8 @@ const CAT_IMGS = {
   'salgados-fritos':   'https://api.iconify.design/noto/dumpling.svg',
   'salgados-assados':  'https://api.iconify.design/noto/flatbread.svg',
   'salgados-finos':    'https://api.iconify.design/noto/croissant.svg',
+  'canapes':           'https://api.iconify.design/noto/bread.svg',
+  'tortelete':         'https://api.iconify.design/noto/pie.svg',
   'combos':            'https://api.iconify.design/noto/bento-box.svg',
   'kit-festa':         'https://api.iconify.design/noto/party-popper.svg',
 };
@@ -1722,8 +1730,8 @@ const GROUPS = [
     slugs:['doces','doces-finos'] },
   { id:'salgados', label:'Salgados',        icon:'🥟',
     img: 'https://api.iconify.design/noto/dumpling.svg',
-    sub:'Fritos · Assados · Finos',
-    slugs:['salgados-fritos','salgados-assados','salgados-finos'] },
+    sub:'Fritos · Assados · Finos · Canapés · Tortelete',
+    slugs:['salgados-fritos','salgados-assados','salgados-finos','canapes','tortelete'] },
   { id:'combos',   label:'Combos Especiais',icon:'🎁',
     img: 'https://api.iconify.design/noto/bento-box.svg',
     sub:'Montado sob medida',
