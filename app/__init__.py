@@ -64,7 +64,7 @@ def _migrate_db():
 
 # Versão do catálogo — suba este número sempre que alterar produtos/opções.
 # O sistema vai apagar e recriar o catálogo automaticamente no próximo deploy.
-_CATALOG_VERSION = "v12"
+_CATALOG_VERSION = "v13"
 
 
 def _seed_data():
@@ -162,7 +162,7 @@ def _seed_data():
             "price_from": "a partir de R$90",
             "catalog_version": _CATALOG_VERSION,
             "options": {
-                "Quilo": ["500g", "700g", "1kg", "1,5kg", "2kg", "2,5kg", "3kg", "4kg"],
+                "Quilo|a partir de R$ 90,00": ["500g", "700g", "1kg", "1,5kg", "2kg", "2,5kg", "3kg", "4kg"],
                 "1º Sabor": [*_TRAD],
                 "2º Sabor": ["Sem segundo sabor", *_TRAD],
                 "Massa": ["Branca (Baunilha)", "Chocolate", "Red Velvet"],
@@ -184,7 +184,7 @@ def _seed_data():
             "price_from": "a partir de R$100",
             "catalog_version": _CATALOG_VERSION,
             "options": {
-                "Quilo": ["500g", "700g", "1kg", "1,5kg", "2kg", "2,5kg", "3kg", "4kg"],
+                "Quilo|a partir de R$ 100,00": ["500g", "700g", "1kg", "1,5kg", "2kg", "2,5kg", "3kg", "4kg"],
                 "1º Sabor": [*_ESP],
                 "2º Sabor": ["Sem segundo sabor", *_ESP],
                 "Massa": ["Branca (Baunilha)", "Chocolate", "Red Velvet"],
@@ -206,7 +206,7 @@ def _seed_data():
             "price_from": "a partir de R$130",
             "catalog_version": _CATALOG_VERSION,
             "options": {
-                "Quilo": ["500g", "700g", "1kg", "1,5kg", "2kg", "2,5kg", "3kg", "4kg"],
+                "Quilo|a partir de R$ 130,00": ["500g", "700g", "1kg", "1,5kg", "2kg", "2,5kg", "3kg", "4kg"],
                 "1º Sabor": [*_SUPER],
                 "2º Sabor": ["Sem segundo sabor", *_SUPER],
                 "Massa": ["Branca (Baunilha)", "Chocolate", "Red Velvet"],
@@ -229,7 +229,7 @@ def _seed_data():
             "price_from": None,
             "catalog_version": _CATALOG_VERSION,
             "options": {
-                "Brigadeiro Gourmet": [
+                "Brigadeiro Gourmet|R$ 180,00 o cento": [
                     "Nenhum",
                     "Brigadeiro Tradicional",
                     "Brigadeiro com Amendoim",
@@ -245,7 +245,7 @@ def _seed_data():
                     "Morango",
                     "Cajuzinho",
                 ],
-                "Brigadeiro Gourmet Especial": [
+                "Brigadeiro Gourmet Especial|R$ 250,00 o cento": [
                     "Nenhum",
                     "Ferreiro Rocher",
                     "Ninho com Nutella",
@@ -257,7 +257,7 @@ def _seed_data():
                     "Castanha do Pará",
                     "Surpresa de Uva",
                 ],
-                "Copinho de Chocolate (Branco ou ao Leite)": [
+                "Copinho de Chocolate (Branco ou ao Leite)|R$ 4,90 un": [
                     "Nenhum",
                     "Morango",
                     "Brigadeiro",
@@ -270,7 +270,7 @@ def _seed_data():
                     "Pedacim do Céu Pêssego",
                     "Ninho com Nozes",
                 ],
-                "Copinho de Acrílico 30ml": [
+                "Copinho de Acrílico 30ml|R$ 4,90 un": [
                     "Nenhum",
                     "Morango",
                     "Brigadeiro",
@@ -282,7 +282,7 @@ def _seed_data():
                     "Pedacim do Céu Pêssego",
                     "Napolitano",
                 ],
-                "Mini Brownie": [
+                "Mini Brownie|R$ 3,90 un": [
                     "Nenhum",
                     "Morango",
                     "Brigadeiro",
@@ -292,14 +292,30 @@ def _seed_data():
                     "Pistache",
                     "Ninho Uva",
                 ],
-                "Pipoca Gourmet": [
+                "Mini Trufa|R$ 2,90 un": [
+                    "Nenhum",
+                    "Castanha Triturada",
+                    "Brigadeiro",
+                    "Coco",
+                    "Cupuaçu",
+                    "Ninho",
+                ],
+                "Doce Fino|a partir de R$ 3,50 un": [
+                    "Nenhum",
+                    "Camafeu Nozes",
+                    "Surpresa de Damasco",
+                    "Surpresa de Castanha de Caju",
+                    "Macarrom",
+                    "Bem Casado com Tag",
+                ],
+                "Pipoca Gourmet|R$ 6,90 gr": [
                     "Nenhum",
                     "Ninho",
                     "Chocolate",
                     "Oreo",
                     "Ovomaltine",
                 ],
-                "Coloridos ou Carimbados": [
+                "Coloridos ou Carimbados|R$ 220,00 o cento": [
                     "Nenhum",
                     "Carimbo Dourado com Sabor Ninho",
                 ],
@@ -313,7 +329,7 @@ def _seed_data():
             "price_from": None,
             "catalog_version": _CATALOG_VERSION,
             "options": {
-                "Mini Trufa": [
+                "Mini Trufa|R$ 2,90 un": [
                     "Nenhum",
                     "Castanha Triturada",
                     "Brigadeiro",
@@ -321,7 +337,7 @@ def _seed_data():
                     "Cupuaçu",
                     "Ninho",
                 ],
-                "Doce Fino": [
+                "Doce Fino|a partir de R$ 3,50 un": [
                     "Nenhum",
                     "Camafeu Nozes",
                     "Surpresa de Damasco",

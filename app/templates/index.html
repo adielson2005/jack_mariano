@@ -392,6 +392,14 @@
       border: 1px solid var(--border);
       margin-left: 5px; vertical-align: middle;
     }
+    .opt-price-tag {
+      margin-left: auto;
+      font-size: .67rem; font-weight: 700;
+      color: #b5006e; background: #fce4f0;
+      padding: 2px 9px; border-radius: 20px;
+      letter-spacing: 0; text-transform: none;
+      white-space: nowrap;
+    }
 
     .opt-pills {
       display: flex; flex-wrap: wrap; gap: 6px;
@@ -2041,9 +2049,12 @@ function renderOptGroup(group, data) {
   const usePills = group === 'Quilo' ||
     (items.length <= 4 && items.every(i => i.name.length <= 35));
 
+  const priceTag = data.price_info
+    ? `<span class="opt-price-tag">${esc(data.price_info)}</span>` : '';
+
   const label = `<label class="opt-label">
     <span class="og-icon">${icon}</span> ${esc(displayGroup)}${isOpt
-      ? ' <span class="opt-badge">opcional</span>' : ''}
+      ? ' <span class="opt-badge">opcional</span>' : ''}${priceTag}
   </label>`;
 
   if (usePills) {
