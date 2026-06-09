@@ -343,6 +343,11 @@
       text-transform: uppercase; letter-spacing: .13em;
       margin-bottom: 7px;
       display: flex; align-items: center; gap: 6px;
+      flex-wrap: wrap;
+    }
+    .og-label-main {
+      display: flex; align-items: center; gap: 4px;
+      flex: 1 1 0; min-width: 0;
     }
     .opt-label::before {
       content: '';
@@ -393,6 +398,7 @@
       margin-left: 5px; vertical-align: middle;
     }
     .opt-price-tag {
+      flex: 0 0 auto;
       margin-left: auto;
       font-size: .67rem; font-weight: 700;
       color: #b5006e; background: #fce4f0;
@@ -2057,8 +2063,8 @@ function renderOptGroup(group, data) {
     ? `<span class="opt-price-tag">${esc(data.price_info)}</span>` : '';
 
   const label = `<label class="opt-label">
-    <span class="og-icon">${icon}</span> ${esc(displayGroup)}${isOpt
-      ? ' <span class="opt-badge">opcional</span>' : ''}${priceTag}
+    <span class="og-label-main"><span class="og-icon">${icon}</span> ${esc(displayGroup)}${isOpt
+      ? ' <span class="opt-badge">opcional</span>' : ''}</span>${priceTag}
   </label>`;
 
   if (usePills) {
