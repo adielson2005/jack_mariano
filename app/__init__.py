@@ -64,7 +64,7 @@ def _migrate_db():
 
 # Versão do catálogo — suba este número sempre que alterar produtos/opções.
 # O sistema vai apagar e recriar o catálogo automaticamente no próximo deploy.
-_CATALOG_VERSION = "v15"
+_CATALOG_VERSION = "v16"
 
 
 def _seed_data():
@@ -384,7 +384,7 @@ def _seed_data():
         {
             "slug": "salgados-finos",
             "name": "Salgados Finos",
-            "description": "Canudínhos e barquetes para eventos elegantes, disponíveis por cento.",
+            "description": "Canudínhos, canapés, torteletes e barquetes para eventos elegantes.",
             "icon": "🥂",
             "price_from": None,
             "catalog_version": _CATALOG_VERSION,
@@ -396,83 +396,29 @@ def _seed_data():
                     "Carne Seca",
                     "Carne Moída Cremosa",
                 ],
+                "Canapés|de R$ 140,00 a R$ 490,00/cento": [
+                    "Nenhum",
+                    "Frango — R$ 140,00/cento",
+                    "Carne Seca com Banana — R$ 200,00/cento",
+                    "Creme de Milho com Tomate — R$ 250,00/cento",
+                    "Camarão — R$ 490,00/cento",
+                    "Camarão e Cream Cheese — R$ 490,00/cento",
+                    "Cream Cheese c/ Geléia de Pimenta — R$ 490,00/cento",
+                ],
+                "Tortelete|de R$ 150,00 a R$ 290,00/cento": [
+                    "Nenhum",
+                    "Frango — R$ 150,00/cento",
+                    "Patê de Atum — R$ 160,00/cento",
+                    "Carne Seca com Banana — R$ 220,00/cento",
+                    "Salmão com Cream Cheese — R$ 220,00/cento",
+                    "Frutas — R$ 290,00/cento",
+                ],
                 "Barquete|de R$ 250,00 a R$ 390,00/cento": [
                     "Nenhum",
                     "Frango com Tomate Seco — R$ 250,00/cento",
                     "Milho — R$ 250,00/cento",
                     "Carne Seca com Banana — R$ 290,00/cento",
                     "Camarão com Creme — R$ 390,00/cento",
-                ],
-            },
-        },
-        {
-            "slug": "canapes",
-            "name": "Canapés",
-            "description": "Canapés finos para eventos, recheios variados disponíveis por cento.",
-            "icon": "🍞",
-            "price_from": None,
-            "catalog_version": _CATALOG_VERSION,
-            "options": {
-                "1º Recheio|de R$ 140,00 a R$ 490,00/cento": [
-                    "Nenhum",
-                    "Frango — R$ 140,00/cento",
-                    "Carne Seca com Banana — R$ 200,00/cento",
-                    "Creme de Milho com Tomate — R$ 250,00/cento",
-                    "Camarão — R$ 490,00/cento",
-                    "Camarão e Cream Cheese — R$ 490,00/cento",
-                    "Cream Cheese c/ Geléia de Pimenta — R$ 490,00/cento",
-                ],
-                "2º Recheio": [
-                    "Nenhum",
-                    "Frango — R$ 140,00/cento",
-                    "Carne Seca com Banana — R$ 200,00/cento",
-                    "Creme de Milho com Tomate — R$ 250,00/cento",
-                    "Camarão — R$ 490,00/cento",
-                    "Camarão e Cream Cheese — R$ 490,00/cento",
-                    "Cream Cheese c/ Geléia de Pimenta — R$ 490,00/cento",
-                ],
-                "3º Recheio": [
-                    "Nenhum",
-                    "Frango — R$ 140,00/cento",
-                    "Carne Seca com Banana — R$ 200,00/cento",
-                    "Creme de Milho com Tomate — R$ 250,00/cento",
-                    "Camarão — R$ 490,00/cento",
-                    "Camarão e Cream Cheese — R$ 490,00/cento",
-                    "Cream Cheese c/ Geléia de Pimenta — R$ 490,00/cento",
-                ],
-            },
-        },
-        {
-            "slug": "tortelete",
-            "name": "Tortelete",
-            "description": "Torteletes para eventos, recheios variados disponíveis por cento.",
-            "icon": "🥧",
-            "price_from": None,
-            "catalog_version": _CATALOG_VERSION,
-            "options": {
-                "1º Recheio|de R$ 150,00 a R$ 290,00/cento": [
-                    "Nenhum",
-                    "Frango — R$ 150,00/cento",
-                    "Patê de Atum — R$ 160,00/cento",
-                    "Carne Seca com Banana — R$ 220,00/cento",
-                    "Salmão com Cream Cheese — R$ 220,00/cento",
-                    "Frutas — R$ 290,00/cento",
-                ],
-                "2º Recheio": [
-                    "Nenhum",
-                    "Frango — R$ 150,00/cento",
-                    "Patê de Atum — R$ 160,00/cento",
-                    "Carne Seca com Banana — R$ 220,00/cento",
-                    "Salmão com Cream Cheese — R$ 220,00/cento",
-                    "Frutas — R$ 290,00/cento",
-                ],
-                "3º Recheio": [
-                    "Nenhum",
-                    "Frango — R$ 150,00/cento",
-                    "Patê de Atum — R$ 160,00/cento",
-                    "Carne Seca com Banana — R$ 220,00/cento",
-                    "Salmão com Cream Cheese — R$ 220,00/cento",
-                    "Frutas — R$ 290,00/cento",
                 ],
             },
         },
