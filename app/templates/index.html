@@ -2963,7 +2963,7 @@ function _onTopoChange(sel) {
   const card = document.getElementById('topo-personalizacao');
   if (!card) return;
   const v = sel.value;
-  const needPers = v.includes('Impresso') || v.includes('Papel de Arroz');
+  const needPers = v.includes('Impresso');
   card.style.display = needPers ? '' : 'none';
   if (!needPers) {
     const nomeEl  = document.getElementById('topo-nome');

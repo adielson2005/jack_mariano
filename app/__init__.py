@@ -64,7 +64,7 @@ def _migrate_db():
 
 # Versão do catálogo — suba este número sempre que alterar produtos/opções.
 # O sistema vai apagar e recriar o catálogo automaticamente no próximo deploy.
-_CATALOG_VERSION = "v17"
+_CATALOG_VERSION = "v18"
 
 
 def _seed_data():
@@ -172,7 +172,6 @@ def _seed_data():
                 ],
                 "Topo de Bolo": [
                     "Sem topo", "Impresso Simples", "Impresso Detalhado",
-                    "3D em Camadas Trabalhado", "Flores Artificiais", "Bolo de Andar", "Papel de Arroz",
                 ],
             },
         },
@@ -194,7 +193,6 @@ def _seed_data():
                 ],
                 "Topo de Bolo": [
                     "Sem topo", "Impresso Simples", "Impresso Detalhado",
-                    "3D em Camadas Trabalhado", "Flores Artificiais", "Bolo de Andar", "Papel de Arroz",
                 ],
             },
         },
@@ -216,7 +214,6 @@ def _seed_data():
                 ],
                 "Topo de Bolo": [
                     "Sem topo", "Impresso Simples", "Impresso Detalhado",
-                    "3D em Camadas Trabalhado", "Flores Artificiais", "Bolo de Andar", "Papel de Arroz",
                 ],
             },
         },
@@ -471,7 +468,6 @@ def _seed_data():
                 ],
                 "Topo de Bolo": [
                     "Sem topo", "Impresso Simples", "Impresso Detalhado",
-                    "3D em Camadas Trabalhado", "Flores Artificiais", "Bolo de Andar", "Papel de Arroz",
                 ],
                 # ── Salgados ─────────────────────────────────────────────────
                 "Salgados Fritos — 1º Sabor": [*_FRITOS],
