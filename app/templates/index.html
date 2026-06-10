@@ -1917,14 +1917,22 @@ function selectCat(slug, rowEl) {
 
   const isBolo = ['bolo-tradicional', 'bolo-especial', 'bolo-super'].includes(slug);
 
-  // Card de personalização do topo (nome + idade) — só para bolos
+  // Card de personalização do topo — só para bolos
   const topoPersonCard = isBolo ? `
     <div id="topo-personalizacao" class="topo-pers-card" style="display:none">
       <div class="topo-pers-title"><i class="bi bi-person-heart"></i> Personalização do Topo</div>
       <div class="topo-pers-fields">
-        <div class="topo-pers-field">
+        <div class="topo-pers-field" style="grid-column:1/-1">
           <label>Nome do aniversariante</label>
           <input type="text" id="topo-nome" placeholder="Ex: Maria Eduarda">
+        </div>
+        <div class="topo-pers-field" id="topo-tema-row" style="grid-column:1/-1;display:none">
+          <label>Tema</label>
+          <input type="text" id="topo-tema" placeholder="Ex: Frozen, Dinossauro, Princesa...">
+        </div>
+        <div class="topo-pers-field" id="topo-cor-row" style="display:none">
+          <label>Cor</label>
+          <input type="text" id="topo-cor" placeholder="Ex: Rosa, Azul...">
         </div>
         <div class="topo-pers-field topo-pers-field--age">
           <label>Idade</label>
@@ -2538,12 +2546,16 @@ function addToSacola() {
   const topoCard = document.getElementById('topo-personalizacao');
   if (topoCard && topoCard.style.display !== 'none') {
     const topoNome  = document.getElementById('topo-nome')?.value.trim();
+    const topoTema  = document.getElementById('topo-tema')?.value.trim();
     const topoIdade = document.getElementById('topo-idade')?.value.trim();
-    if (topoNome || topoIdade) {
-      const parts = [];
-      if (topoNome)  parts.push(`Nome: ${topoNome}`);
-      if (topoIdade) parts.push(`Idade: ${topoIdade}`);
-      const persNote = '🎂 Topo personalizado — ' + parts.join(' · ');
+    const topoCor   = document.getElementById('topo-cor')?.value.trim();
+    const parts = [];
+    if (topoNome)  parts.push(`Nome: ${topoNome}`);
+    if (topoTema)  parts.push(`Tema: ${topoTema}`);
+    if (topoIdade) parts.push(`Idade: ${topoIdade}`);
+    if (topoCor)   parts.push(`Cor: ${topoCor}`);
+    if (parts.length) {
+      const persNote = '🎂 Topo — ' + parts.join(' · ');
       itemNote = itemNote ? itemNote + ' · ' + persNote : persNote;
     }
   }
@@ -2962,9 +2974,24 @@ function removeTopoDesign(e) {
 function _onTopoChange(sel) {
   const card = document.getElementById('topo-personalizacao');
   if (!card) return;
-  const v = sel.value;
-  const needPers = v.includes('Impresso');
+  const v         = sel.value;
+  const isSimples  = v === 'Impresso Simples';
+  const needPers   = v.includes('Impresso');
   card.style.display = needPers ? '' : 'none';
+
+  // Tema e Cor só aparecem para Impresso Simples
+  const temaRow = document.getElementById('topo-tema-row');
+  const corRow  = document.getElementById('topo-cor-row');
+  if (temaRow) temaRow.style.display = isSimples ? '' : 'none';
+  if (corRow)  corRow.style.display  = isSimples ? '' : 'none';
+
+  // Limpa campos ao trocar de opção
+  if (!isSimples) {
+    const temaEl = document.getElementById('topo-tema');
+    const corEl  = document.getElementById('topo-cor');
+    if (temaEl) temaEl.value = '';
+    if (corEl)  corEl.value  = '';
+  }
   if (!needPers) {
     const nomeEl  = document.getElementById('topo-nome');
     const idadeEl = document.getElementById('topo-idade');
