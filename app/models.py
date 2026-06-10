@@ -78,6 +78,10 @@ class Order(db.Model):
     allergies = db.Column(db.Text)
     notes     = db.Column(db.Text)
 
+    # Fotos de referência (base64 data URL ou URL de galeria)
+    bolo_photo_data = db.Column(db.Text)
+    topo_photo_data = db.Column(db.Text)
+
     # Status: pending | confirmed | in_progress | ready | cancelled
     status = db.Column(db.String(20), default="pending")
     admin_notes = db.Column(db.Text)
@@ -104,6 +108,8 @@ class Order(db.Model):
             "admin_notes":           self.admin_notes,
             "status":                self.status,
             "status_label":          STATUS_LABELS.get(self.status, self.status),
+            "has_bolo_photo":        bool(self.bolo_photo_data),
+            "has_topo_photo":        bool(self.topo_photo_data),
         }
         data["item_count"] = len(self.items)
         if include_items:

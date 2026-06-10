@@ -1555,8 +1555,8 @@
 
       <!-- Lembrete de foto -->
       <div id="photo-reminder" class="photo-reminder-card d-none">
-        <i class="bi bi-image-fill"></i>
-        <span>Você escolheu uma foto de referência — envie pelo WhatsApp após confirmar! 📸</span>
+        <i class="bi bi-check-circle-fill"></i>
+        <span>Fotos de referência incluídas no pedido — o link para visualização está na mensagem do WhatsApp. ✓</span>
       </div>
 
       <!-- Botão WhatsApp -->
@@ -2701,24 +2701,25 @@ async function submitOrder() {
     return;
   }
 
-  // ── Monta payload ──────────────────────────────────────────────────────
-  let notesVal = document.getElementById('f-notes').value.trim();
+  // ── Codifica fotos para envio automático ──────────────────────────────
+  let boloPhotoData = null;
+  let topoPhotoData = null;
 
   if (orderModelPhoto) {
-    let photoNote;
-    if (orderModelPhoto.type === 'gallery') {
-      const lbl = orderModelPhoto.photoType === 'topo' ? 'Modelo de topo' : 'Modelo de bolo';
-      photoNote = `📸 ${lbl} selecionado: "${orderModelPhoto.title}" — referência enviada pelo WhatsApp.`;
-    } else {
-      photoNote = '📸 Foto de referência (modelo/topo) enviada pelo WhatsApp em seguida.';
+    if (orderModelPhoto.type === 'file') {
+      boloPhotoData = await _resizeAndEncode(orderModelPhoto.file);
+    } else if (orderModelPhoto.type === 'gallery') {
+      // Fotos da galeria já são URLs/base64 armazenadas no servidor
+      if (orderModelPhoto.photoType === 'topo') topoPhotoData = orderModelPhoto.url;
+      else                                       boloPhotoData = orderModelPhoto.url;
     }
-    notesVal = notesVal ? notesVal + '\n' + photoNote : photoNote;
+  }
+  if (topoDesignPhoto && topoDesignPhoto.type === 'file') {
+    topoPhotoData = await _resizeAndEncode(topoDesignPhoto.file);
   }
 
-  if (topoDesignPhoto) {
-    const topoNote = '🎨 Design do topo enviado pelo WhatsApp.';
-    notesVal = notesVal ? notesVal + '\n' + topoNote : topoNote;
-  }
+  // ── Monta payload ──────────────────────────────────────────────────────
+  const notesVal = document.getElementById('f-notes').value.trim();
 
   const payload = {
     customer_name:      name,
@@ -2730,6 +2731,8 @@ async function submitOrder() {
     pickup_time:        time,
     allergies:          document.getElementById('f-allergy').value.trim(),
     notes:              notesVal,
+    bolo_photo_data:    boloPhotoData,
+    topo_photo_data:    topoPhotoData,
     items:              sacola.map(({ icon, ...rest }) => rest),
   };
 
@@ -2754,9 +2757,9 @@ async function submitOrder() {
       document.getElementById('order-id-display').textContent = '#' + data.order_id;
       document.getElementById('wa-client-btn').href = data.whatsapp_link;
 
-      // Lembrete de foto
+      // Lembrete de foto (confirma que foram incluídas)
       const photoReminder = document.getElementById('photo-reminder');
-      if (photoReminder) photoReminder.classList.toggle('d-none', !orderModelPhoto);
+      if (photoReminder) photoReminder.classList.toggle('d-none', !boloPhotoData && !topoPhotoData);
 
       sacola = []; renderBag(); setStep(3);
       // Abre o WhatsApp automaticamente com o pedido pré-preenchido
@@ -2939,6 +2942,28 @@ function removeBoloPhoto(e) {
   document.querySelectorAll('.ref-gallery-card').forEach(c => c.classList.remove('sel-ref'));
   const bar = document.getElementById('ref-selected-bar');
   if (bar) bar.style.display = 'none';
+}
+
+/* Redimensiona e converte File em base64 JPEG para envio junto ao pedido */
+async function _resizeAndEncode(file, maxSide = 1200, quality = 0.85) {
+  return new Promise((resolve) => {
+    const img = new Image();
+    const url = URL.createObjectURL(file);
+    img.onload = () => {
+      URL.revokeObjectURL(url);
+      let { width, height } = img;
+      if (Math.max(width, height) > maxSide) {
+        if (width >= height) { height = Math.round(height * maxSide / width); width = maxSide; }
+        else                 { width  = Math.round(width  * maxSide / height); height = maxSide; }
+      }
+      const canvas = document.createElement('canvas');
+      canvas.width = width; canvas.height = height;
+      canvas.getContext('2d').drawImage(img, 0, 0, width, height);
+      resolve(canvas.toDataURL('image/jpeg', quality));
+    };
+    img.onerror = () => { URL.revokeObjectURL(url); resolve(null); };
+    img.src = url;
+  });
 }
 
 /* Upload e preview do design do topo (enviado pelo cliente na aba Topos) */

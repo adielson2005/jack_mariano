@@ -1,7 +1,8 @@
+import base64 as _b64
 import json
 import re
 from datetime import date as date_type
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, Response, jsonify, redirect, request
 from app import db
 from app.models import Category, Order, OrderItem, CatalogImage
 from app.utils import build_client_link, build_help_link
@@ -72,6 +73,8 @@ def create_order():
         delivery_contact      = _clean_phone(data.get("delivery_contact", ""))[:_MAX_PHONE] or None,
         allergies             = data.get("allergies", "").strip()[:_MAX_TEXT]  or None,
         notes                 = data.get("notes",     "").strip()[:_MAX_NOTES] or None,
+        bolo_photo_data       = data.get("bolo_photo_data") or None,
+        topo_photo_data       = data.get("topo_photo_data") or None,
     )
     db.session.add(order)
     db.session.flush()
@@ -113,9 +116,10 @@ def create_order():
 
     db.session.commit()
 
+    base_url = request.url_root.rstrip("/")
     return jsonify({
         "message": "Pedido recebido! Entraremos em contato via WhatsApp em breve. 🧁",
-        "whatsapp_link": build_client_link(order),
+        "whatsapp_link": build_client_link(order, base_url),
         "order_id": order.id,
     }), 201
 
@@ -130,6 +134,33 @@ def get_catalog_images():
         query = query.filter_by(category_tag=tag)
     images = query.order_by(CatalogImage.created_at.desc()).all()
     return jsonify([img.to_dict() for img in images])
+
+
+# ── Fotos de pedido (público — usadas nos links do WhatsApp) ─────────────────
+
+@api_bp.get("/orders/<int:order_id>/photo/<which>")
+def order_photo(order_id, which):
+    """Serve a foto de referência de bolo ou topo de um pedido."""
+    order = Order.query.get_or_404(order_id)
+    data = None
+    if which == "bolo":
+        data = order.bolo_photo_data
+    elif which == "topo":
+        data = order.topo_photo_data
+    if not data:
+        return jsonify({"error": "Foto não encontrada"}), 404
+    # Se for data URL base64: decodifica e serve como imagem
+    if data.startswith("data:"):
+        try:
+            header, b64data = data.split(",", 1)
+            mime = header.split(":")[1].split(";")[0]
+            img_bytes = _b64.b64decode(b64data)
+            return Response(img_bytes, mimetype=mime,
+                            headers={"Cache-Control": "public, max-age=31536000"})
+        except Exception:
+            return jsonify({"error": "Erro ao decodificar imagem"}), 500
+    # URL externa (galeria): redireciona
+    return redirect(data)
 
 
 # ── WhatsApp ajuda (público — somente link de dúvidas para a loja) ───────────

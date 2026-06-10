@@ -18,7 +18,7 @@ _EMOJI = {
 }
 
 
-def build_client_link(order) -> str:
+def build_client_link(order, base_url: str = None) -> str:
     """
     Link que o cliente abre após confirmar o pedido.
     O WhatsApp já abre com a mensagem completa pré-preenchida
@@ -81,6 +81,13 @@ def build_client_link(order) -> str:
         parts.append(f"⚠️ *Alergias/restrições:* {order.allergies}")
     if order.notes:
         parts.append(f"📝 *Observações:* {order.notes}")
+
+    # Links das fotos de referência (apenas se o servidor estiver disponível)
+    if base_url:
+        if getattr(order, "bolo_photo_data", None):
+            parts.append(f"📸 *Referência de bolo:* {base_url}/api/orders/{order.id}/photo/bolo")
+        if getattr(order, "topo_photo_data", None):
+            parts.append(f"🎨 *Design/referência do topo:* {base_url}/api/orders/{order.id}/photo/topo")
 
     parts += ["", f"_Pedido #{order.id} — aguardo a confirmação! 😊_"]
 

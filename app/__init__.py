@@ -42,6 +42,8 @@ def _migrate_db():
         "ALTER TABLE orders ADD COLUMN IF NOT EXISTS delivery_neighborhood VARCHAR(150)",
         "ALTER TABLE orders ADD COLUMN IF NOT EXISTS delivery_recipient VARCHAR(150)",
         "ALTER TABLE orders ADD COLUMN IF NOT EXISTS delivery_contact VARCHAR(50)",
+        "ALTER TABLE orders ADD COLUMN IF NOT EXISTS bolo_photo_data TEXT",
+        "ALTER TABLE orders ADD COLUMN IF NOT EXISTS topo_photo_data TEXT",
     ]
 
     with db.engine.connect() as conn:
