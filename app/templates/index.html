@@ -1149,6 +1149,56 @@
       font-size: .7rem; color: #9ca3af; font-weight: 500;
     }
 
+    /* Topo upload section (inside ref-panel-topo) */
+    .topo-upload-section {
+      border-top: 1px solid var(--border);
+      padding: 12px 0 0;
+      margin-top: 8px;
+    }
+    .topo-upload-title {
+      font-size: .69rem; font-weight: 700; color: var(--muted);
+      text-transform: uppercase; letter-spacing: .1em; margin-bottom: 8px;
+    }
+    .topo-design-preview {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 12px; border-radius: 8px;
+      background: #f0fdf4; border: 1px solid #bbf7d0;
+      margin-top: 8px;
+    }
+    .topo-design-thumb {
+      width: 44px; height: 44px; object-fit: cover;
+      border-radius: 6px; border: 1.5px solid #d1fae5; flex-shrink: 0;
+    }
+    .topo-design-name {
+      flex: 1; min-width: 0; font-size: .76rem; font-weight: 600;
+      color: #166534; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+
+    /* Topo personalization card (nome + idade — shown for printed topos) */
+    .topo-pers-card {
+      background: #fff8fc; border: 1.5px solid #f9a8d4;
+      border-radius: 10px; padding: 14px 16px; margin-bottom: 12px;
+    }
+    .topo-pers-title {
+      font-size: .78rem; font-weight: 700; color: var(--pk-dark);
+      display: flex; align-items: center; gap: 6px; margin-bottom: 10px;
+    }
+    .topo-pers-fields {
+      display: grid; grid-template-columns: 1fr 80px; gap: 10px; align-items: end;
+    }
+    .topo-pers-field > label {
+      display: block; font-size: .68rem; font-weight: 700; color: var(--muted);
+      text-transform: uppercase; letter-spacing: .1em; margin-bottom: 5px;
+    }
+    .topo-pers-field input {
+      width: 100%; border: 1.5px solid #e5e7eb; border-radius: 8px;
+      padding: 8px 10px; font-size: .88rem; font-weight: 600;
+      color: var(--text); background: #fff; transition: border-color .18s;
+      font-family: inherit;
+    }
+    .topo-pers-field input:focus { outline: none; border-color: var(--pk); }
+    .topo-pers-field--age input { text-align: center; }
+
     /* Selected bar — shown at bottom when photo/model is chosen */
     .ref-selected-bar {
       margin: 0 14px 14px;
@@ -1559,7 +1609,8 @@ let selectedCat     = null;
 let sacola          = [];
 let bagOpen         = false;
 let deliveryType    = 'retirada';
-let orderModelPhoto = null;               // foto de referência selecionada pelo cliente
+let orderModelPhoto  = null;              // foto de referência selecionada pelo cliente
+let topoDesignPhoto  = null;              // design do topo enviado pelo cliente
 
 /* ── Steps ──────────────────────────────────────────────────────────────── */
 function setStep(n) {
@@ -1866,6 +1917,22 @@ function selectCat(slug, rowEl) {
 
   const isBolo = ['bolo-tradicional', 'bolo-especial', 'bolo-super'].includes(slug);
 
+  // Card de personalização do topo (nome + idade) — só para bolos
+  const topoPersonCard = isBolo ? `
+    <div id="topo-personalizacao" class="topo-pers-card" style="display:none">
+      <div class="topo-pers-title"><i class="bi bi-person-heart"></i> Personalização do Topo</div>
+      <div class="topo-pers-fields">
+        <div class="topo-pers-field">
+          <label>Nome do aniversariante</label>
+          <input type="text" id="topo-nome" placeholder="Ex: Maria Eduarda">
+        </div>
+        <div class="topo-pers-field topo-pers-field--age">
+          <label>Idade</label>
+          <input type="number" id="topo-idade" min="0" max="150" placeholder="7">
+        </div>
+      </div>
+    </div>` : '';
+
   // Categorias não-bolo: galeria de referência simples (fotos de exemplo)
   const catRefCard = !isBolo ? `
     <div class="cat-ref-card" id="cat-ref-${slug}" style="display:none">
@@ -1910,6 +1977,28 @@ function selectCat(slug, rowEl) {
             <span class="spinner-border spinner-border-sm spinner-pk me-2"></span>Carregando...
           </div>
         </div>
+        <!-- Upload do design do próprio topo -->
+        <div class="topo-upload-section">
+          <p class="topo-upload-title"><i class="bi bi-pencil-square me-1"></i>Envie o design do seu topo</p>
+          <label class="ref-upload-label" id="topo-design-label" for="topo-design-input">
+            <i class="bi bi-image"></i>
+            <strong>Selecionar imagem do design</strong>
+            <span>JPG · PNG · WEBP</span>
+          </label>
+          <input type="file" id="topo-design-input" accept="image/*" style="display:none"
+                 onchange="previewTopoDesign(this)">
+          <div id="topo-design-preview" class="topo-design-preview" style="display:none">
+            <img id="topo-design-img" class="topo-design-thumb" src="" alt="">
+            <div class="topo-design-name" id="topo-design-name"></div>
+            <button class="ref-remove-btn" onclick="removeTopoDesign(event)" title="Remover">
+              <i class="bi bi-x-lg"></i>
+            </button>
+          </div>
+          <p class="ref-upload-hint" style="margin-top:8px">
+            <i class="bi bi-whatsapp" style="color:#25d366"></i>
+            Envie também pelo WhatsApp após finalizar o pedido
+          </p>
+        </div>
       </div>
 
       <!-- Panel: Upload de foto própria -->
@@ -1946,6 +2035,7 @@ function selectCat(slug, rowEl) {
         <i class="bi bi-arrow-left"></i> Voltar
       </button>
       <div class="opts-groups-grid">${groupsHtml}</div>
+      ${topoPersonCard}
       ${boloRefCard}${catRefCard}
       <div class="qty-note-row">
         <div class="qty-col">
@@ -2115,10 +2205,11 @@ function renderOptGroup(group, data) {
     `<option value="${esc(i.name)}"${idx === 0 && isOpt ? ' selected' : ''}>${i.name}</option>`
   ).join('');
 
+  const topoOnChange = group === 'Topo de Bolo' ? '_onTopoChange(this);' : '';
   return `<div class="opt-group"${recheioAttr}${salgadoAttr}${finoAttr}>
     ${label}
     <select class="opt-sel" data-group="${esc(group)}"
-      onchange="this.classList.remove('is-invalid');this.classList.toggle('sel-filled',!!this.value)">
+      onchange="${topoOnChange}this.classList.remove('is-invalid');this.classList.toggle('sel-filled',!!this.value)">
       ${isOpt ? '' : '<option value="">— escolha —</option>'}
       ${opts}
     </select>
@@ -2442,13 +2533,28 @@ function addToSacola() {
   });
   if (!valid) return toast('Preencha as opções obrigatórias antes de adicionar.', 'danger');
 
+  // Coleta observação + personalização do topo (se selecionado)
+  let itemNote = document.getElementById('item-note').value.trim();
+  const topoCard = document.getElementById('topo-personalizacao');
+  if (topoCard && topoCard.style.display !== 'none') {
+    const topoNome  = document.getElementById('topo-nome')?.value.trim();
+    const topoIdade = document.getElementById('topo-idade')?.value.trim();
+    if (topoNome || topoIdade) {
+      const parts = [];
+      if (topoNome)  parts.push(`Nome: ${topoNome}`);
+      if (topoIdade) parts.push(`Idade: ${topoIdade}`);
+      const persNote = '🎂 Topo personalizado — ' + parts.join(' · ');
+      itemNote = itemNote ? itemNote + ' · ' + persNote : persNote;
+    }
+  }
+
   sacola.push({
     category_slug: selectedCat.slug,
     category_name: selectedCat.name,
     icon:          selectedCat.icon,
     quantity:      Math.max(1, parseInt(document.getElementById('item-qty').value) || 1),
     selections,
-    item_notes: document.getElementById('item-note').value.trim()
+    item_notes: itemNote
   });
   renderBag();
   openBag();
@@ -2596,6 +2702,11 @@ async function submitOrder() {
     notesVal = notesVal ? notesVal + '\n' + photoNote : photoNote;
   }
 
+  if (topoDesignPhoto) {
+    const topoNote = '🎨 Design do topo enviado pelo WhatsApp.';
+    notesVal = notesVal ? notesVal + '\n' + topoNote : topoNote;
+  }
+
   const payload = {
     customer_name:      name,
     customer_cpf:       document.getElementById('f-cpf').value.trim(),
@@ -2664,8 +2775,9 @@ function resetForm() {
     .forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
   document.getElementById('f-time').value = '09:00';
   setDeliveryType('retirada');
-  // Reset foto de referência
+  // Reset foto de referência e design do topo
   orderModelPhoto = null;
+  topoDesignPhoto = null;
   document.getElementById('photo-reminder')?.classList.add('d-none');
   selectedCat = null;
   if (categories.length) renderGroupMenu();
@@ -2814,6 +2926,51 @@ function removeBoloPhoto(e) {
   document.querySelectorAll('.ref-gallery-card').forEach(c => c.classList.remove('sel-ref'));
   const bar = document.getElementById('ref-selected-bar');
   if (bar) bar.style.display = 'none';
+}
+
+/* Upload e preview do design do topo (enviado pelo cliente na aba Topos) */
+function previewTopoDesign(input) {
+  if (!input.files || !input.files[0]) return;
+  topoDesignPhoto = { type: 'file', file: input.files[0] };
+  const reader = new FileReader();
+  reader.onload = e => {
+    const preview = document.getElementById('topo-design-preview');
+    const img     = document.getElementById('topo-design-img');
+    const nm      = document.getElementById('topo-design-name');
+    const lbl     = document.getElementById('topo-design-label');
+    if (img)     img.src = e.target.result;
+    if (nm)      nm.textContent = input.files[0].name || 'Design do topo';
+    if (preview) preview.style.display = 'flex';
+    if (lbl)     lbl.style.display = 'none';
+  };
+  reader.readAsDataURL(input.files[0]);
+  toast('✓ Design do topo adicionado!', 'success');
+}
+
+function removeTopoDesign(e) {
+  if (e) e.stopPropagation();
+  topoDesignPhoto = null;
+  const inp = document.getElementById('topo-design-input');
+  if (inp) inp.value = '';
+  const preview = document.getElementById('topo-design-preview');
+  const lbl     = document.getElementById('topo-design-label');
+  if (preview) preview.style.display = 'none';
+  if (lbl)     lbl.style.display = 'flex';
+}
+
+/* Mostra/oculta card de personalização ao escolher tipo de topo */
+function _onTopoChange(sel) {
+  const card = document.getElementById('topo-personalizacao');
+  if (!card) return;
+  const v = sel.value;
+  const needPers = v.includes('Impresso') || v.includes('Papel de Arroz');
+  card.style.display = needPers ? '' : 'none';
+  if (!needPers) {
+    const nomeEl  = document.getElementById('topo-nome');
+    const idadeEl = document.getElementById('topo-idade');
+    if (nomeEl)  nomeEl.value  = '';
+    if (idadeEl) idadeEl.value = '';
+  }
 }
 
 /* ── Toast ──────────────────────────────────────────────────────────────── */
