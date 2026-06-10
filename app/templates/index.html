@@ -2159,8 +2159,9 @@ function renderOptGroup(group, data) {
   const isOpt    = isSkipValue(items[0].name);
   // Quilo é sempre pills (seletor de peso com botões)
   // Pills também quando há ≤ 4 opções e nenhuma é texto longo
+  // Topo de Bolo usa sempre dropdown (precisa de onchange para personalização)
   const usePills = group === 'Quilo' ||
-    (items.length <= 4 && items.every(i => i.name.length <= 35));
+    (group !== 'Topo de Bolo' && items.length <= 4 && items.every(i => i.name.length <= 35));
 
   // Badge de preço — fica FORA do label (elemento irmão, abaixo do nome)
   const priceTag = data.price_info
