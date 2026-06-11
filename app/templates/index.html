@@ -1225,6 +1225,150 @@
     }
     .ref-remove-btn:hover { color: #ef4444; }
 
+    /* ══ REFINAMENTOS DE LAYOUT ════════════════════════════════════════ */
+
+    /* Hero — gradiente sutil + decoração de fundo */
+    .hero-strip {
+      background:
+        radial-gradient(ellipse 80% 60% at 90% 10%, rgba(229,25,107,.07) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 50% at 10% 90%, rgba(229,25,107,.05) 0%, transparent 55%);
+    }
+    .hero-badge {
+      box-shadow: 0 1px 6px rgba(229,25,107,.13);
+      animation: badgePop .55s cubic-bezier(.34,1.56,.64,1) both;
+    }
+    @keyframes badgePop {
+      from { opacity:0; transform: scale(.7) translateY(4px); }
+      to   { opacity:1; transform: scale(1) translateY(0); }
+    }
+    .hero-strip h1 { letter-spacing: -.03em; }
+    .hero-strip h1 em {
+      background: linear-gradient(120deg, var(--pk) 0%, #c0266a 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* Opt-groups — borda visível + hover + focus-within */
+    .opt-group {
+      border: 1px solid var(--border);
+      transition: border-color .18s, box-shadow .18s, background .18s;
+    }
+    .opt-group:focus-within {
+      border-color: color-mix(in srgb, var(--accent, var(--pk)) 55%, transparent);
+      box-shadow: 0 0 0 2.5px color-mix(in srgb, var(--accent, var(--pk)) 10%, transparent);
+      background: #fff;
+    }
+    .opt-group:has(.sel-filled) {
+      border-left: 2.5px solid var(--accent, var(--pk));
+      background: color-mix(in srgb, var(--accent, var(--pk)) 3.5%, var(--bg));
+    }
+    .opt-group:has(.opt-pill.sel):not([data-quilo]) {
+      border-left: 2.5px solid var(--accent, var(--pk));
+      background: color-mix(in srgb, var(--accent, var(--pk)) 3.5%, var(--bg));
+    }
+
+    /* Topo personalization card — slide-in animado */
+    .topo-pers-card {
+      overflow: hidden;
+      max-height: 0; opacity: 0; transform: translateY(-6px); margin-bottom: 0;
+      transition: max-height .3s ease, opacity .25s ease, transform .25s ease, margin-bottom .3s ease;
+      /* override the static style for display */
+      display: block !important;
+    }
+    .topo-pers-card.visible {
+      max-height: 320px; opacity: 1; transform: translateY(0); margin-bottom: 14px;
+    }
+
+    /* Fino type picker — destaque */
+    .fino-type-picker {
+      background: linear-gradient(135deg, #fff 0%, #fffbfe 100%) !important;
+      border: 1.5px solid color-mix(in srgb, var(--accent, var(--pk)) 28%, transparent) !important;
+      box-shadow: 0 2px 10px color-mix(in srgb, var(--accent, var(--pk)) 8%, transparent);
+    }
+
+    /* Bolo ref card — mais polido */
+    .bolo-ref-card {
+      border-color: #dde1e5;
+      box-shadow: 0 2px 14px rgba(0,0,0,.06), 0 1px 3px rgba(0,0,0,.04);
+    }
+    .bolo-ref-tabs { background: #f4f5f7; }
+    .bolo-ref-tab.active { background: #fff; }
+
+    /* Category row — hover/active mais suave */
+    .cat-row { border-radius: 14px; }
+    .cat-row:active { transform: scale(.988); box-shadow: var(--shadow-sm); }
+
+    /* Btn-add — gradiente + sombra */
+    .btn-add {
+      border-radius: 12px;
+      box-shadow: 0 3px 14px color-mix(in srgb, var(--accent, var(--pk)) 28%, transparent);
+    }
+    .btn-add:hover { box-shadow: 0 5px 20px color-mix(in srgb, var(--accent, var(--pk)) 36%, transparent); }
+
+    /* Confirm card — header gradiente */
+    .confirm-header {
+      background: linear-gradient(160deg, #fff8fc 0%, #fef0f5 100%);
+      margin: -26px -20px 22px;
+      padding: 28px 20px 22px;
+      border-radius: 18px 18px 0 0;
+      border-bottom: 1px solid rgba(229,25,107,.1);
+    }
+    .confirm-emoji { filter: drop-shadow(0 2px 6px rgba(229,25,107,.22)); }
+
+    /* Opt price tag — levemente maior */
+    .opt-price-tag {
+      font-size: .7rem; padding: 3px 11px;
+      box-shadow: 0 1px 4px rgba(181,0,110,.1);
+    }
+
+    /* Form card — sombra mais rica */
+    .form-card {
+      box-shadow: 0 2px 16px rgba(0,0,0,.06), 0 1px 4px rgba(0,0,0,.04);
+    }
+
+    /* Section separators */
+    .form-section-head { padding-top: 4px; }
+    .form-section-icon {
+      box-shadow: 0 2px 8px rgba(229,25,107,.12);
+    }
+
+    /* Photo reminder — ícone de check */
+    .photo-reminder-card {
+      background: linear-gradient(135deg, #f0fdfa 0%, #e8faf5 100%);
+    }
+
+    /* Sel-chip — levemente mais suave */
+    .sel-chip {
+      border: 1px solid rgba(229,25,107,.18);
+    }
+
+    /* Bag panel — sombra */
+    .bag-btn { border-radius: 12px; }
+
+    /* Opts-inner — leve gradiente de fundo */
+    .opts-inner {
+      background: linear-gradient(180deg, #fdfdfd 0%, var(--surface) 40%);
+    }
+
+    /* Hero-strip: texto entra suavemente */
+    .hero-strip h1 {
+      animation: fadeUp .45s .08s cubic-bezier(.4,0,.2,1) both;
+    }
+    .hero-strip p {
+      animation: fadeUp .45s .18s cubic-bezier(.4,0,.2,1) both;
+    }
+    @keyframes fadeUp {
+      from { opacity:0; transform: translateY(10px); }
+      to   { opacity:1; transform: translateY(0); }
+    }
+
+    /* Checkout bar — polido */
+    .checkout-bar { backdrop-filter: blur(10px); background: rgba(255,255,255,.96); }
+    .checkout-bar .btn-finalizar { border-radius: 12px; }
+
+    /* Spinner rosa */
+    .spinner-pk { color: var(--pk); }
+
   </style>
 </head>
 <body>
@@ -1919,7 +2063,7 @@ function selectCat(slug, rowEl) {
 
   // Card de personalização do topo — só para bolos
   const topoPersonCard = isBolo ? `
-    <div id="topo-personalizacao" class="topo-pers-card" style="display:none">
+    <div id="topo-personalizacao" class="topo-pers-card">
       <div class="topo-pers-title"><i class="bi bi-person-heart"></i> Personalização do Topo</div>
       <div class="topo-pers-fields">
         <div class="topo-pers-field" style="grid-column:1/-1">
@@ -2545,7 +2689,7 @@ function addToSacola() {
   // Coleta observação + personalização do topo (se selecionado)
   let itemNote = document.getElementById('item-note').value.trim();
   const topoCard = document.getElementById('topo-personalizacao');
-  if (topoCard && topoCard.style.display !== 'none') {
+  if (topoCard && topoCard.classList.contains('visible')) {
     const topoNome  = document.getElementById('topo-nome')?.value.trim();
     const topoTema  = document.getElementById('topo-tema')?.value.trim();
     const topoIdade = document.getElementById('topo-idade')?.value.trim();
@@ -3003,7 +3147,9 @@ function _onTopoChange(sel) {
   const v         = sel.value;
   const isSimples  = v === 'Impresso Simples';
   const needPers   = v.includes('Impresso');
-  card.style.display = needPers ? '' : 'none';
+
+  // Usa classe CSS .visible para animar entrada/saída (max-height + opacity)
+  card.classList.toggle('visible', needPers);
 
   // Tema e Cor só aparecem para Impresso Simples
   const temaRow = document.getElementById('topo-tema-row');
