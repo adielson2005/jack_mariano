@@ -14,7 +14,7 @@ _EMOJI = {
     "salgados-assados":  "🥧",
     "salgados-finos":    "🥐",
     "combos":            "🎁",
-    "kit-festa":         "🎊",
+    "kit-festa":         "🎉",
 }
 
 

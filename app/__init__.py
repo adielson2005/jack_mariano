@@ -66,7 +66,7 @@ def _migrate_db():
 
 # Versão do catálogo — suba este número sempre que alterar produtos/opções.
 # O sistema vai apagar e recriar o catálogo automaticamente no próximo deploy.
-_CATALOG_VERSION = "v18"
+_CATALOG_VERSION = "v19"
 
 
 def _seed_data():
@@ -126,6 +126,31 @@ def _seed_data():
         "Pistache",
         "Pistache com Geléia de Morango",
         "Creme com Castanha do Pará",
+    ]
+
+    # Docinhos tradicionais usados nos Kits Festa (sem gourmet especial)
+    _BRIG_TRAD = [
+        "Brigadeiro Tradicional",
+        "Brigadeiro com Amendoim",
+        "Beijinho",
+        "Limão",
+        "Delícia de Amendoim",
+        "Churros",
+        "Maracujá",
+        "Dois Amores",
+        "Napolitano",
+        "Olho de Sogra",
+        "Beijinho Queimado",
+        "Morango",
+        "Cajuzinho",
+    ]
+
+    # Refrigerantes disponíveis nos kits (sem Coca-Cola — custo elevado)
+    _REFRI = [
+        "Fanta Laranja",
+        "Fanta Uva",
+        "Guaraná Antarctica",
+        "Guaraná Jesus",
     ]
 
     _FRITOS = [
@@ -444,79 +469,34 @@ def _seed_data():
         {
             "slug": "kit-festa",
             "name": "Kits Festa",
-            "description": "Kit completo: bolo + doces + salgados + bebida para sua festa.",
-            "icon": "🎈",
+            "description": "Kit completo: bolo + docinhos tradicionais + salgados fritos + refrigerante.",
+            "icon": "🎉",
             "price_from": None,
             "catalog_version": _CATALOG_VERSION,
             "options": {
-                # ── Kit ──────────────────────────────────────────────────────
+                # ── Seleção do kit ────────────────────────────────────────────
                 "Escolha o Kit": [
-                    "Kit PP — 3 pessoas (bolo 500g + topo simples + 15 docinhos + 30 salgados fritos + refri 600ml)",
-                    "Kit P — 10 pessoas (bolo 1kg + topo simples + 25 docinhos + 50 salgados fritos + refri 2L)",
-                    "Kit M — 15 pessoas (bolo 1,5kg + topo simples + 30 docinhos + 100 salgados fritos + refri 2L)",
-                    "Kit G — 20 pessoas (bolo 2kg + topo simples + 50 docinhos + 100 salgados fritos + 2 refris 2L)",
+                    "Kit PP — 3 pessoas  ·  bolo 500g · 15 docinhos · 30 salgados · refri 600ml",
+                    "Kit P — 10 pessoas  ·  bolo 1kg · 25 docinhos · 50 salgados · refri 2L",
+                    "Kit M — 15 pessoas  ·  bolo 1,5kg · 30 docinhos · 100 salgados · refri 2L",
+                    "Kit G — 20 pessoas  ·  bolo 2kg · 50 docinhos · 100 salgados · 2×refri 2L",
                 ],
                 # ── Bolo ─────────────────────────────────────────────────────
-                "Massa": ["Branca (Baunilha)", "Chocolate", "Red Velvet"],
-                "Recheio Tradicional — 1º Sabor": [*_TRAD],
-                "Recheio Tradicional — 2º Sabor": ["Sem segundo sabor", *_TRAD],
-                "Recheio Especial — 1º Sabor": [*_ESP],
-                "Recheio Especial — 2º Sabor": ["Sem segundo sabor", *_ESP],
-                "Recheio Super Especial — 1º Sabor": [*_SUPER],
-                "Recheio Super Especial — 2º Sabor": ["Sem segundo sabor", *_SUPER],
-                "Decoração": [
-                    "Sem decoração", "Chantilly", "Pasta Americana", "Morangos",
-                    "Brigadeiro Festa Tradicional", "Macarrons", "Arte a Mão",
-                ],
-                "Topo de Bolo": [
-                    "Sem topo", "Impresso Simples", "Impresso Detalhado",
-                ],
-                # ── Salgados ─────────────────────────────────────────────────
-                "Salgados Fritos — 1º Sabor": [*_FRITOS],
-                "Salgados Fritos — 2º Sabor": ["Nenhum", *_FRITOS],
-                "Salgados Fritos — 3º Sabor": ["Nenhum", *_FRITOS],
-                "Salgados Fritos — 4º Sabor": ["Nenhum", *_FRITOS],
-                "Salgados Fritos — 5º Sabor": ["Nenhum", *_FRITOS],
-                "Mini Pastel de Vento": ["Nenhum", "Presunto e Queijo", "Queijo", "Carne"],
-                "Salgados Assados": ["Nenhum", *_ASSADOS],
-                "Empadinhas": ["Nenhum", "Frango", "Palmito"],
-                "Salgados Finos": ["Nenhum", "Canapés", "Tortelete", "Barquete"],
-                # ── Doces ────────────────────────────────────────────────────
-                "Brigadeiro Gourmet": [
-                    "Nenhum", "Brigadeiro Tradicional", "Brigadeiro com Amendoim",
-                    "Beijinho", "Limão", "Delícia de Amendoim", "Churros", "Maracujá",
-                    "Dois Amores", "Napolitano", "Olho de Sogra", "Beijinho Queimado",
-                    "Morango", "Cajuzinho",
-                ],
-                "Brigadeiro Gourmet Especial": [
-                    "Nenhum", "Ferreiro Rocher", "Ninho com Nutella", "Brigadeiro M&M",
-                    "Brigadeiro com Granulado Meio Amargo", "Café", "Cappuccino",
-                    "Ninho M&M", "Castanha do Pará", "Surpresa de Uva",
-                ],
-                "Copinho de Chocolate (Branco ou ao Leite)": [
-                    "Nenhum", "Morango", "Brigadeiro", "Ninho Morango", "Ninho Cereja",
-                    "Ninho Damasco", "Oreo", "Pistache", "Ninho Uva",
-                    "Pedacim do Céu Pêssego", "Ninho com Nozes",
-                ],
-                "Copinho de Acrílico 30ml": [
-                    "Nenhum", "Morango", "Brigadeiro", "Ninho Morango", "Ninho Cereja",
-                    "Ninho Damasco", "Oreo", "Ninho Uva", "Pedacim do Céu Pêssego", "Napolitano",
-                ],
-                "Mini Brownie": [
-                    "Nenhum", "Morango", "Brigadeiro", "Ninho Morango", "Ninho",
-                    "Oreo", "Pistache", "Ninho Uva",
-                ],
-                "Mini Trufa": ["Nenhum", "Castanha Triturada", "Brigadeiro", "Coco", "Cupuaçu", "Ninho"],
-                "Doce Fino": [
-                    "Nenhum", "Camafeu Nozes", "Surpresa de Damasco",
-                    "Surpresa de Castanha de Caju", "Macarrom", "Bem Casado com Tag",
-                ],
-                "Pipoca Gourmet": ["Nenhum", "Ninho", "Chocolate", "Oreo", "Ovomaltine"],
-                # ── Extras ───────────────────────────────────────────────────
-                "Acréscimos": [
-                    "Sem acréscimos", "Topo de Bolo Trabalhado", "Suporte no Bolo de Andar",
-                    "Decoração com Flores Naturais", "Papel de Arroz", "Ganache",
-                ],
+                "Massa do Bolo": ["Branca (Baunilha)", "Chocolate", "Red Velvet"],
+                "Recheio — 1º Sabor": [*_TRAD],
+                "Recheio — 2º Sabor": ["Sem segundo sabor", *_TRAD],
+                # ── Salgados fritos ───────────────────────────────────────────
+                "Salgados — 1º Sabor": [*_FRITOS],
+                "Salgados — 2º Sabor": ["Nenhum", *_FRITOS],
+                "Salgados — 3º Sabor": ["Nenhum", *_FRITOS],
+                "Salgados — 4º Sabor": ["Nenhum", *_FRITOS],
+                "Salgados — 5º Sabor": ["Nenhum", *_FRITOS],
+                # ── Docinhos tradicionais ─────────────────────────────────────
+                "Docinhos — 1º Sabor": [*_BRIG_TRAD],
+                "Docinhos — 2º Sabor": ["Nenhum", *_BRIG_TRAD],
+                "Docinhos — 3º Sabor": ["Nenhum", *_BRIG_TRAD],
+                # ── Bebida ───────────────────────────────────────────────────
+                "Refrigerante": [*_REFRI],
             },
         },
     ]

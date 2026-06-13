@@ -1369,6 +1369,52 @@
     /* Spinner rosa */
     .spinner-pk { color: var(--pk); }
 
+    /* ── Kit Festa — cabeçalhos de seção ─────────────────────────── */
+    .kit-section-header {
+      margin: 12px 0 0;
+      grid-column: 1 / -1;
+    }
+    .kit-section-label {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: .75rem;
+      font-weight: 700;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      color: var(--accent, var(--pk));
+      padding: 8px 0 6px;
+      border-bottom: 2px solid currentColor;
+    }
+
+    /* ── Kit Festa — card resumo do kit selecionado ───────────────── */
+    .kit-info-card {
+      grid-column: 1 / -1;
+      background: linear-gradient(135deg,#fff0f8,#fce7f3);
+      border: 1.5px solid var(--pk-border, #fbcfe8);
+      border-radius: 14px;
+      padding: 12px 14px;
+      margin-top: 6px;
+    }
+    .kit-info-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+    }
+    .kit-info-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: #fff;
+      border: 1px solid #fde8f4;
+      border-radius: 10px;
+      padding: 7px 11px;
+      flex: 1 1 120px;
+    }
+    .ki-icon { font-size: 1.25rem; flex-shrink: 0; }
+    .kit-info-item div b  { display:block; font-size:.84rem; color:var(--dark,#111); font-weight:700; }
+    .kit-info-item div small { display:block; font-size:.71rem; color:var(--muted,#6b7280); }
+
   </style>
 </head>
 <body>
@@ -2059,10 +2105,12 @@ function selectCat(slug, rowEl) {
   // Build options HTML
   const groupsHtml = Object.entries(cat.options).map(([g, d]) => renderOptGroup(g, d)).join('');
 
-  const isBolo = ['bolo-tradicional', 'bolo-especial', 'bolo-super'].includes(slug);
+  const isBolo = ['bolo-tradicional', 'bolo-especial', 'bolo-super', 'kit-festa'].includes(slug);
 
-  // Card de personalização do topo — só para bolos
-  const topoPersonCard = isBolo ? `
+  // Card de personalização do topo — para bolos e kits (kit inclui topo simples)
+  const isBoloSlug = ['bolo-tradicional', 'bolo-especial', 'bolo-super'].includes(slug);
+  const isKit = slug === 'kit-festa';
+  const topoPersonCard = (isBoloSlug || isKit) ? `
     <div id="topo-personalizacao" class="topo-pers-card">
       <div class="topo-pers-title"><i class="bi bi-person-heart"></i> Personalização do Topo</div>
       <div class="topo-pers-fields">
@@ -2204,11 +2252,11 @@ function selectCat(slug, rowEl) {
       </button>
     </div>`;
 
-  // Kit Festa: opções aparecem só após escolher o kit (inclui seletor de recheio interno)
-  if (slug === 'kit-festa') _setupKitFesta(slug);
+  // Kit Festa: opções reveladas progressivamente após escolher o kit
+  if (isKit) _setupKitFesta(slug);
   // Salgados Finos: seletor de subtipo (Canudinho / Canapés / Tortelete / Barquete)
   if (slug === 'salgados-finos') _injectFinoTypePicker(slug);
-  // Bolo: carrega galeria de referências (modelos + topos)
+  // Bolo e Kit: carrega galeria de referências de modelos de bolo + topos
   if (isBolo) _loadBoloGallery(slug);
   // Outras categorias: carrega galeria de referência simples
   else _loadCatGallery(slug);
@@ -2258,6 +2306,12 @@ function groupIcon(name) {
   if (n.includes('colorido') || n.includes('carimbado')) return '🎨';  // paleta = cor/arte
   if (n.includes('combo') || n.includes('escolha'))      return '🎁';  // presente = combo/pacote
   if (n.includes('acréscimo'))                           return '➕';  // mais = acréscimo
+  // Kit Festa — grupos específicos
+  if (n === 'massa do bolo')                             return '🍞';  // massa do bolo
+  if (n.startsWith('recheio —'))                         return '🫙';  // recheio kit
+  if (n.startsWith('salgados —'))                        return '🍗';  // salgados fritos kit
+  if (n.startsWith('docinhos —'))                        return '🍬';  // docinhos kit
+  if (n === 'refrigerante')                              return '🥤';  // bebida kit
   return '📋';
 }
 
@@ -2293,8 +2347,11 @@ function renderOptGroup(group, data) {
 
   // Simplifica labels com "—": "Salgados Fritos — 1º Sabor" → "1º Sabor"
   //                           "Recheio Tradicional — 1º Sabor" → "1º Sabor"
+  //                           "Salgados — 1º Sabor" → "1º Sabor"
   let displayGroup = group;
-  if (recheioType || group.startsWith('Salgados Fritos —')) {
+  if (recheioType || group.startsWith('Salgados Fritos —') ||
+      group.startsWith('Recheio —') || group.startsWith('Salgados —') ||
+      group.startsWith('Docinhos —')) {
     const dash = group.indexOf('—');
     if (dash !== -1) displayGroup = group.slice(dash + 2).trim();
   }
@@ -2383,10 +2440,11 @@ function _setupKitFesta(slug) {
   const wrap = document.getElementById('ow-' + slug);
   if (!wrap) return;
 
-  // 1. Injeta o seletor de recheio igual ao bolo
-  _injectRecheioTypePicker(slug);
+  // Oculta ref card de bolo até um kit ser escolhido
+  const boloRef = wrap.querySelector('.bolo-ref-card');
+  if (boloRef) boloRef.style.display = 'none';
 
-  // 2. Esconde tudo exceto "Escolha o Kit"
+  // Oculta todos os grupos dependentes (mantém só "Escolha o Kit")
   wrap.querySelectorAll('.opt-group').forEach(g => {
     const sel = g.querySelector('select.opt-sel');
     if (sel && sel.dataset.group === 'Escolha o Kit') return;
@@ -2394,33 +2452,89 @@ function _setupKitFesta(slug) {
     g.style.display = 'none';
   });
 
-  // 3. Ao escolher um kit, revela as opções de personalização
+  // Injeta card de resumo do kit e cabeçalhos de seção
+  _injectKitInfoCard(wrap);
+  _injectKitSectionHeaders(wrap);
+
   const kitSel = wrap.querySelector('select.opt-sel[data-group="Escolha o Kit"]');
   if (!kitSel) return;
 
   kitSel.addEventListener('change', function () {
     if (!this.value) return;
 
-    // Mostra todos os grupos dependentes, exceto os de recheio (gerenciados pelo picker)
-    wrap.querySelectorAll('.opt-group[data-kit-dep]').forEach(g => {
-      if (g.dataset.recheioType) return;
-      g.style.display = '';
-    });
+    // Revela todos os grupos e cabeçalhos dependentes
+    wrap.querySelectorAll('[data-kit-dep]').forEach(el => (el.style.display = ''));
 
-    // Garante que o picker de recheio aparece e está resetado para "Sem recheio"
-    const picker = wrap.querySelector('.recheio-type-picker');
-    if (picker) {
-      picker.style.display = '';
-      picker.querySelectorAll('.opt-pill').forEach((p, i) => {
-        p.classList.remove('sel', 'sel-skip');
-        if (i === 0) p.classList.add('sel-skip', 'sel');
-      });
-      wrap.querySelectorAll('.opt-group[data-recheio-type]').forEach(g => {
-        g.style.display = 'none';
-        g.querySelectorAll('select.opt-sel').forEach(s => { s.selectedIndex = 0; });
-      });
-      wrap.querySelector('.btn-add-2nd-sabor')?.remove();
+    // Revela bolo ref card
+    if (boloRef) boloRef.style.display = '';
+
+    // Revela personalização do topo com todos os campos
+    // (todos os kits incluem topo simples — nome, tema, idade e cor)
+    const topoCard = wrap.querySelector('#topo-personalizacao');
+    if (topoCard && !topoCard.classList.contains('visible')) {
+      topoCard.classList.add('visible');
+      const temaRow = document.getElementById('topo-tema-row');
+      const corRow  = document.getElementById('topo-cor-row');
+      if (temaRow) temaRow.style.display = '';
+      if (corRow)  corRow.style.display  = '';
     }
+  });
+}
+
+/* Injeta card de resumo visual do kit selecionado */
+function _injectKitInfoCard(wrap) {
+  const KIT_DATA = {
+    'Kit PP': { bolo: '500g',  docinhos: 15, salgados: 30,  refri: '600ml',    pessoas: 3  },
+    'Kit P':  { bolo: '1kg',   docinhos: 25, salgados: 50,  refri: '2L',       pessoas: 10 },
+    'Kit M':  { bolo: '1,5kg', docinhos: 30, salgados: 100, refri: '2L',       pessoas: 15 },
+    'Kit G':  { bolo: '2kg',   docinhos: 50, salgados: 100, refri: '2×2L',     pessoas: 20 },
+  };
+
+  const kitSel = wrap.querySelector('.opt-sel[data-group="Escolha o Kit"]');
+  if (!kitSel) return;
+
+  const card = document.createElement('div');
+  card.className = 'kit-info-card';
+  card.style.display = 'none';
+  card.setAttribute('data-kit-info', '1');
+  kitSel.closest('.opt-group').insertAdjacentElement('afterend', card);
+
+  kitSel.addEventListener('change', function () {
+    if (!this.value) { card.style.display = 'none'; return; }
+    const kitKey = Object.keys(KIT_DATA).find(k => this.value.startsWith(k));
+    if (!kitKey) return;
+    const d = KIT_DATA[kitKey];
+    card.style.display = '';
+    card.innerHTML = `
+      <div class="kit-info-grid">
+        <div class="kit-info-item"><span class="ki-icon">👥</span><div><b>${d.pessoas} pessoas</b><small>${kitKey}</small></div></div>
+        <div class="kit-info-item"><span class="ki-icon">🎂</span><div><b>Bolo ${d.bolo}</b><small>+ topo impresso</small></div></div>
+        <div class="kit-info-item"><span class="ki-icon">🍬</span><div><b>${d.docinhos} docinhos</b><small>tradicionais</small></div></div>
+        <div class="kit-info-item"><span class="ki-icon">🍗</span><div><b>${d.salgados} salgados</b><small>fritos</small></div></div>
+        <div class="kit-info-item"><span class="ki-icon">🥤</span><div><b>Refrigerante</b><small>${d.refri}</small></div></div>
+      </div>`;
+  });
+}
+
+/* Injeta cabeçalhos visuais de seção dentro do grid de opções do kit */
+function _injectKitSectionHeaders(wrap) {
+  const sections = [
+    { group: 'Massa do Bolo',       label: '🎂 Bolo' },
+    { group: 'Salgados — 1º Sabor', label: '🍗 Salgados Fritos' },
+    { group: 'Docinhos — 1º Sabor', label: '🍬 Docinhos Tradicionais' },
+    { group: 'Refrigerante',        label: '🥤 Refrigerante' },
+  ];
+  sections.forEach(({ group, label }) => {
+    const sel = wrap.querySelector(`.opt-sel[data-group="${group}"]`);
+    if (!sel) return;
+    const grp = sel.closest('.opt-group');
+    if (!grp) return;
+    const hdr = document.createElement('div');
+    hdr.className = 'kit-section-header';
+    hdr.setAttribute('data-kit-dep', '1');
+    hdr.style.display = 'none';
+    hdr.innerHTML = `<div class="kit-section-label">${label}</div>`;
+    grp.insertAdjacentElement('beforebegin', hdr);
   });
 }
 
