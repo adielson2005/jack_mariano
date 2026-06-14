@@ -66,7 +66,7 @@ def _migrate_db():
 
 # Versão do catálogo — suba este número sempre que alterar produtos/opções.
 # O sistema vai apagar e recriar o catálogo automaticamente no próximo deploy.
-_CATALOG_VERSION = "v19"
+_CATALOG_VERSION = "v20"
 
 
 def _seed_data():
@@ -247,29 +247,27 @@ def _seed_data():
         # ── Doces ────────────────────────────────────────────────────────────
         {
             "slug": "doces",
-            "name": "Doces Tradicionais",
-            "description": "Brigadeiros gourmet, copinhos, brownies, pipoca e coloridos artesanais.",
-            "icon": "🍫",
+            "name": "Docinhos Tradicionais",
+            "description": "Brigadeiros artesanais tradicionais — R$ 180,00 o cento. Escolha até 3 sabores.",
+            "icon": "🍬",
+            "price_from": "R$ 180,00 o cento",
+            "catalog_version": _CATALOG_VERSION,
+            "options": {
+                # Até 3 sabores — cor da forminha e cor do laço são campos livres no front
+                "1º Sabor|R$ 180,00 o cento": [*_BRIG_TRAD],
+                "2º Sabor": ["Nenhum", *_BRIG_TRAD],
+                "3º Sabor": ["Nenhum", *_BRIG_TRAD],
+            },
+        },
+        {
+            "slug": "doces-finos",
+            "name": "Doces Finos",
+            "description": "Brigadeiros especiais, copinhos, trufas, brownies, pipoca e carimbados.",
+            "icon": "💎",
             "price_from": None,
             "catalog_version": _CATALOG_VERSION,
             "options": {
-                "Brigadeiro Gourmet|R$ 180,00 o cento": [
-                    "Nenhum",
-                    "Brigadeiro Tradicional",
-                    "Brigadeiro com Amendoim",
-                    "Beijinho",
-                    "Limão",
-                    "Delícia de Amendoim",
-                    "Churros",
-                    "Maracujá",
-                    "Dois Amores",
-                    "Napolitano",
-                    "Olho de Sogra",
-                    "Beijinho Queimado",
-                    "Morango",
-                    "Cajuzinho",
-                ],
-                "Brigadeiro Gourmet Especial|R$ 250,00 o cento": [
+                "Brigadeiro Especial|R$ 250,00 o cento": [
                     "Nenhum",
                     "Ferreiro Rocher",
                     "Ninho com Nutella",
@@ -342,32 +340,6 @@ def _seed_data():
                 "Coloridos ou Carimbados|R$ 220,00 o cento": [
                     "Nenhum",
                     "Carimbo Dourado com Sabor Ninho",
-                ],
-            },
-        },
-        {
-            "slug": "doces-finos",
-            "name": "Doces Finos",
-            "description": "Trufas artesanais e doces finos elegantes para eventos especiais.",
-            "icon": "💎",
-            "price_from": None,
-            "catalog_version": _CATALOG_VERSION,
-            "options": {
-                "Mini Trufa|R$ 2,90 un": [
-                    "Nenhum",
-                    "Castanha Triturada",
-                    "Brigadeiro",
-                    "Coco",
-                    "Cupuaçu",
-                    "Ninho",
-                ],
-                "Doce Fino|a partir de R$ 3,50 un": [
-                    "Nenhum",
-                    "Camafeu Nozes",
-                    "Surpresa de Damasco",
-                    "Surpresa de Castanha de Caju",
-                    "Macarrom",
-                    "Bem Casado com Tag",
                 ],
             },
         },

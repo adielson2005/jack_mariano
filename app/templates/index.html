@@ -1369,6 +1369,62 @@
     /* Spinner rosa */
     .spinner-pk { color: var(--pk); }
 
+    /* ── Docinhos Tradicionais — card cor da forminha / laço ────── */
+    .docinhos-pers-card {
+      background: linear-gradient(135deg,#fff8e1,#fef3c7);
+      border: 1.5px solid #fde68a;
+      border-radius: 14px;
+      padding: 14px 16px;
+      margin-top: 6px;
+    }
+    .docinhos-pers-title {
+      font-size: .84rem;
+      font-weight: 700;
+      color: #92400e;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .docinhos-pers-fields {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    @media (max-width:420px) { .docinhos-pers-fields { grid-template-columns:1fr; } }
+    .docinhos-pers-field label {
+      display: block;
+      font-size: .77rem;
+      font-weight: 600;
+      color: #78350f;
+      margin-bottom: 5px;
+    }
+    .docinhos-pers-field input {
+      width: 100%;
+      border: 1.5px solid #fde68a;
+      border-radius: 8px;
+      padding: 8px 10px;
+      font-size: .88rem;
+      color: #1f2937;
+      background: #fff;
+      outline: none;
+      transition: border-color .2s, box-shadow .2s;
+      box-sizing: border-box;
+      font-family: inherit;
+    }
+    .docinhos-pers-field input:focus {
+      border-color: #f59e0b;
+      box-shadow: 0 0 0 3px rgba(245,158,11,.15);
+    }
+    .docinhos-pers-hint {
+      font-size: .72rem;
+      color: #a16207;
+      margin-top: 8px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
     /* ── Kit Festa — cabeçalhos de seção ─────────────────────────── */
     .kit-section-header {
       margin: 12px 0 0;
@@ -2133,6 +2189,28 @@ function selectCat(slug, rowEl) {
       </div>
     </div>` : '';
 
+  // Docinhos Tradicionais: card de cor da forminha e cor do laço
+  const docinhosCard = (slug === 'doces') ? `
+    <div class="docinhos-pers-card" id="docinhos-personalizacao">
+      <div class="docinhos-pers-title">
+        <i class="bi bi-palette2"></i> Personalização
+      </div>
+      <div class="docinhos-pers-fields">
+        <div class="docinhos-pers-field">
+          <label>Cor da forminha</label>
+          <input type="text" id="doc-cor-forminha" placeholder="Ex: Rosa, Azul, Dourada...">
+        </div>
+        <div class="docinhos-pers-field">
+          <label>Cor do laço</label>
+          <input type="text" id="doc-cor-laco" placeholder="Ex: Dourado, Branco, Vinho...">
+        </div>
+      </div>
+      <div class="docinhos-pers-hint">
+        <i class="bi bi-info-circle"></i>
+        Deixe em branco se não quiser forminha/laço personalizado.
+      </div>
+    </div>` : '';
+
   // Categorias não-bolo: galeria de referência simples (fotos de exemplo)
   const catRefCard = !isBolo ? `
     <div class="cat-ref-card" id="cat-ref-${slug}" style="display:none">
@@ -2236,6 +2314,7 @@ function selectCat(slug, rowEl) {
       </button>
       <div class="opts-groups-grid">${groupsHtml}</div>
       ${topoPersonCard}
+      ${docinhosCard}
       ${boloRefCard}${catRefCard}
       <div class="qty-note-row">
         <div class="qty-col">
@@ -2855,6 +2934,20 @@ function addToSacola() {
     if (parts.length) {
       const persNote = '🎂 Topo — ' + parts.join(' · ');
       itemNote = itemNote ? itemNote + ' · ' + persNote : persNote;
+    }
+  }
+
+  // Coleta personalização dos docinhos (cor da forminha e cor do laço)
+  const docCard = document.getElementById('docinhos-personalizacao');
+  if (docCard) {
+    const corForminha = document.getElementById('doc-cor-forminha')?.value.trim();
+    const corLaco     = document.getElementById('doc-cor-laco')?.value.trim();
+    const dParts = [];
+    if (corForminha) dParts.push(`Forminha: ${corForminha}`);
+    if (corLaco)     dParts.push(`Laço: ${corLaco}`);
+    if (dParts.length) {
+      const dNote = '🎀 ' + dParts.join(' · ');
+      itemNote = itemNote ? itemNote + ' · ' + dNote : dNote;
     }
   }
 
