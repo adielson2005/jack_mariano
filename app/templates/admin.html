@@ -640,6 +640,155 @@
     @media (max-width: 480px) {
       .search-wrap { max-width: 100%; }
     }
+
+    /* ══ ADMIN REFINEMENTS ══════════════════════════════════════════════════════ */
+
+    /* Urgency row tinting */
+    .table tbody tr.tr-today    { background: rgba(254,242,242,.6); }
+    .table tbody tr.tr-tomorrow { background: rgba(255,251,235,.6); }
+    .table tbody tr.tr-today:hover    { background: rgba(254,226,226,.75) !important; }
+    .table tbody tr.tr-tomorrow:hover { background: rgba(254,243,199,.65) !important; }
+
+    /* Zebra striping nas linhas normais */
+    .table tbody tr:nth-child(even):not(.tr-today):not(.tr-tomorrow) {
+      background: rgba(0,0,0,.013);
+    }
+
+    /* Status pills — bordas e cores mais definidas */
+    .sp { padding: 4px 10px; font-size: .72rem; border-radius: 6px; font-weight: 700; }
+    .sp-pending     { background: #fef9c3; color: #854d0e; border: 1px solid #fde68a; }
+    .sp-confirmed   { background: #dbeafe; color: #1d4ed8; border: 1px solid #bfdbfe; }
+    .sp-in_progress { background: #e0f2fe; color: #0369a1; border: 1px solid #bae6fd; }
+    .sp-ready       { background: #dcfce7; color: #15803d; border: 1px solid #bbf7d0; }
+    .sp-cancelled   { background: #fee2e2; color: #b91c1c; border: 1px solid #fecaca; }
+
+    /* ── Grid de botões de status rápido ──────────────────────────── */
+    .status-quick-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 5px;
+      margin-bottom: 10px;
+    }
+    @media (max-width: 500px) {
+      .status-quick-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+    .sqb {
+      display: flex; flex-direction: column; align-items: center; gap: 4px;
+      padding: 9px 4px;
+      border-radius: 10px;
+      border: 1.5px solid var(--border);
+      background: var(--bg);
+      cursor: pointer;
+      font-family: inherit;
+      font-size: .67rem;
+      font-weight: 600;
+      color: var(--muted);
+      line-height: 1.25;
+      text-align: center;
+      transition: border-color .14s, background .14s, color .14s, box-shadow .14s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .sqb i { font-size: 1.1rem; }
+    .sqb:hover { border-color: var(--pk); color: var(--pk); background: var(--pk-soft); }
+    /* Ativos por status */
+    .sqb-pending.sqb-active     { background: #fef9c3; border-color: #f59e0b; color: #854d0e; box-shadow: 0 0 0 2px rgba(245,158,11,.15); }
+    .sqb-confirmed.sqb-active   { background: #dbeafe; border-color: #3b82f6; color: #1d4ed8; box-shadow: 0 0 0 2px rgba(59,130,246,.15); }
+    .sqb-in_progress.sqb-active { background: #e0f2fe; border-color: #0ea5e9; color: #0369a1; box-shadow: 0 0 0 2px rgba(14,165,233,.15); }
+    .sqb-ready.sqb-active       { background: #dcfce7; border-color: #22c55e; color: #15803d; box-shadow: 0 0 0 2px rgba(34,197,94,.15); }
+    .sqb-cancelled.sqb-active   { background: #fee2e2; border-color: #ef4444; color: #b91c1c; box-shadow: 0 0 0 2px rgba(239,68,68,.15); }
+    .sqb-cancelled:hover { border-color: #ef4444; color: #b91c1c; background: #fef2f2; }
+
+    /* Botão salvar nota */
+    .btn-save-notes {
+      width: 100%;
+      background: var(--bg);
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: .8rem;
+      font-weight: 600;
+      color: var(--muted);
+      padding: 7px 12px;
+      cursor: pointer;
+      display: flex; align-items: center; gap: 6px;
+      transition: border-color .14s, color .14s, background .14s;
+    }
+    .btn-save-notes:hover { border-color: var(--pk); color: var(--pk); background: var(--pk-soft); }
+
+    /* ── Header do painel de detalhes ─────────────────────────────── */
+    .dp-header {
+      background: linear-gradient(135deg, #fff 0%, var(--bg) 100%);
+    }
+    .dp-order-num { letter-spacing: .08em; }
+    .dp-title     { font-size: 1.08rem; margin-bottom: 2px; }
+
+    /* ── Seções do painel ─────────────────────────────────────────── */
+    .dp-section-head { font-size: .67rem; letter-spacing: .1em; gap: 7px; }
+    .dp-section-head .dsh-icon {
+      width: 22px; height: 22px; border-radius: 6px;
+      display: inline-flex; align-items: center; justify-content: center;
+      font-size: .82rem; flex-shrink: 0;
+    }
+    .dsh-client    { background: #eff6ff; color: #2563eb; }
+    .dsh-schedule  { background: #f0fdf4; color: #16a34a; }
+    .dsh-items     { background: var(--pk-soft); color: var(--pk); }
+    .dsh-notes     { background: #fffbeb; color: #d97706; }
+
+    /* Info rows — zebra suave */
+    .dp-section-body .info-row:nth-child(even) {
+      background: rgba(0,0,0,.022);
+      margin: 0 -14px;
+      padding: 6px 14px;
+    }
+    .info-row { margin-bottom: 6px; }
+    .info-lbl { min-width: 100px; font-size: .8rem; }
+    .info-val { font-size: .855rem; }
+
+    /* Item cards — cabeçalho com fundo suave */
+    .item-card {
+      overflow: hidden;
+      border-radius: 10px;
+      padding: 0;
+      margin-bottom: 8px;
+    }
+    .item-card .item-head {
+      background: linear-gradient(135deg, var(--bg), #f8f7fb);
+      padding: 9px 13px;
+      border-bottom: 1px solid var(--border);
+    }
+    .item-card .item-body {
+      padding: 9px 13px;
+    }
+    .item-title { font-size: .9rem; }
+    .item-qty   { font-size: .82rem; }
+    .item-tag   { font-size: .68rem; padding: 2px 9px; border-radius: 6px; }
+
+    /* ── Filter bar — mais limpa ──────────────────────────────────── */
+    .filter-bar { border-radius: 12px; padding: 11px 14px; }
+    .search-wrap input {
+      border-radius: 9px; border-width: 1px; font-size: .83rem;
+      padding: 7px 30px;
+    }
+    #status-filter { border-radius: 9px; border-width: 1px; font-size: .83rem; padding: 7px 10px; }
+    .period-pill   { border-width: 1px; font-size: .77rem; }
+
+    /* ── Stat cards ───────────────────────────────────────────────── */
+    .stat-icon-wrap { border-radius: 13px; }
+    .stat-val { letter-spacing: -.04em; }
+    .stat-card { border-radius: 12px; }
+
+    /* ── Table ────────────────────────────────────────────────────── */
+    .table-card { border-radius: 12px; }
+    .table-card .table thead th {
+      font-size: .67rem; padding: 10px 14px; letter-spacing: .09em;
+    }
+    .table-card .table tbody td { padding: 11px 14px; font-size: .845rem; }
+
+    /* ── dp-footer ────────────────────────────────────────────────── */
+    .dp-footer { padding: 12px 14px 16px; }
+    .dp-footer-label { font-size: .64rem; letter-spacing: .1em; margin-bottom: 0; }
+    .note-area { border-radius: 9px; font-size: .845rem; border-width: 1px; margin-top: 9px; }
+    .btn-delete { border-radius: 9px; border-width: 1px; padding: 7px 11px; font-size: .88rem; }
   </style>
 </head>
 <body>
@@ -949,24 +1098,34 @@
   </div>
 
   <div class="dp-footer">
-    <div class="dp-footer-label">Alterar status</div>
-    <div class="status-action-row">
-      <select id="dp-status-sel">
-        <option value="pending">Aguardando confirmação</option>
-        <option value="confirmed">Confirmado</option>
-        <option value="in_progress">Em produção</option>
-        <option value="ready">Pronto para retirada</option>
-        <option value="cancelled">Cancelado</option>
-      </select>
-      <button class="btn-save-status" onclick="saveStatus()">
-        <i class="bi bi-check2"></i> Salvar
-      </button>
+    <div class="d-flex align-items-center justify-content-between mb-2">
+      <div class="dp-footer-label">Status do pedido</div>
       <button class="btn-delete" onclick="confirmDelete()" title="Excluir pedido">
         <i class="bi bi-trash"></i>
       </button>
     </div>
+    <div class="status-quick-grid" id="status-quick-grid">
+      <button class="sqb sqb-pending"     data-s="pending"     onclick="quickSetStatus('pending')">
+        <i class="bi bi-hourglass-split"></i><span>Aguardando</span>
+      </button>
+      <button class="sqb sqb-confirmed"   data-s="confirmed"   onclick="quickSetStatus('confirmed')">
+        <i class="bi bi-check-circle"></i><span>Confirmar</span>
+      </button>
+      <button class="sqb sqb-in_progress" data-s="in_progress" onclick="quickSetStatus('in_progress')">
+        <i class="bi bi-hammer"></i><span>Produção</span>
+      </button>
+      <button class="sqb sqb-ready"       data-s="ready"       onclick="quickSetStatus('ready')">
+        <i class="bi bi-gift"></i><span>Pronto</span>
+      </button>
+      <button class="sqb sqb-cancelled"   data-s="cancelled"   onclick="quickSetStatus('cancelled')">
+        <i class="bi bi-x-circle"></i><span>Cancelar</span>
+      </button>
+    </div>
     <textarea class="note-area" id="dp-admin-notes" rows="2"
               placeholder="Nota interna para a equipe..."></textarea>
+    <button class="btn-save-notes mt-1" onclick="saveNotes()">
+      <i class="bi bi-sticky"></i> Salvar nota interna
+    </button>
   </div>
 </div>
 
@@ -1165,8 +1324,9 @@ async function loadOrders(silent = false) {
     const dlvLabel = o.delivery_type === 'entrega' ? 'Entrega' : 'Retirada';
     const itemCount = o.item_count ?? '–';
 
+    const trCls = urgDot === 'urg-today' ? 'tr-today' : urgDot === 'urg-tomorrow' ? 'tr-tomorrow' : '';
     return `
-    <tr onclick="openPanel(${o.id})">
+    <tr onclick="openPanel(${o.id})" class="${trCls}">
       <td>
         <div class="d-flex align-items-center gap-2">
           <span class="urg-dot ${urgDot}"></span>
@@ -1219,9 +1379,12 @@ async function openPanel(id) {
   document.getElementById('dp-order-num').textContent   = `Pedido #${o.id}`;
   document.getElementById('dp-title').textContent       = o.customer_name;
   document.getElementById('dp-status-badge').innerHTML  = `<span class="sp ${s.cls}"><i class="bi ${s.icon}"></i>${s.label}</span>`;
-  document.getElementById('dp-status-sel').value        = o.status;
   document.getElementById('dp-admin-notes').value       = o.admin_notes || '';
   document.getElementById('dp-wa-btn').href             = '#';
+  // Destaca botão do status atual
+  document.querySelectorAll('#status-quick-grid .sqb').forEach(b =>
+    b.classList.toggle('sqb-active', b.dataset.s === o.status)
+  );
 
   // Busca whatsapp link assincronamente
   apiFetch(`${API}/admin/whatsapp/${id}`)
@@ -1263,11 +1426,14 @@ async function openPanel(id) {
       .map(([k, v]) => `<span class="item-tag">${esc(k)}: ${esc(v)}</span>`).join('');
     return `
       <div class="item-card">
-        <div class="item-title">${esc(item.category_name)}
+        <div class="item-head">
+          <span class="item-title">${esc(item.category_name)}</span>
           <span class="item-qty"> × ${item.quantity}</span>
         </div>
-        <div class="mt-2">${tags || '<span style="color:var(--muted);font-size:.78rem">Sem personalizações</span>'}</div>
-        ${item.item_notes ? `<div class="item-note"><i class="bi bi-chat-dots me-1"></i>${esc(item.item_notes)}</div>` : ''}
+        <div class="item-body">
+          ${tags || '<span style="color:var(--muted);font-size:.78rem">Sem personalizações</span>'}
+          ${item.item_notes ? `<div class="item-note mt-1"><i class="bi bi-chat-dots me-1"></i>${esc(item.item_notes)}</div>` : ''}
+        </div>
       </div>`;
   }).join('');
 
@@ -1283,22 +1449,30 @@ async function openPanel(id) {
 
   document.getElementById('dp-body').innerHTML = `
     <div class="dp-section">
-      <div class="dp-section-head"><i class="bi bi-person-fill"></i> Cliente</div>
+      <div class="dp-section-head">
+        <span class="dsh-icon dsh-client"><i class="bi bi-person-fill"></i></span> Cliente
+      </div>
       <div class="dp-section-body">${clientHtml}</div>
     </div>
     <div class="dp-section">
-      <div class="dp-section-head"><i class="bi bi-calendar-event-fill"></i> Agendamento</div>
+      <div class="dp-section-head">
+        <span class="dsh-icon dsh-schedule"><i class="bi bi-calendar-event-fill"></i></span> Agendamento
+      </div>
       <div class="dp-section-body">${schedHtml}</div>
     </div>
     <div class="dp-section">
-      <div class="dp-section-head"><i class="bi bi-bag-fill"></i> Itens (${o.items.length})</div>
+      <div class="dp-section-head">
+        <span class="dsh-icon dsh-items"><i class="bi bi-bag-fill"></i></span> Itens (${o.items.length})
+      </div>
       <div class="dp-section-body">${itemsHtml || '<p class="text-muted small mb-0">Nenhum item.</p>'}</div>
     </div>
     ${hasExtras ? `<div class="dp-section">
-      <div class="dp-section-head"><i class="bi bi-sticky-fill"></i> Observações</div>
+      <div class="dp-section-head">
+        <span class="dsh-icon dsh-notes"><i class="bi bi-sticky-fill"></i></span> Observações
+      </div>
       <div class="dp-section-body">${extrasHtml}</div>
     </div>` : ''}
-    <div style="font-size:.74rem;color:var(--muted);text-align:center;padding:4px 0">
+    <div style="font-size:.72rem;color:var(--muted);text-align:center;padding:4px 0 2px">
       Criado em ${o.created_at}
     </div>`;
 
@@ -1337,28 +1511,40 @@ async function openWA(el, e) {
   window.open(d.admin_link, '_blank');
 }
 
-/* ── Save status ─────────────────────────────────────────────────────────── */
-async function saveStatus() {
+/* ── Status rápido (botões do painel) ────────────────────────────────────── */
+async function quickSetStatus(status) {
   if (!currentOrderId) return;
-  const btn = document.querySelector('.btn-save-status');
-  btn.disabled = true;
-  btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>Salvando...';
+  // Atualiza UI imediatamente
+  document.querySelectorAll('#status-quick-grid .sqb').forEach(b =>
+    b.classList.toggle('sqb-active', b.dataset.s === status)
+  );
+  const s = STATUS[status] || { label: status, cls: '', icon: 'bi-circle' };
+  document.getElementById('dp-status-badge').innerHTML =
+    `<span class="sp ${s.cls}"><i class="bi ${s.icon}"></i>${s.label}</span>`;
 
   const res = await apiFetch(`${API}/admin/orders/${currentOrderId}/status`, {
     method: 'PATCH',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      status:      document.getElementById('dp-status-sel').value,
+      status,
       admin_notes: document.getElementById('dp-admin-notes').value,
     }),
   });
+  if (!res || !res.ok) { toast('Erro ao salvar status.', 'danger'); return; }
+  loadOrders(true);
+  toast('✓ Status atualizado!', 'success');
+}
 
-  btn.disabled = false;
-  btn.innerHTML = '<i class="bi bi-check2"></i> Salvar';
-
-  if (!res) return;
-  if (res.ok) { closePanel(); loadOrders(); toast('✓ Status atualizado!', 'success'); }
-  else toast('Erro ao salvar.', 'danger');
+/* ── Salvar nota interna ─────────────────────────────────────────────────── */
+async function saveNotes() {
+  if (!currentOrderId) return;
+  const res = await apiFetch(`${API}/admin/orders/${currentOrderId}/status`, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ admin_notes: document.getElementById('dp-admin-notes').value }),
+  });
+  if (res && res.ok) toast('✓ Nota salva!', 'success');
+  else toast('Erro ao salvar nota.', 'danger');
 }
 
 /* ── Delete ──────────────────────────────────────────────────────────────── */
