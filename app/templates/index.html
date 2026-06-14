@@ -1471,6 +1471,287 @@
     .kit-info-item div b  { display:block; font-size:.84rem; color:var(--dark,#111); font-weight:700; }
     .kit-info-item div small { display:block; font-size:.71rem; color:var(--muted,#6b7280); }
 
+    /* ═══════════════════════════════════════════════════════════════
+       VISUAL REFINEMENT — minimalista, sofisticado, atraente
+       ═══════════════════════════════════════════════════════════════ */
+
+    /* ── Root tokens refinados ───────────────────────────────────── */
+    :root {
+      --shadow-xs: 0 1px 2px rgba(0,0,0,.04);
+      --shadow-sm: 0 1px 4px rgba(0,0,0,.05);
+      --shadow-md: 0 2px 10px rgba(0,0,0,.07);
+      --border: #eae7e3;
+    }
+
+    /* ── Hero — respiro menor no mobile ─────────────────────────── */
+    .hero-strip { padding: 28px 20px 20px; }
+    .hero-strip h1 { letter-spacing: -.035em; }
+
+    /* ── Step bar — mais compacto ────────────────────────────────── */
+    .step-bar { height: 42px; }
+    .step-pill { padding: 4px 9px; font-size: .71rem; }
+    .step-pill .sp-num { width: 18px; height: 18px; font-size: .64rem; }
+    .step-sep { width: 18px; }
+
+    /* ── Category list — espaçamento mais apertado ───────────────── */
+    .cat-list    { gap: 5px; }
+    .cat-group-grid { gap: 6px; margin-bottom: 4px; }
+
+    /* ── Group tiles — ícone quadrado, borda fina, sombra mínima ── */
+    .cat-group-tile {
+      padding: 11px 14px 11px 11px;
+      border-radius: 13px;
+      border-left-width: 2.5px;
+      box-shadow: var(--shadow-xs);
+      gap: 12px;
+    }
+    .cat-group-tile:hover { box-shadow: 0 3px 14px rgba(0,0,0,.07); }
+    .cgt-icon-badge {
+      width: 44px; height: 44px;
+      border-radius: 12px;          /* quadrado suave em vez de círculo */
+      border-width: 1px;
+    }
+    .cgt-img   { width: 27px; height: 27px; }
+    .cgt-label { font-size: .9rem; }
+    .cgt-sub   { font-size: .71rem; }
+
+    /* ── Cat rows — mesmo tratamento dos tiles ───────────────────── */
+    .cat-row {
+      padding: 11px 14px 11px 11px;
+      border-left-width: 2.5px;
+      border-radius: 13px;
+      box-shadow: var(--shadow-xs);
+      gap: 12px;
+    }
+    .cat-row:hover  { box-shadow: 0 3px 14px rgba(0,0,0,.07); }
+    .cat-row.active { box-shadow: var(--shadow-xs); }
+
+    /* ── Ícone das linhas — quadrado compacto ────────────────────── */
+    .cat-icon-badge {
+      width: 44px; height: 44px;
+      border-radius: 12px;
+      border-width: 1px;
+    }
+    .cat-icon-badge img   { width: 27px; height: 27px; }
+    .cat-icon-badge span  { font-size: 1.35rem; }
+    .cat-row:hover .cat-icon-badge,
+    .cat-row.active .cat-icon-badge { box-shadow: none; }
+    .cat-name { font-size: .9rem; }
+    .cat-desc { font-size: .72rem; }
+
+    /* ── Painel de opções — fundo branco limpo ───────────────────── */
+    .opts-inner {
+      background: #fff;
+      padding: 8px 12px 16px;
+      margin-top: -6px;
+      border-radius: 0 0 13px 13px;
+      box-shadow: none;
+      border-color: var(--border);
+    }
+    .opts-back-btn { padding: 4px 12px 4px 8px; font-size: .75rem; margin-bottom: 10px; }
+
+    /* ── Grade de opções — gap mais apertado ─────────────────────── */
+    .opts-groups-grid { gap: 6px; margin-bottom: 10px; }
+
+    /* ── Grupos de opção — branco, borda hairline ────────────────── */
+    .opt-group {
+      padding: 9px 11px 11px;
+      border-radius: 9px;
+      background: #fff;
+      border: 1px solid var(--border);
+      margin-bottom: 0;
+    }
+    .opt-group:focus-within {
+      box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent, var(--pk)) 13%, transparent);
+    }
+
+    /* ── Label dos grupos — mais fino ────────────────────────────── */
+    .opt-label {
+      font-size: .59rem;
+      letter-spacing: .15em;
+      margin-bottom: 5px;
+    }
+    .opt-label::before { width: 3px; height: 3px; }
+
+    /* ── Pills — compactas, borda 1px ────────────────────────────── */
+    .opt-pills { gap: 5px; }
+    .opt-pill {
+      padding: 5px 11px;
+      font-size: .78rem;
+      border-width: 1px;
+      font-weight: 600;
+    }
+    .opt-pill.sel {
+      box-shadow: 0 1px 6px color-mix(in srgb, var(--accent, var(--pk)) 22%, transparent);
+    }
+
+    /* ── Select — padding refinado ───────────────────────────────── */
+    .opt-sel {
+      padding: 9px 36px 9px 12px;
+      font-size: .86rem;
+      border-width: 1px;
+      border-radius: 9px;
+    }
+    .opt-sel:focus { box-shadow: 0 0 0 2.5px color-mix(in srgb, var(--accent, var(--pk)) 13%, transparent); }
+
+    /* ── Qty / note row — tighter ────────────────────────────────── */
+    .qty-note-row {
+      padding: 10px 12px;
+      border-radius: 10px;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    .qty-note-row input { padding: 8px 11px; font-size: .86rem; border-width: 1px; border-radius: 9px; }
+    .qty-note-row label { font-size: .61rem; margin-bottom: 6px; }
+
+    /* ── Botão adicionar — refinado ──────────────────────────────── */
+    .btn-add {
+      padding: 12px;
+      border-radius: 11px;
+      font-size: .88rem;
+      letter-spacing: .02em;
+      box-shadow: 0 2px 10px color-mix(in srgb, var(--accent, var(--pk)) 22%, transparent);
+    }
+    .btn-add:hover {
+      box-shadow: 0 4px 18px color-mix(in srgb, var(--accent, var(--pk)) 32%, transparent);
+      transform: translateY(-1px);
+    }
+
+    /* ── Back row ────────────────────────────────────────────────── */
+    .cat-back-row { padding: 2px 0 12px; gap: 8px; }
+    .cat-back-btn { padding: 4px 12px; font-size: .78rem; border-radius: 18px; }
+    .cat-group-heading { font-size: .93rem; }
+
+    /* ── Form card — bordas limpas ───────────────────────────────── */
+    .form-card { border-radius: 14px; box-shadow: var(--shadow-sm); }
+    .form-card-head { padding: 18px 20px 16px; gap: 12px; }
+    .form-card-head-icon { width: 40px; height: 40px; border-radius: 11px; font-size: 1.2rem; }
+    .form-card-body { padding: 18px 20px 24px; }
+    .form-control, .form-select {
+      border-width: 1px; border-radius: 10px;
+      padding: 10px 13px; font-size: .86rem;
+    }
+
+    /* ── Section headers do form ─────────────────────────────────── */
+    .form-section-head { margin: 18px 0 9px; }
+    .form-section-icon { width: 34px; height: 34px; font-size: 1rem; border-radius: 9px; box-shadow: none; }
+    .form-section-title { font-size: .88rem; }
+
+    /* ── Summary card ────────────────────────────────────────────── */
+    .sum-card { padding: 14px 16px; border-radius: 12px; box-shadow: var(--shadow-xs); }
+    .sum-item { padding: 9px 0; gap: 10px; }
+    .sum-ico  { font-size: 1.2rem; }
+    .sum-name { font-size: .88rem; }
+    .sum-qty  { font-size: .83rem; }
+    .sel-chip { font-size: .65rem; padding: 2px 9px; }
+
+    /* ── Confirm card ────────────────────────────────────────────── */
+    .confirm-card { border-radius: 16px; padding: 22px 18px 20px; }
+
+    /* ── Checkout bar — mais limpo ───────────────────────────────── */
+    .checkout-bar { padding: 10px 18px; }
+    .checkout-bar .btn-finalizar { padding: 11px 22px; border-radius: 11px; font-size: .88rem; }
+
+    /* ── Bag button ──────────────────────────────────────────────── */
+    .bag-btn { width: 40px; height: 40px; border-radius: 11px; }
+
+    /* ── Bag panel items ─────────────────────────────────────────── */
+    .bp-item { padding: 9px 11px; border-radius: 9px; margin-bottom: 5px; }
+
+    /* ── Delivery toggle ─────────────────────────────────────────── */
+    .dt-btn { padding: 11px 10px; border-radius: 11px; border-width: 1px; font-size: .81rem; }
+    .dt-btn i { font-size: 1.25rem; }
+
+    /* ── Payment toggle ──────────────────────────────────────────── */
+    .pay-btn { padding: 12px 10px; border-radius: 11px; border-width: 1.5px; }
+
+    /* ── Kit info card — compacto ────────────────────────────────── */
+    .kit-info-card { padding: 10px 12px; border-radius: 12px; margin-top: 5px; }
+    .kit-info-grid  { gap: 5px; }
+    .kit-info-item  { padding: 6px 10px; border-radius: 9px; gap: 7px; flex: 1 1 110px; }
+    .ki-icon { font-size: 1.1rem; }
+    .kit-info-item div b     { font-size: .79rem; }
+    .kit-info-item div small { font-size: .67rem; }
+
+    /* ── Kit section headers — finos ─────────────────────────────── */
+    .kit-section-header { margin: 10px 0 0; }
+    .kit-section-label {
+      font-size: .67rem;
+      padding: 6px 0 5px;
+      border-bottom-width: 1.5px;
+      letter-spacing: .07em;
+      gap: 5px;
+    }
+
+    /* ── Docinhos pers card ──────────────────────────────────────── */
+    .docinhos-pers-card { padding: 12px 14px; border-radius: 12px; }
+    .docinhos-pers-title { font-size: .82rem; margin-bottom: 9px; }
+    .docinhos-pers-fields { gap: 8px; }
+    .docinhos-pers-field label { font-size: .74rem; }
+    .docinhos-pers-field input { padding: 7px 9px; font-size: .86rem; border-radius: 7px; }
+    .docinhos-pers-hint { font-size: .7rem; margin-top: 7px; }
+
+    /* ── Topo pers card ──────────────────────────────────────────── */
+    .topo-pers-card { padding: 12px 14px; border-radius: 9px; }
+    .topo-pers-title { font-size: .76rem; margin-bottom: 9px; }
+    .topo-pers-fields { gap: 8px; }
+    .topo-pers-field input { padding: 7px 9px; font-size: .86rem; border-width: 1px; border-radius: 7px; }
+
+    /* ── Bolo ref card ───────────────────────────────────────────── */
+    .bolo-ref-card { border-radius: 11px; margin-top: 12px; }
+    .bolo-ref-tab { font-size: .71rem; }
+    .bolo-ref-panel { padding: 12px; }
+    .ref-gallery-grid { gap: 6px; }
+    .ref-gallery-card { border-radius: 7px; border-width: 1px; }
+
+    /* ── Cat ref card ────────────────────────────────────────────── */
+    .cat-ref-card { border-radius: 10px; margin-top: 12px; }
+    .cat-ref-header { padding: 9px 13px 8px; font-size: .73rem; }
+
+    /* ── Stagger fade-in para tiles e rows ───────────────────────── */
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .cat-group-tile { animation: slideUp .28s cubic-bezier(.4,0,.2,1) both; }
+    .cat-group-tile:nth-child(1) { animation-delay: .00s; }
+    .cat-group-tile:nth-child(2) { animation-delay: .05s; }
+    .cat-group-tile:nth-child(3) { animation-delay: .10s; }
+    .cat-group-tile:nth-child(4) { animation-delay: .15s; }
+    .cat-group-tile:nth-child(5) { animation-delay: .20s; }
+
+    .cat-row { animation: slideUp .25s cubic-bezier(.4,0,.2,1) both; }
+    .cat-row:nth-child(1) { animation-delay: .00s; }
+    .cat-row:nth-child(2) { animation-delay: .04s; }
+    .cat-row:nth-child(3) { animation-delay: .08s; }
+    .cat-row:nth-child(4) { animation-delay: .12s; }
+    .cat-row:nth-child(5) { animation-delay: .16s; }
+    .cat-row:nth-child(6) { animation-delay: .20s; }
+    .cat-row:nth-child(7) { animation-delay: .24s; }
+
+    /* ── Responsive overrides ────────────────────────────────────── */
+    @media (max-width: 380px) {
+      .cat-icon-badge { width: 40px; height: 40px; border-radius: 10px; }
+      .cat-icon-badge img { width: 24px; height: 24px; }
+      .cgt-icon-badge { width: 40px; height: 40px; border-radius: 10px; }
+      .cgt-img        { width: 24px; height: 24px; }
+    }
+    @media (min-width: 768px) {
+      .cat-icon-badge { width: 48px; height: 48px; border-radius: 13px; }
+      .cat-icon-badge img { width: 30px; height: 30px; }
+      .cgt-icon-badge { width: 48px; height: 48px; border-radius: 13px; }
+      .cgt-img        { width: 30px; height: 30px; }
+      .opts-inner { padding: 9px 14px 18px; }
+      .opt-group  { padding: 10px 13px 13px; }
+    }
+    @media (min-width: 1024px) {
+      .cat-icon-badge { width: 50px; height: 50px; border-radius: 14px; }
+      .cat-icon-badge img { width: 32px; height: 32px; }
+      .cgt-icon-badge { width: 50px; height: 50px; border-radius: 14px; }
+      .cgt-img        { width: 32px; height: 32px; }
+      .opts-inner { padding: 10px 16px 20px; }
+    }
+
   </style>
 </head>
 <body>
