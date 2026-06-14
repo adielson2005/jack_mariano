@@ -2465,6 +2465,11 @@ function _setupKitFesta(slug) {
     // Revela todos os grupos e cabeçalhos dependentes
     wrap.querySelectorAll('[data-kit-dep]').forEach(el => (el.style.display = ''));
 
+    // Regra de sabores de salgado por quantidade do kit:
+    //   Kit PP  → 30 salgados → máx 2 sabores (esconde 3º, 4º, 5º)
+    //   Kit P/M/G → 50+ salgados → máx 5 sabores (todos visíveis)
+    _updateKitSalgadoSlots(wrap, this.value);
+
     // Revela bolo ref card
     if (boloRef) boloRef.style.display = '';
 
@@ -2477,6 +2482,39 @@ function _setupKitFesta(slug) {
       const corRow  = document.getElementById('topo-cor-row');
       if (temaRow) temaRow.style.display = '';
       if (corRow)  corRow.style.display  = '';
+    }
+  });
+}
+
+/* Controla quantos slots de salgado aparecem conforme a quantidade do kit.
+   Regra da loja:
+   – Kit PP  (30 salgados) → até 2 sabores
+   – Kit P/M/G (≥50)       → até 5 sabores                                    */
+const _KIT_SALGADOS = { 'Kit PP': 30, 'Kit P': 50, 'Kit M': 100, 'Kit G': 100 };
+
+function _updateKitSalgadoSlots(wrap, kitValue) {
+  const kitKey = Object.keys(_KIT_SALGADOS).find(k => kitValue.startsWith(k));
+  const qty     = kitKey ? _KIT_SALGADOS[kitKey] : 100;
+  const maxSab  = qty < 50 ? 2 : 5;   // PP=2, todos os outros=5
+
+  [3, 4, 5].forEach(n => {
+    const ord = ['3º','4º','5º'][n - 3];
+    const sel = wrap.querySelector(`.opt-sel[data-group="Salgados — ${ord} Sabor"]`);
+    if (!sel) return;
+    const grp = sel.closest('.opt-group');
+    if (!grp) return;
+    if (n <= maxSab) {
+      grp.style.display = '';
+    } else {
+      grp.style.display = 'none';
+      sel.selectedIndex = 0;          // reseta para "Nenhum"
+    }
+  });
+
+  // Atualiza dica no cabeçalho de salgados
+  wrap.querySelectorAll('.kit-section-label').forEach(lbl => {
+    if (lbl.textContent.includes('Salgados')) {
+      lbl.innerHTML = `🍗 Salgados Fritos <small style="font-size:.68rem;font-weight:500;text-transform:none;letter-spacing:0;opacity:.75">— até ${maxSab} sabor${maxSab > 1 ? 'es' : ''}</small>`;
     }
   });
 }
@@ -2504,13 +2542,14 @@ function _injectKitInfoCard(wrap) {
     const kitKey = Object.keys(KIT_DATA).find(k => this.value.startsWith(k));
     if (!kitKey) return;
     const d = KIT_DATA[kitKey];
+    const maxSab = d.salgados < 50 ? 2 : 5;
     card.style.display = '';
     card.innerHTML = `
       <div class="kit-info-grid">
         <div class="kit-info-item"><span class="ki-icon">👥</span><div><b>${d.pessoas} pessoas</b><small>${kitKey}</small></div></div>
         <div class="kit-info-item"><span class="ki-icon">🎂</span><div><b>Bolo ${d.bolo}</b><small>+ topo impresso</small></div></div>
         <div class="kit-info-item"><span class="ki-icon">🍬</span><div><b>${d.docinhos} docinhos</b><small>tradicionais</small></div></div>
-        <div class="kit-info-item"><span class="ki-icon">🍗</span><div><b>${d.salgados} salgados</b><small>fritos</small></div></div>
+        <div class="kit-info-item"><span class="ki-icon">🍗</span><div><b>${d.salgados} salgados</b><small>até ${maxSab} sabores</small></div></div>
         <div class="kit-info-item"><span class="ki-icon">🥤</span><div><b>Refrigerante</b><small>${d.refri}</small></div></div>
       </div>`;
   });
