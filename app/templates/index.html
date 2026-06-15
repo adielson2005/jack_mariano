@@ -2538,6 +2538,85 @@
       .opt-group      { padding: 11px 13px 13px; }
     }
 
+
+    /* ═══════════════════════════════════════════════════════════════
+       LIGHTBOX — foto em tela cheia ao clicar na galeria
+       ═══════════════════════════════════════════════════════════════ */
+    .photo-lightbox {
+      position: fixed; inset: 0; z-index: 2000;
+      background: rgba(8,6,14,.92);
+      display: flex; align-items: center; justify-content: center;
+      padding: 16px;
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+    }
+    .plb-inner {
+      position: relative;
+      max-width: 480px; width: 100%;
+      border-radius: 18px; overflow: hidden;
+      background: #0f0c18;
+      animation: plbIn .22s cubic-bezier(.34,1.4,.64,1) both;
+      box-shadow: 0 28px 90px rgba(0,0,0,.65);
+    }
+    @keyframes plbIn {
+      from { transform: scale(.86) translateY(16px); opacity: 0; }
+      to   { transform: scale(1)   translateY(0);    opacity: 1; }
+    }
+    .plb-img-wrap {
+      width: 100%; background: #060408;
+      display: flex; align-items: center; justify-content: center;
+      max-height: 62vh; overflow: hidden;
+    }
+    .plb-img-wrap img {
+      width: 100%; max-height: 62vh;
+      object-fit: contain; display: block;
+    }
+    .plb-toolbar {
+      position: absolute; top: 10px; right: 10px;
+      display: flex; gap: 6px; z-index: 2;
+    }
+    .plb-btn {
+      width: 34px; height: 34px; border-radius: 50%;
+      background: rgba(0,0,0,.6);
+      border: 1px solid rgba(255,255,255,.15);
+      color: #fff; font-size: .85rem;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; transition: background .14s, transform .1s;
+      backdrop-filter: blur(4px);
+    }
+    .plb-btn:hover { background: rgba(0,0,0,.86); transform: scale(1.1); }
+    .plb-footer {
+      padding: 13px 16px;
+      display: flex; align-items: center; justify-content: space-between; gap: 10px;
+      background: #181425;
+    }
+    .plb-title-text {
+      font-size: .87rem; font-weight: 600; color: #ddd8f0;
+      flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    }
+    .plb-select-btn {
+      flex-shrink: 0;
+      background: var(--pk); color: #fff;
+      border: none; border-radius: 9px;
+      padding: 9px 18px; font-size: .83rem; font-weight: 700;
+      cursor: pointer; display: flex; align-items: center; gap: 7px;
+      transition: background .14s, transform .12s;
+    }
+    .plb-select-btn:hover  { background: var(--pk-dark); transform: translateY(-1px); }
+    .plb-select-btn:active { transform: scale(.97); }
+    .plb-select-btn.plb-done { background: #16a34a; pointer-events: none; }
+
+    /* Expand icon on gallery card hover */
+    .ref-gallery-card .rgc-expand {
+      position: absolute; top: 6px; left: 6px; z-index: 2;
+      width: 26px; height: 26px; border-radius: 7px;
+      background: rgba(0,0,0,.5); color: #fff; font-size: .72rem;
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; transition: opacity .15s;
+      pointer-events: none;
+    }
+    .ref-gallery-card:hover .rgc-expand { opacity: 1; }
+
   </style>
 </head>
 <body>
@@ -4276,13 +4355,14 @@ async function _loadGallerySection(galleryId, panelId, tag, photoType) {
     }
     galleryEl.innerHTML = imgs.map(img => `
       <div class="ref-gallery-card"
-           onclick="selectGalleryPhoto('${esc(img.image_url)}','${esc(img.title)}','${photoType}',this)">
+           onclick="openLightbox('${esc(img.image_url)}','${esc(img.title)}',{photoType:'${photoType}',cardEl:this})">
         <img src="${esc(img.image_url)}" alt="${esc(img.title)}" loading="lazy" draggable="false"
              onerror="this.closest('.ref-gallery-card').remove()">
         <div class="ref-card-overlay">
           <div class="ref-card-title">${esc(img.title)}</div>
         </div>
         <div class="ref-card-check"><i class="bi bi-check-lg"></i></div>
+        <div class="rgc-expand"><i class="bi bi-arrows-fullscreen"></i></div>
       </div>`).join('');
   } catch(e) {
     galleryEl.innerHTML = `<div class="ref-gallery-empty">Erro ao carregar modelos</div>`;
@@ -4301,12 +4381,13 @@ async function _loadCatGallery(slug) {
     card.style.display = 'block';
     gallery.innerHTML = imgs.map(img => `
       <div class="ref-gallery-card ref-gallery-card--view"
-           onclick="this.classList.toggle('sel-ref')">
+           onclick="openLightbox('${esc(img.image_url)}','${esc(img.title)}',{viewOnly:true})">
         <img src="${esc(img.image_url)}" alt="${esc(img.title)}" loading="lazy" draggable="false"
              onerror="this.closest('.ref-gallery-card').remove()">
         <div class="ref-card-overlay">
           <div class="ref-card-title">${esc(img.title)}</div>
         </div>
+        <div class="rgc-expand"><i class="bi bi-arrows-fullscreen"></i></div>
       </div>`).join('');
   } catch(e) {}
 }
@@ -4512,6 +4593,59 @@ loadCategories();
 _loadSacola();   // restaura sacola salva no navegador
 setStep(1);
 
+/* ── Lightbox de foto ───────────────────────────────────────────────────── */
+let _lbData = null;
+
+function openLightbox(url, title, opts) {
+  opts = opts || {};
+  _lbData = { url, title, photoType: opts.photoType || null, cardEl: opts.cardEl || null, viewOnly: !!opts.viewOnly };
+  const lb  = document.getElementById('photo-lightbox');
+  const img = document.getElementById('plb-img');
+  const ttl = document.getElementById('plb-title');
+  const btn = document.getElementById('plb-select-btn');
+  if (!lb) return;
+  img.src = url;
+  ttl.textContent = title || '';
+  if (btn) {
+    btn.style.display = opts.viewOnly ? 'none' : 'flex';
+    btn.classList.remove('plb-done');
+    btn.innerHTML = '<i class="bi bi-check2-circle"></i> Usar modelo';
+  }
+  lb.style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+}
+
+function closeLightbox() {
+  const lb = document.getElementById('photo-lightbox');
+  if (lb) lb.style.display = 'none';
+  document.body.style.overflow = '';
+  _lbData = null;
+}
+
+function _plbBackdropClick(e) {
+  if (e.target === document.getElementById('photo-lightbox')) closeLightbox();
+}
+
+function confirmLightboxSelect() {
+  if (!_lbData || _lbData.viewOnly) return;
+  const { url, title, photoType, cardEl } = _lbData;
+  const btn = document.getElementById('plb-select-btn');
+  if (btn) {
+    btn.classList.add('plb-done');
+    btn.innerHTML = '<i class="bi bi-check-circle-fill"></i> Selecionado!';
+  }
+  selectGalleryPhoto(url, title, photoType, cardEl);
+  setTimeout(closeLightbox, 700);
+}
+
+/* Fechar lightbox com Escape */
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    const lb = document.getElementById('photo-lightbox');
+    if (lb && lb.style.display !== 'none') { closeLightbox(); return; }
+  }
+});
+
 // CPF: máscara em tempo real + busca ao completar 11 dígitos
 document.getElementById('f-cpf').addEventListener('input', function() {
   const digits  = this.value.replace(/\D/g, '');
@@ -4524,5 +4658,26 @@ document.addEventListener('input', e => {
   if (e.target.closest('#step2')) _saveToStorage();
 });
 </script>
+
+<!-- ── Lightbox de foto em tela cheia ──────────────────────────────────── -->
+<div id="photo-lightbox" class="photo-lightbox" style="display:none" onclick="_plbBackdropClick(event)">
+  <div class="plb-inner">
+    <div class="plb-img-wrap">
+      <img id="plb-img" src="" alt="">
+    </div>
+    <div class="plb-toolbar">
+      <button class="plb-btn" onclick="closeLightbox()" title="Fechar (ESC)">
+        <i class="bi bi-x-lg"></i>
+      </button>
+    </div>
+    <div class="plb-footer">
+      <div id="plb-title" class="plb-title-text"></div>
+      <button class="plb-select-btn" id="plb-select-btn" onclick="confirmLightboxSelect()">
+        <i class="bi bi-check2-circle"></i> Usar modelo
+      </button>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>
