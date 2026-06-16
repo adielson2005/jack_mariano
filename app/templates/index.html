@@ -2617,6 +2617,71 @@
     }
     .ref-gallery-card:hover .rgc-expand { opacity: 1; }
 
+    /* ── Gallery: 3-col + title bar ────────────────────────────────── */
+    .ref-gallery-grid { grid-template-columns: repeat(3, 1fr); }
+    .ref-card-title-bar {
+      font-size: .6rem; font-weight: 600; color: var(--text);
+      padding: 4px 6px 5px; background: var(--surface);
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+      border-top: 1px solid var(--border); line-height: 1.3;
+    }
+
+    /* Gallery search row */
+    .rgb-search-row {
+      display: flex; align-items: center; gap: 8px; margin-bottom: 8px;
+    }
+    .rgb-count {
+      font-size: .64rem; font-weight: 700; color: var(--muted);
+      white-space: nowrap; background: #f0f0f2; border-radius: 20px;
+      padding: 2px 8px;
+    }
+    .rgb-search-input {
+      flex: 1; border: 1.5px solid var(--border); border-radius: 8px;
+      padding: 5px 10px; font-size: .75rem; outline: none;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: var(--surface); color: var(--text);
+      transition: border-color .15s;
+    }
+    .rgb-search-input:focus { border-color: var(--pk); }
+    .rgb-search-input::placeholder { color: #b0b0b0; }
+
+    /* ── Confirm Review card ────────────────────────────────────────── */
+    .confirm-review-body { margin-bottom: 14px; }
+    .crv-section {
+      border: 1px solid var(--border); border-radius: 10px;
+      padding: 11px 13px; margin-bottom: 10px; background: var(--surface);
+    }
+    .crv-section-title {
+      font-size: .66rem; font-weight: 800; color: var(--pk);
+      margin-bottom: 8px; text-transform: uppercase; letter-spacing: .06em;
+    }
+    .crv-item {
+      padding: 7px 0; border-bottom: 1px dashed var(--border);
+    }
+    .crv-item:last-child { border-bottom: none; padding-bottom: 0; }
+    .crv-item-header {
+      display: flex; align-items: center; gap: 6px;
+      font-size: .8rem; font-weight: 700; color: var(--text);
+    }
+    .crv-item-name { flex: 1; }
+    .crv-item-qty { color: var(--pk); font-weight: 800; font-size: .84rem; }
+    .crv-sel {
+      font-size: .69rem; color: var(--muted); padding: 2px 0 0 22px;
+      line-height: 1.5;
+    }
+    .crv-sel-grp { font-weight: 600; color: #555; }
+    .crv-notes {
+      font-size: .68rem; color: var(--muted); padding: 2px 0 0 22px;
+      font-style: italic;
+    }
+    .crv-row {
+      font-size: .76rem; color: var(--text); padding: 2px 0;
+      display: flex; align-items: flex-start; gap: 6px; line-height: 1.6;
+    }
+    .crv-row i { color: var(--pk); margin-top: 2px; flex-shrink: 0; }
+    .crv-row .text-success { color: #16a34a; }
+    .confirm-review-actions { margin-top: 14px; }
+
   </style>
 </head>
 <body>
@@ -2917,13 +2982,13 @@
     </div>
 
     <div id="form-error" class="alert alert-danger mt-3 d-none" role="alert"></div>
-    <button class="btn btn-pk w-100 py-3 mt-1 mb-2" onclick="submitOrder()" id="btn-submit"
+    <button class="btn btn-pk w-100 py-3 mt-1 mb-2" onclick="goStep3Review()" id="btn-review"
             style="font-size:1rem;border-radius:14px;font-weight:800;letter-spacing:.01em">
-      <i class="bi bi-send-fill me-2"></i> Enviar pedido
+      <i class="bi bi-eye-fill me-2"></i> Revisar pedido
     </button>
     <p class="text-center" style="font-size:.72rem;color:var(--muted);line-height:1.65;font-weight:500">
       <i class="bi bi-info-circle" style="color:var(--pk);opacity:.7;margin-right:4px"></i>
-      Nossa equipe confirmará o pedido pelo WhatsApp após o envio.
+      Revise os detalhes antes de confirmar o envio.
     </p>
 
   </div>
@@ -2934,45 +2999,69 @@
 <div id="step3" class="d-none">
   <div class="page">
 
-    <div class="confirm-card">
+    <!-- ── Estado 1: Revisão do pedido ──────────────────────────────── -->
+    <div id="confirm-review">
+      <div class="confirm-card">
 
-      <!-- Cabeçalho -->
-      <div class="confirm-header">
-        <div class="confirm-emoji">🎉</div>
-        <h4 class="confirm-title">Pedido enviado!</h4>
-        <p class="confirm-sub">
-          Pedido <strong id="order-id-display" style="color:var(--pk)">#</strong>
-        </p>
+        <div class="confirm-header">
+          <div class="confirm-emoji">📋</div>
+          <h4 class="confirm-title">Revise seu pedido</h4>
+          <p class="confirm-sub">Confirme os detalhes antes de enviar</p>
+        </div>
+
+        <div id="confirm-review-body" class="confirm-review-body"></div>
+
+        <div id="confirm-review-error" class="alert alert-danger d-none" role="alert"></div>
+
+        <div class="confirm-review-actions">
+          <button class="btn btn-pk-outline w-100 py-3 mb-2" onclick="voltarCorrigir()">
+            <i class="bi bi-arrow-left me-2"></i> Voltar e corrigir
+          </button>
+          <button class="btn btn-pk w-100 py-3" onclick="submitOrder()" id="btn-confirm-final"
+                  style="font-size:1rem;border-radius:14px;font-weight:800;letter-spacing:.01em">
+            <i class="bi bi-send-fill me-2"></i> Confirmar pedido
+          </button>
+        </div>
+
       </div>
-
-      <!-- Lembrete de foto -->
-      <div id="photo-reminder" class="photo-reminder-card d-none">
-        <i class="bi bi-check-circle-fill"></i>
-        <span>Fotos de referência incluídas no pedido — o link para visualização está na mensagem do WhatsApp. ✓</span>
-      </div>
-
-      <!-- Botão WhatsApp -->
-      <a id="wa-client-btn" href="#" target="_blank" rel="noopener" class="btn-wa-confirm">
-        <i class="bi bi-whatsapp"></i>
-        <span>Confirmar pedido pelo WhatsApp</span>
-      </a>
-      <p class="wa-hint">
-        <i class="bi bi-info-circle me-1"></i>
-        Seu pedido já está pré-preenchido — só enviar para a loja
-      </p>
-
-      <!-- Ações secundárias -->
-      <div class="confirm-actions">
-        <button class="btn btn-pk-outline px-4 py-2" onclick="voltarCorrigir()">
-          <i class="bi bi-arrow-left me-1"></i> Corrigir pedido
-        </button>
-        <button class="btn btn-link py-2" style="color:var(--muted);font-size:.82rem;font-weight:600"
-                onclick="resetForm()">
-          Fazer novo pedido
-        </button>
-      </div>
-
     </div>
+
+    <!-- ── Estado 2: Pedido enviado com sucesso ─────────────────────── -->
+    <div id="confirm-success" style="display:none">
+      <div class="confirm-card">
+
+        <div class="confirm-header">
+          <div class="confirm-emoji">🎉</div>
+          <h4 class="confirm-title">Pedido enviado!</h4>
+          <p class="confirm-sub">
+            Pedido <strong id="order-id-display" style="color:var(--pk)">#</strong>
+          </p>
+        </div>
+
+        <div id="photo-reminder" class="photo-reminder-card d-none">
+          <i class="bi bi-check-circle-fill"></i>
+          <span>Fotos de referência incluídas — o link de visualização está na mensagem do WhatsApp. ✓</span>
+        </div>
+
+        <a id="wa-client-btn" href="#" target="_blank" rel="noopener" class="btn-wa-confirm">
+          <i class="bi bi-whatsapp"></i>
+          <span>Confirmar pedido pelo WhatsApp</span>
+        </a>
+        <p class="wa-hint">
+          <i class="bi bi-info-circle me-1"></i>
+          Seu pedido já está pré-preenchido — só enviar para a loja
+        </p>
+
+        <div class="confirm-actions">
+          <button class="btn btn-link py-2" style="color:var(--muted);font-size:.82rem;font-weight:600"
+                  onclick="resetForm()">
+            Fazer novo pedido
+          </button>
+        </div>
+
+      </div>
+    </div>
+
   </div>
 </div>
 
@@ -4207,8 +4296,8 @@ function closeBag() {
 
 /* ── Submit ─────────────────────────────────────────────────────────────── */
 async function submitOrder() {
-  const btn   = document.getElementById('btn-submit');
-  const errEl = document.getElementById('form-error');
+  const btn   = document.getElementById('btn-confirm-final');
+  const errEl = document.getElementById('confirm-review-error');
   errEl.classList.add('d-none');
 
   // ── Validação client-side ──────────────────────────────────────────────
@@ -4297,7 +4386,10 @@ async function submitOrder() {
       const photoReminder = document.getElementById('photo-reminder');
       if (photoReminder) photoReminder.classList.toggle('d-none', !boloPhotoData && !topoPhotoData);
 
-      sacola = []; renderBag(); setStep(3);
+      sacola = []; renderBag();
+      document.getElementById('confirm-review').style.display = 'none';
+      document.getElementById('confirm-success').style.display = '';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
       // Abre o WhatsApp automaticamente com o pedido pré-preenchido
       setTimeout(() => { try { window.open(data.whatsapp_link, '_blank'); } catch(e) {} }, 700);
     } else {
@@ -4311,13 +4403,118 @@ async function submitOrder() {
     errEl.classList.remove('d-none');
   } finally {
     btn.disabled = false;
-    btn.innerHTML = '<i class="bi bi-send-fill me-1"></i> Enviar pedido';
+    btn.innerHTML = '<i class="bi bi-send-fill me-2"></i> Confirmar pedido';
   }
 }
 
 /** Volta ao formulário (step 2) preservando todos os dados preenchidos. */
 function voltarCorrigir() {
   setStep(2);
+}
+
+/** Valida o formulário e avança para a tela de revisão (step 3) sem enviar ainda. */
+function goStep3Review() {
+  const name  = document.getElementById('f-name').value.trim();
+  const phone = document.getElementById('f-phone').value.trim();
+  const date  = document.getElementById('f-date').value;
+  const time  = document.getElementById('f-time').value;
+  const errEl = document.getElementById('form-error');
+  errEl.classList.add('d-none');
+
+  const errs = [];
+  if (!name)  errs.push('Nome completo é obrigatório');
+  if (!phone) errs.push('WhatsApp é obrigatório');
+  if (!date)  errs.push('Data é obrigatória');
+  if (!time)  errs.push('Horário é obrigatório');
+  if (deliveryType === 'entrega') {
+    if (!document.getElementById('f-address').value.trim())
+      errs.push('Endereço é obrigatório para entrega');
+    if (!document.getElementById('f-neighborhood').value.trim())
+      errs.push('Bairro é obrigatório para entrega');
+  }
+  if (errs.length) {
+    errEl.textContent = '⚠️ ' + errs.join(' • ');
+    errEl.classList.remove('d-none');
+    errEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    return;
+  }
+
+  renderConfirmReview();
+  document.getElementById('confirm-review').style.display = '';
+  document.getElementById('confirm-success').style.display = 'none';
+  document.getElementById('confirm-review-error').classList.add('d-none');
+  setStep(3);
+}
+
+/** Popula o card de revisão com os dados do pedido atual. */
+function renderConfirmReview() {
+  const name    = document.getElementById('f-name').value.trim();
+  const phone   = document.getElementById('f-phone').value.trim();
+  const cpf     = document.getElementById('f-cpf').value.trim();
+  const date    = document.getElementById('f-date').value;
+  const time    = document.getElementById('f-time').value;
+  const allergy = document.getElementById('f-allergy').value.trim();
+  const notes   = document.getElementById('f-notes').value.trim();
+
+  const fmtDate = d => {
+    if (!d || !d.includes('-')) return d || '';
+    const [y, m, dd] = d.split('-'); return `${dd}/${m}/${y}`;
+  };
+
+  const itemsHtml = sacola.map(item => {
+    const sels = Object.entries(item.selections || {})
+      .map(([g, c]) => `<div class="crv-sel"><span class="crv-sel-grp">${esc(g)}:</span> ${esc(String(c))}</div>`)
+      .join('');
+    return `<div class="crv-item">
+      <div class="crv-item-header">
+        <span>${item.icon || '📦'}</span>
+        <span class="crv-item-name">${esc(item.category_name)}</span>
+        <span class="crv-item-qty">× ${item.quantity}</span>
+      </div>
+      ${sels}
+      ${item.item_notes ? `<div class="crv-notes"><i class="bi bi-chat-dots me-1"></i>${esc(item.item_notes)}</div>` : ''}
+    </div>`;
+  }).join('');
+
+  let deliveryHtml = '';
+  if (deliveryType === 'entrega') {
+    const addr = document.getElementById('f-address').value.trim();
+    const nbhd = document.getElementById('f-neighborhood').value.trim();
+    const recp = document.getElementById('f-recipient').value.trim();
+    const cont = document.getElementById('f-delivery-contact').value.trim();
+    deliveryHtml = `
+      <div class="crv-row"><i class="bi bi-truck"></i><strong>Entrega</strong></div>
+      <div class="crv-row"><i class="bi bi-calendar2"></i>${fmtDate(date)} às ${esc(time)}</div>
+      ${addr ? `<div class="crv-row"><i class="bi bi-geo-alt"></i>${esc(addr)}${nbhd ? `, ${esc(nbhd)}` : ''}</div>` : ''}
+      ${recp ? `<div class="crv-row"><i class="bi bi-person"></i>Recebe: ${esc(recp)}</div>` : ''}
+      ${cont ? `<div class="crv-row"><i class="bi bi-telephone"></i>${esc(cont)}</div>` : ''}`;
+  } else {
+    deliveryHtml = `
+      <div class="crv-row"><i class="bi bi-shop"></i><strong>Retirada na loja</strong></div>
+      <div class="crv-row"><i class="bi bi-calendar2"></i>${fmtDate(date)} às ${esc(time)}</div>`;
+  }
+
+  const hasPhoto = orderModelPhoto || topoDesignPhoto;
+
+  document.getElementById('confirm-review-body').innerHTML = `
+    <div class="crv-section">
+      <div class="crv-section-title"><i class="bi bi-bag-heart-fill me-1"></i>Itens (${sacola.length})</div>
+      ${itemsHtml}
+    </div>
+    <div class="crv-section">
+      <div class="crv-section-title"><i class="bi bi-person-fill me-1"></i>Cliente</div>
+      <div class="crv-row"><i class="bi bi-person"></i>${esc(name)}</div>
+      <div class="crv-row"><i class="bi bi-whatsapp"></i>${esc(phone)}</div>
+      ${cpf ? `<div class="crv-row"><i class="bi bi-credit-card-2-front"></i>${esc(cpf)}</div>` : ''}
+    </div>
+    <div class="crv-section">
+      <div class="crv-section-title"><i class="bi bi-calendar-event-fill me-1"></i>Agendamento</div>
+      ${deliveryHtml}
+    </div>
+    ${allergy ? `<div class="crv-section"><div class="crv-section-title"><i class="bi bi-exclamation-triangle-fill me-1" style="color:#f59e0b"></i>Alergias / Restrições</div><div class="crv-row" style="color:#92400e"><i class="bi bi-dot" style="color:#f59e0b"></i>${esc(allergy)}</div></div>` : ''}
+    ${notes ? `<div class="crv-section"><div class="crv-section-title"><i class="bi bi-sticky-fill me-1"></i>Observações</div><div class="crv-row"><i class="bi bi-dot"></i>${esc(notes)}</div></div>` : ''}
+    ${hasPhoto ? `<div class="crv-section"><div class="crv-section-title"><i class="bi bi-camera-fill me-1"></i>Referências</div><div class="crv-row"><i class="bi bi-check-circle-fill" style="color:#16a34a"></i>Fotos incluídas no pedido</div></div>` : ''}
+  `;
 }
 
 function resetForm() {
@@ -4346,6 +4543,10 @@ async function _loadGallerySection(galleryId, panelId, tag, photoType) {
   const galleryEl = document.getElementById(galleryId);
   if (!galleryEl) return;
   try {
+    // Remove previous search row if already injected (e.g. on reload)
+    const prev = galleryEl.parentElement.querySelector('.rgb-search-row');
+    if (prev) prev.remove();
+
     const res  = await fetch(`/api/catalog-images?tag=${encodeURIComponent(tag)}`);
     const imgs = await res.json();
     if (!imgs.length) {
@@ -4353,20 +4554,44 @@ async function _loadGallerySection(galleryId, panelId, tag, photoType) {
         <i class="bi bi-images"></i>Nenhum modelo cadastrado ainda</div>`;
       return;
     }
+
+    // Inject search / count row above the grid
+    const searchRow = document.createElement('div');
+    searchRow.className = 'rgb-search-row';
+    searchRow.innerHTML = `
+      <span class="rgb-count" id="${galleryId}-count">${imgs.length} modelo${imgs.length !== 1 ? 's' : ''}</span>
+      <input class="rgb-search-input" type="search" placeholder="Buscar modelo..."
+             oninput="_filterGallery(this,'${galleryId}')">`;
+    galleryEl.parentElement.insertBefore(searchRow, galleryEl);
+
     galleryEl.innerHTML = imgs.map(img => `
       <div class="ref-gallery-card"
+           data-title="${esc(img.title.toLowerCase())}"
            onclick="openLightbox('${esc(img.image_url)}','${esc(img.title)}',{photoType:'${photoType}',cardEl:this})">
         <img src="${esc(img.image_url)}" alt="${esc(img.title)}" loading="lazy" draggable="false"
              onerror="this.closest('.ref-gallery-card').remove()">
-        <div class="ref-card-overlay">
-          <div class="ref-card-title">${esc(img.title)}</div>
-        </div>
         <div class="ref-card-check"><i class="bi bi-check-lg"></i></div>
         <div class="rgc-expand"><i class="bi bi-arrows-fullscreen"></i></div>
+        <div class="ref-card-title-bar">${esc(img.title)}</div>
       </div>`).join('');
   } catch(e) {
     galleryEl.innerHTML = `<div class="ref-gallery-empty">Erro ao carregar modelos</div>`;
   }
+}
+
+/** Filtra cards da galeria pelo título conforme o usuário digita. */
+function _filterGallery(inputEl, galleryId) {
+  const q = inputEl.value.toLowerCase().trim();
+  const galleryEl = document.getElementById(galleryId);
+  if (!galleryEl) return;
+  let visible = 0;
+  galleryEl.querySelectorAll('.ref-gallery-card').forEach(card => {
+    const match = !q || (card.dataset.title || '').includes(q);
+    card.style.display = match ? '' : 'none';
+    if (match) visible++;
+  });
+  const countEl = document.getElementById(galleryId + '-count');
+  if (countEl) countEl.textContent = `${visible} modelo${visible !== 1 ? 's' : ''}`;
 }
 
 /* ── Galeria de referência genérica (doces, salgados, etc.) ───────────── */

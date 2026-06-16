@@ -18,6 +18,9 @@ _EMOJI = {
 }
 
 
+_DIV = "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+
+
 def build_client_link(order, base_url: str = None) -> str:
     """
     Link que o cliente abre após confirmar o pedido.
@@ -27,25 +30,25 @@ def build_client_link(order, base_url: str = None) -> str:
     lines = []
     for item in order.items:
         emoji = _EMOJI.get(item.category_slug, "📦")
-        lines.append(f"{emoji} *{item.category_name}* × {item.quantity}")
+        lines.append(f"  {emoji} *{item.category_name}* × {item.quantity}")
 
         sels = json.loads(item.selections) if item.selections else {}
         for group, choice in sels.items():
-            lines.append(f"    ‣ _{group}:_ {choice}")
+            lines.append(f"     ‣ _{group}:_ {choice}")
 
         if item.item_notes:
-            lines.append(f"    📝 {item.item_notes}")
+            lines.append(f"     📝 _{item.item_notes}_")
 
     items_block = "\n".join(lines)
 
     delivery_type = getattr(order, "delivery_type", None) or "retirada"
 
     parts = [
-        f"Olá, *{SHOP_NAME}*! 🧁",
-        "",
-        "Acabei de finalizar meu pedido pelo site.",
-        "",
-        f"👤 *Cliente:* {order.customer_name}",
+        f"🧁 *{SHOP_NAME.upper()}*",
+        _DIV,
+        f"📋 *NOVO PEDIDO #{order.id}*",
+        _DIV,
+        f"👤 *Nome:* {order.customer_name}",
         f"📱 *WhatsApp:* {order.customer_whatsapp}",
     ]
 
@@ -55,13 +58,15 @@ def build_client_link(order, base_url: str = None) -> str:
 
     parts += [
         "",
-        "🛍️ *Itens do pedido:*",
+        f"🛍️ *ITENS DO PEDIDO*",
+        _DIV,
         items_block,
-        "",
+        _DIV,
     ]
 
     if delivery_type == "entrega":
-        parts.append(f"🛵 *Entrega:* {_fmt_date(order.pickup_date)} às {order.pickup_time}")
+        parts.append(f"🛵 *Tipo:* Entrega")
+        parts.append(f"📅 *Data/hora:* {_fmt_date(order.pickup_date)} às {order.pickup_time}")
         addr = getattr(order, "delivery_address", None)
         nbhd = getattr(order, "delivery_neighborhood", None)
         recp = getattr(order, "delivery_recipient", None)
@@ -73,23 +78,27 @@ def build_client_link(order, base_url: str = None) -> str:
         if recp:
             parts.append(f"👤 *Recebe:* {recp}")
         if cont:
-            parts.append(f"📱 *Contato destinatário:* {cont}")
+            parts.append(f"📱 *Contato entrega:* {cont}")
     else:
-        parts.append(f"📅 *Retirada:* {_fmt_date(order.pickup_date)} às {order.pickup_time}")
+        parts.append(f"📦 *Tipo:* Retirada na loja")
+        parts.append(f"📅 *Data/hora:* {_fmt_date(order.pickup_date)} às {order.pickup_time}")
 
     if order.allergies:
-        parts.append(f"⚠️ *Alergias/restrições:* {order.allergies}")
+        parts += ["", f"⚠️ *Alergias/restrições:* {order.allergies}"]
     if order.notes:
-        parts.append(f"📝 *Observações:* {order.notes}")
+        parts += ["", f"📝 *Observações:* {order.notes}"]
 
     # Links das fotos de referência (apenas se o servidor estiver disponível)
     if base_url:
         if getattr(order, "bolo_photo_data", None):
-            parts.append(f"📸 *Referência de bolo:* {base_url}/api/orders/{order.id}/photo/bolo")
+            parts.append(f"📸 *Ref. bolo:* {base_url}/api/orders/{order.id}/photo/bolo")
         if getattr(order, "topo_photo_data", None):
-            parts.append(f"🎨 *Design/referência do topo:* {base_url}/api/orders/{order.id}/photo/topo")
+            parts.append(f"🎨 *Ref. topo:* {base_url}/api/orders/{order.id}/photo/topo")
 
-    parts += ["", f"_Pedido #{order.id} — aguardo a confirmação! 😊_"]
+    parts += [
+        _DIV,
+        f"_Enviado pelo site — aguardo confirmação! 😊_",
+    ]
 
     return f"https://wa.me/{SHOP_WHATSAPP}?text={quote(chr(10).join(parts))}"
 
@@ -97,8 +106,9 @@ def build_client_link(order, base_url: str = None) -> str:
 def build_admin_link(order) -> str:
     """Link para o admin contatar o cliente com resumo do pedido."""
     phone = _normalize_phone(order.customer_whatsapp)
+
     items_lines = "\n".join(
-        f"  • {item.category_name} × {item.quantity}"
+        f"  {_EMOJI.get(item.category_slug, '📦')} *{item.category_name}* × {item.quantity}"
         for item in order.items
     )
 
@@ -108,21 +118,36 @@ def build_admin_link(order) -> str:
         addr = getattr(order, "delivery_address", "") or ""
         nbhd = getattr(order, "delivery_neighborhood", "") or ""
         local = f"{addr}, {nbhd}".strip(", ") if addr or nbhd else ""
-        schedule_line = f"🛵 *Entrega:* {_fmt_date(order.pickup_date)} às {order.pickup_time}"
+        schedule_parts = [
+            f"🛵 *Tipo:* Entrega",
+            f"📅 *Data/hora:* {_fmt_date(order.pickup_date)} às {order.pickup_time}",
+        ]
         if local:
-            schedule_line += f"\n📍 *Endereço:* {local}"
+            schedule_parts.append(f"📍 *Endereço:* {local}")
     else:
-        schedule_line = f"📅 *Retirada:* {_fmt_date(order.pickup_date)} às {order.pickup_time}"
+        schedule_parts = [
+            f"📦 *Tipo:* Retirada na loja",
+            f"📅 *Data/hora:* {_fmt_date(order.pickup_date)} às {order.pickup_time}",
+        ]
 
-    msg = (
-        f"Olá, *{order.customer_name}*! 👋\n\n"
-        f"Aqui é da *{SHOP_NAME}*! 🧁\n"
-        f"Recebemos seu pedido *#{order.id}* e gostaríamos de confirmar os detalhes.\n\n"
-        f"📦 *Itens solicitados:*\n{items_lines}\n\n"
-        f"{schedule_line}\n\n"
-        f"Em breve confirmamos disponibilidade e valor. Obrigada pela preferência! 🎂"
-    )
-    return f"https://wa.me/{phone}?text={quote(msg)}"
+    schedule_block = "\n".join(schedule_parts)
+
+    parts = [
+        f"Olá, *{order.customer_name}*! 👋",
+        "",
+        f"Aqui é da *{SHOP_NAME}*! 🧁",
+        _DIV,
+        f"✅ Recebemos seu pedido *#{order.id}* e gostaríamos de confirmar os detalhes:",
+        "",
+        f"🛍️ *ITENS:*",
+        items_lines,
+        "",
+        schedule_block,
+        _DIV,
+        f"Em breve confirmamos disponibilidade e valor. Obrigada pela preferência! 🎂",
+    ]
+
+    return f"https://wa.me/{phone}?text={quote(chr(10).join(parts))}"
 
 
 def build_help_link() -> str:
