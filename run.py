@@ -3,7 +3,7 @@ import socket
 import time
 from collections import defaultdict
 from werkzeug.security import check_password_hash, generate_password_hash
-from flask import render_template, session, redirect, request, Response
+from flask import render_template, session, redirect, request, Response, abort
 from app import create_app
 
 # ── Rate-limit de login por IP (server-side) ─────────────────────────────────
@@ -91,6 +91,90 @@ def admin_login():
 def admin_logout():
     session.clear()
     return redirect("/painel/login")
+
+
+# ── Ações públicas de pedido via WhatsApp ─────────────────────────────────────
+
+_ACTION_CFG = {
+    "confirmar": {
+        "status":  "confirmed",
+        "emoji":   "✅",
+        "heading": "Pedido confirmado!",
+        "msg":     "Ótimo! Seu pedido foi confirmado e em breve entraremos em contato com detalhes.",
+        "badge":   "Confirmado",
+        "cls":     "ok",
+    },
+    "producao": {
+        "status":  "in_progress",
+        "emoji":   "🔧",
+        "heading": "Em produção!",
+        "msg":     "Seu pedido já está sendo preparado com muito carinho. 🧁",
+        "badge":   "Em Produção",
+        "cls":     "info",
+    },
+    "pronto": {
+        "status":  "ready",
+        "emoji":   "🎁",
+        "heading": "Pronto para retirada!",
+        "msg":     "Seu pedido está prontinho! Venha buscar quando quiser. 🎂",
+        "badge":   "Pronto",
+        "cls":     "ok",
+    },
+    "cancelar": {
+        "status":  "cancelled",
+        "emoji":   "❌",
+        "heading": "Pedido cancelado",
+        "msg":     "O pedido foi cancelado. Entre em contato pelo WhatsApp se precisar de ajuda.",
+        "badge":   "Cancelado",
+        "cls":     "err",
+    },
+}
+
+
+@app.route("/pedido/<int:order_id>/<action>/<token>")
+def public_order_action(order_id, action, token):
+    """Rota pública — muda status do pedido via link seguro enviado pelo WhatsApp."""
+    from app.utils import verify_order_token
+    from app.models import Order
+    from app import db
+
+    cfg = _ACTION_CFG.get(action)
+    if not cfg:
+        return render_template(
+            "order_action.html",
+            emoji="⚠️", heading="Ação inválida", order_id=order_id,
+            badge=f"'{action}' desconhecido", badge_cls="err",
+            msg="Este link não corresponde a uma ação válida.",
+        ), 404
+
+    if not verify_order_token(order_id, token, app.config["SECRET_KEY"]):
+        return render_template(
+            "order_action.html",
+            emoji="🔒", heading="Link inválido", order_id=order_id,
+            badge="Não autorizado", badge_cls="err",
+            msg="Este link é inválido ou não pertence a este pedido.",
+        ), 403
+
+    order = Order.query.get_or_404(order_id)
+
+    # Idempotente: só atualiza se o status for diferente
+    already_done = order.status == cfg["status"]
+    if not already_done:
+        order.status = cfg["status"]
+        db.session.commit()
+
+    return render_template(
+        "order_action.html",
+        emoji=cfg["emoji"],
+        heading=cfg["heading"],
+        order_id=order_id,
+        badge=cfg["badge"],
+        badge_cls=cfg["cls"],
+        msg=cfg["msg"] if not already_done else "Status já estava atualizado.",
+        customer_name=order.customer_name,
+        pickup_date=order.pickup_date,
+        pickup_time=order.pickup_time,
+    )
 
 
 # ── Produção / infra ──────────────────────────────────────────────────────────

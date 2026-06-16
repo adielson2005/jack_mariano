@@ -1348,12 +1348,8 @@
         <!-- Tab bar — agrupada por categoria -->
         <div class="bm-tabs">
           <span class="bm-tab-grp">Bolos</span>
-          <button class="bm-tab active" data-tag="bolo-tradicional"
-                  onclick="switchBoloTab('bolo-tradicional',this)">🎂 Tradicional</button>
-          <button class="bm-tab" data-tag="bolo-especial"
-                  onclick="switchBoloTab('bolo-especial',this)">🎂 Especial</button>
-          <button class="bm-tab" data-tag="bolo-super"
-                  onclick="switchBoloTab('bolo-super',this)">🎂 Super Especial</button>
+          <button class="bm-tab active" data-tag="bolo"
+                  onclick="switchBoloTab('bolo',this)">🎂 Modelos de Bolo</button>
           <button class="bm-tab" data-tag="topo-bolo"
                   onclick="switchBoloTab('topo-bolo',this)">⭐ Topos</button>
 
@@ -1386,7 +1382,7 @@
           <div class="bm-add-header">
             <i class="bi bi-plus-circle" style="color:var(--pk);font-size:1rem"></i>
             Adicionar foto
-            <span id="bm-active-cat" class="bm-cat-badge">🎂 Bolo Tradicional</span>
+            <span id="bm-active-cat" class="bm-cat-badge">🎂 Modelos de Bolo</span>
           </div>
           <div class="row g-3 align-items-start">
             <div class="col-md-5">
@@ -1590,7 +1586,7 @@ function startAutoRefresh() {
   autoRefTimer = setInterval(() => {
     if (!document.getElementById('sec-stats').classList.contains('d-none')) return;
     loadOrders(true);
-  }, 60000);
+  }, 30000); // 30s — captura mudanças de status feitas via links WhatsApp
 }
 function stopAutoRefresh() { clearInterval(autoRefTimer); }
 
@@ -1964,12 +1960,10 @@ function toast(msg, type = 'info') {
 }
 
 /* ── Modelos de Bolos ─────────────────────────────────────────────────────── */
-let currentBoloTag = 'bolo-tradicional';
+let currentBoloTag = 'bolo';
 
 const BOLO_CAT_LABELS = {
-  'bolo-tradicional':  '🎂 Bolo Tradicional',
-  'bolo-especial':     '🎂 Bolo Especial',
-  'bolo-super':        '🎂 Super Especial',
+  'bolo':              '🎂 Modelos de Bolo',
   'topo-bolo':         '⭐ Topos de Bolo',
   'doces':             '🍬 Doces',
   'doces-finos':       '💎 Doces Finos',

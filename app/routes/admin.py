@@ -1,5 +1,5 @@
 from functools import wraps
-from flask import Blueprint, jsonify, request, session
+from flask import Blueprint, current_app, jsonify, request, session
 from app import db
 from app.models import Order, STATUS_LABELS
 from app.utils import build_client_link, build_admin_link, build_help_link
@@ -97,9 +97,11 @@ def delete_order(order_id):
 @login_required
 def whatsapp_links(order_id):
     """Retorna links wa.me para o admin contatar o cliente e para o cliente."""
-    order = Order.query.get_or_404(order_id)
+    order    = Order.query.get_or_404(order_id)
+    base_url = request.url_root.rstrip("/")
+    secret   = current_app.config.get("SECRET_KEY", "")
     return jsonify({
-        "client_link": build_client_link(order),
+        "client_link": build_client_link(order, base_url, secret),
         "admin_link":  build_admin_link(order),
         "help_link":   build_help_link(),
         "shop_number": "+55 94984239253",

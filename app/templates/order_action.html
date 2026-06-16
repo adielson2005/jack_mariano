@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ heading }} — Jack Mariano Confeitaria</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+      background: linear-gradient(160deg, #fff0f6 0%, #fdf4ff 60%, #f0f9ff 100%);
+      min-height: 100vh;
+      display: flex; align-items: center; justify-content: center;
+      padding: 24px 16px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 24px;
+      padding: 40px 28px 32px;
+      max-width: 380px;
+      width: 100%;
+      text-align: center;
+      box-shadow:
+        0 4px 24px rgba(229,25,107,.10),
+        0 1px 4px rgba(0,0,0,.06);
+    }
+
+    .emoji {
+      font-size: 3.8rem;
+      line-height: 1;
+      margin-bottom: 18px;
+      display: block;
+    }
+
+    .heading {
+      font-size: 1.45rem;
+      font-weight: 800;
+      color: #18161e;
+      margin-bottom: 6px;
+      line-height: 1.25;
+    }
+
+    .order-id {
+      font-size: .9rem;
+      color: #e5196b;
+      font-weight: 700;
+      margin-bottom: 18px;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 6px 20px;
+      border-radius: 30px;
+      font-size: .82rem;
+      font-weight: 700;
+      margin-bottom: 18px;
+    }
+    .badge-ok   { background: #dcfce7; color: #166534; }
+    .badge-err  { background: #fee2e2; color: #991b1b; }
+    .badge-info { background: #e0e7ff; color: #3730a3; }
+
+    .details {
+      background: #f9f7fc;
+      border-radius: 12px;
+      padding: 14px 16px;
+      margin: 0 0 18px;
+      text-align: left;
+    }
+    .details-row {
+      display: flex; align-items: center; gap: 8px;
+      font-size: .82rem; color: #374151;
+      padding: 4px 0;
+    }
+    .details-row span { color: #9ca3af; font-size: .88rem; }
+
+    .msg {
+      font-size: .85rem;
+      color: #6b7280;
+      line-height: 1.65;
+      margin-bottom: 22px;
+    }
+
+    .divider {
+      height: 1px;
+      background: #f0eef4;
+      margin: 0 0 18px;
+    }
+
+    .brand {
+      font-size: .75rem;
+      color: #b0aabb;
+      font-weight: 600;
+    }
+    .brand strong { color: #e5196b; }
+
+    .wa-btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: #25d366; color: #fff;
+      padding: 11px 24px; border-radius: 12px;
+      font-size: .88rem; font-weight: 700;
+      text-decoration: none;
+      margin-bottom: 20px;
+      transition: opacity .15s;
+    }
+    .wa-btn:hover { opacity: .88; }
+    .wa-icon { width: 18px; height: 18px; fill: #fff; flex-shrink: 0; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <span class="emoji">{{ emoji }}</span>
+    <div class="heading">{{ heading }}</div>
+    <div class="order-id">Pedido #{{ order_id }}</div>
+
+    <div class="badge badge-{{ badge_cls }}">{{ badge }}</div>
+
+    {% if customer_name %}
+    <div class="details">
+      <div class="details-row"><span>👤</span> {{ customer_name }}</div>
+      {% if pickup_date and pickup_time %}
+      <div class="details-row">
+        <span>📅</span>
+        {% set parts = pickup_date.split('-') %}
+        {% if parts|length == 3 %}
+          {{ parts[2] }}/{{ parts[1] }}/{{ parts[0] }} às {{ pickup_time }}
+        {% else %}
+          {{ pickup_date }} às {{ pickup_time }}
+        {% endif %}
+      </div>
+      {% endif %}
+    </div>
+    {% endif %}
+
+    <p class="msg">{{ msg }}</p>
+
+    <div class="divider"></div>
+
+    <a href="https://wa.me/5594984239253" class="wa-btn">
+      <svg class="wa-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
+        <path d="M12 0C5.373 0 0 5.373 0 12c0 2.124.558 4.115 1.532 5.838L0 24l6.335-1.509A11.945 11.945 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.8 9.8 0 01-4.964-1.349l-.356-.212-3.761.896.953-3.663-.232-.374A9.794 9.794 0 012.182 12C2.182 6.57 6.57 2.182 12 2.182S21.818 6.57 21.818 12 17.43 21.818 12 21.818z"/>
+      </svg>
+      Falar com a confeitaria
+    </a>
+
+    <div class="brand">🧁 <strong>Jack Mariano Confeitaria</strong></div>
+  </div>
+</body>
+</html>

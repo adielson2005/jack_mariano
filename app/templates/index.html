@@ -4520,7 +4520,8 @@ function resetForm() {
 
 /* ── Galeria de referências da confeitaria (bolos + topos) ──────────────── */
 async function _loadBoloGallery(slug) {
-  await _loadGallerySection('bolo-gallery', 'ref-panel-bolo', slug,      'modelo');
+  // Todos os tipos de bolo partilham o mesmo catálogo de modelos (tag='bolo')
+  await _loadGallerySection('bolo-gallery', 'ref-panel-bolo', 'bolo',     'modelo');
   await _loadGallerySection('topo-gallery', 'ref-panel-topo', 'topo-bolo','topo');
 }
 

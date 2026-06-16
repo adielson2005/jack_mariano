@@ -2,7 +2,7 @@ import base64 as _b64
 import json
 import re
 from datetime import date as date_type
-from flask import Blueprint, Response, jsonify, redirect, request
+from flask import Blueprint, Response, current_app, jsonify, redirect, request
 from app import db
 from app.models import Category, Order, OrderItem, CatalogImage
 from app.utils import build_client_link, build_help_link
@@ -117,9 +117,10 @@ def create_order():
     db.session.commit()
 
     base_url = request.url_root.rstrip("/")
+    secret   = current_app.config.get("SECRET_KEY", "")
     return jsonify({
         "message": "Pedido recebido! Entraremos em contato via WhatsApp em breve. 🧁",
-        "whatsapp_link": build_client_link(order, base_url),
+        "whatsapp_link": build_client_link(order, base_url, secret),
         "order_id": order.id,
     }), 201
 

@@ -63,6 +63,16 @@ def _migrate_db():
             except Exception:
                 conn.rollback()
 
+        # Unifica as tags de bolos: bolo-tradicional / bolo-especial / bolo-super → bolo
+        try:
+            conn.execute(text(
+                "UPDATE catalog_images SET category_tag = 'bolo' "
+                "WHERE category_tag IN ('bolo-tradicional', 'bolo-especial', 'bolo-super')"
+            ))
+            conn.commit()
+        except Exception:
+            conn.rollback()
+
 
 # Versão do catálogo — suba este número sempre que alterar produtos/opções.
 # O sistema vai apagar e recriar o catálogo automaticamente no próximo deploy.
