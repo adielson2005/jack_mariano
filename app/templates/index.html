@@ -4300,29 +4300,10 @@ async function submitOrder() {
   const errEl = document.getElementById('confirm-review-error');
   errEl.classList.add('d-none');
 
-  // ── Validação client-side ──────────────────────────────────────────────
-  const name  = document.getElementById('f-name').value.trim();
-  const phone = document.getElementById('f-phone').value.trim();
-  const date  = document.getElementById('f-date').value;
-  const time  = document.getElementById('f-time').value;
-
-  const errs = [];
-  if (!name)  errs.push('Nome completo é obrigatório');
-  if (!phone) errs.push('WhatsApp é obrigatório');
-  if (!date)  errs.push('Data é obrigatória');
-  if (!time)  errs.push('Horário é obrigatório');
-
-  if (deliveryType === 'entrega') {
-    if (!document.getElementById('f-address').value.trim())
-      errs.push('Endereço é obrigatório para entrega');
-    if (!document.getElementById('f-neighborhood').value.trim())
-      errs.push('Bairro é obrigatório para entrega');
-  }
-
-  if (errs.length) {
-    errEl.textContent = '⚠️ ' + errs.join(' • ');
+  // Segurança: sacola não pode estar vazia (goStep3Review() já valida, mas por garantia)
+  if (!sacola.length) {
+    errEl.textContent = '⚠️ Nenhum item na sacola. Volte e adicione itens.';
     errEl.classList.remove('d-none');
-    errEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     return;
   }
 
@@ -4409,11 +4390,15 @@ async function submitOrder() {
 
 /** Volta ao formulário (step 2) preservando todos os dados preenchidos. */
 function voltarCorrigir() {
+  renderSummary(); // atualiza o resumo caso a sacola tenha mudado
   setStep(2);
 }
 
 /** Valida o formulário e avança para a tela de revisão (step 3) sem enviar ainda. */
 function goStep3Review() {
+  // Garante que há itens na sacola (o usuário pode ter removido tudo via bag panel)
+  if (!sacola.length) return toast('Adicione pelo menos um item à sacola.', 'warning');
+
   const name  = document.getElementById('f-name').value.trim();
   const phone = document.getElementById('f-phone').value.trim();
   const date  = document.getElementById('f-date').value;
