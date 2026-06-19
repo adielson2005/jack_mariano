@@ -35,3 +35,6 @@ Thumbs.db
 
 # Permitir .env.example mesmo que .env.* esteja ignorado
 !.env.example
+
+# Landing page separada (projeto Next.js independente)
+disputa_landing/
