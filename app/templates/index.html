@@ -4325,11 +4325,19 @@ async function submitOrder() {
   }
 
   // ── Monta payload ──────────────────────────────────────────────────────
-  const name    = document.getElementById('f-name').value.trim();
-  const phone   = document.getElementById('f-phone').value.trim();
-  const date    = document.getElementById('f-date').value;
-  const time    = document.getElementById('f-time').value;
-  const notesVal = document.getElementById('f-notes').value.trim();
+  const name    = (document.getElementById('f-name')  || {}).value?.trim()  || '';
+  const phone   = (document.getElementById('f-phone') || {}).value?.trim()  || '';
+  const date    = (document.getElementById('f-date')  || {}).value           || '';
+  const time    = (document.getElementById('f-time')  || {}).value           || '';
+  const notesVal = (document.getElementById('f-notes') || {}).value?.trim() || '';
+
+  if (!name || !phone || !date || !time) {
+    errEl.textContent = '⚠️ Preencha nome, WhatsApp, data e horário antes de confirmar.';
+    errEl.classList.remove('d-none');
+    btn.disabled = false;
+    btn.innerHTML = '<i class="bi bi-send-fill me-2"></i> Confirmar pedido';
+    return;
+  }
 
   const payload = {
     customer_name:      name,
