@@ -62,10 +62,14 @@ def init_monitoring(app):
         )
         return response
 
-    # 7. Global error handler: full stack trace + context
+    # 7. Global error handler: full stack trace + context (só erros 5xx reais)
     @app.errorhandler(Exception)
     def _handle_error(exc):
+        from werkzeug.exceptions import HTTPException
         from app.monitoring.request_context import get_request_id
+        # Deixa erros HTTP (404, 405, etc.) passarem para os handlers padrão do Flask
+        if isinstance(exc, HTTPException):
+            return exc
         metrics.record_error(
             endpoint=request.endpoint or request.path,
             error_type=type(exc).__name__,
