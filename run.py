@@ -179,18 +179,6 @@ def public_order_action(order_id, action, token):
 
 # ── Produção / infra ──────────────────────────────────────────────────────────
 
-@app.route("/health")
-def health():
-    """Health check para load balancers e plataformas de deploy."""
-    from app import db
-    try:
-        db.session.execute(db.text("SELECT 1"))
-        db_ok = True
-    except Exception:
-        db_ok = False
-    status = 200 if db_ok else 503
-    return {"status": "ok" if db_ok else "degraded", "db": db_ok}, status
-
 
 @app.route("/robots.txt")
 def robots():

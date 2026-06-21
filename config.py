@@ -53,3 +53,13 @@ class Config:
     SESSION_COOKIE_SECURE   = os.environ.get("FLASK_ENV") == "production"
     SESSION_COOKIE_HTTPONLY = True          # JS não consegue ler o cookie
     SESSION_COOKIE_SAMESITE = "Lax"        # protege contra CSRF
+
+    # ── Monitoramento ─────────────────────────────────────────────────────────
+    METRICS_DB_PATH         = os.environ.get("METRICS_DB_PATH", "/tmp/metrics.db")
+    SLOW_QUERY_MS           = int(os.environ.get("SLOW_QUERY_MS", "100"))
+    LOG_LEVEL               = os.environ.get("LOG_LEVEL", "INFO")
+    ALERT_WEBHOOK_URL       = os.environ.get("ALERT_WEBHOOK_URL", "")
+    ALERT_ERROR_RATE        = float(os.environ.get("ALERT_ERROR_RATE_THRESHOLD", "0.10"))
+    ALERT_LATENCY_P95_MS    = int(os.environ.get("ALERT_LATENCY_P95_MS", "2000"))
+    ALERT_ORDER_SPIKE_PM    = int(os.environ.get("ALERT_ORDER_SPIKE_PER_MINUTE", "10"))
+    ALERT_COOLDOWN_SECS     = int(os.environ.get("ALERT_COOLDOWN_SECONDS", "300"))

@@ -26,6 +26,9 @@ def create_app():
         _migrate_db()
         _seed_data()
 
+    from app.monitoring import init_monitoring
+    init_monitoring(app)
+
     return app
 
 
