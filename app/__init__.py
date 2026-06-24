@@ -261,15 +261,17 @@ def _seed_data():
         {
             "slug": "doces",
             "name": "Docinhos Tradicionais",
-            "description": "Brigadeiros artesanais tradicionais — R$ 180,00 o cento. Escolha até 3 sabores.",
+            "description": "Brigadeiros artesanais tradicionais — R$ 180,00 o cento. 25 un → 2 sabores | 50 un → 3 sabores | 100 un → 5 sabores.",
             "icon": "🍬",
             "price_from": "R$ 180,00 o cento",
             "catalog_version": _CATALOG_VERSION,
             "options": {
-                # Até 3 sabores — cor da forminha e cor do laço são campos livres no front
+                # Sabores liberados por quantidade: 25→2, 50→3, 100→5
                 "1º Sabor|R$ 180,00 o cento": [*_BRIG_TRAD],
                 "2º Sabor": ["Nenhum", *_BRIG_TRAD],
                 "3º Sabor": ["Nenhum", *_BRIG_TRAD],
+                "4º Sabor": ["Nenhum", *_BRIG_TRAD],
+                "5º Sabor": ["Nenhum", *_BRIG_TRAD],
             },
         },
         {

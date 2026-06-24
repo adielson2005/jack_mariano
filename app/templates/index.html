@@ -3570,6 +3570,8 @@ function selectCat(slug, rowEl) {
   if (isKit) _setupKitFesta(slug);
   // Salgados Finos: seletor de subtipo (Canudinho / Canapés / Tortelete / Barquete)
   if (slug === 'salgados-finos') _injectFinoTypePicker(slug);
+  // Docinhos Tradicionais: sabores liberados por quantidade
+  if (slug === 'doces') _initDocesSabores(wrap);
   // Bolo e Kit: carrega galeria de referências de modelos de bolo + topos
   if (isBolo) _loadBoloGallery(slug);
   // Outras categorias: carrega galeria de referência simples
@@ -3831,6 +3833,61 @@ function _updateKitSalgadoSlots(wrap, kitValue) {
       lbl.innerHTML = `🍗 Salgados Fritos <small style="font-size:.68rem;font-weight:500;text-transform:none;letter-spacing:0;opacity:.75">— até ${maxSab} sabor${maxSab > 1 ? 'es' : ''}</small>`;
     }
   });
+}
+
+/* ── Docinhos Tradicionais: sabores por quantidade ───────────────────────
+   < 25 un  → 1 sabor
+   25–49    → 2 sabores
+   50–99    → 3 sabores
+   ≥ 100    → 5 sabores                                                     */
+function _initDocesSabores(wrap) {
+  const qtyInput = document.getElementById('item-qty');
+  if (!qtyInput) return;
+
+  // Força mínimo 1 e valor padrão 25
+  qtyInput.min   = 1;
+  qtyInput.value = qtyInput.value < 1 ? 25 : qtyInput.value;
+
+  // Injeta badge de dica abaixo do campo de quantidade
+  let hint = document.getElementById('doces-sabores-hint');
+  if (!hint) {
+    hint = document.createElement('div');
+    hint.id = 'doces-sabores-hint';
+    hint.style.cssText = 'font-size:.75rem;color:var(--pk);font-weight:600;margin-top:4px;';
+    qtyInput.closest('.qty-col').appendChild(hint);
+  }
+
+  function _maxSabores(qty) {
+    if (qty >= 100) return 5;
+    if (qty >= 50)  return 3;
+    if (qty >= 25)  return 2;
+    return 1;
+  }
+
+  function _apply(qty) {
+    const max = _maxSabores(qty);
+    // Slots: 2º, 3º, 4º, 5º Sabor
+    [2, 3, 4, 5].forEach(n => {
+      const ord = ['2º','3º','4º','5º'][n - 2];
+      const sel = wrap.querySelector(`.opt-sel[data-group="${n}º Sabor"]`);
+      if (!sel) return;
+      const grp = sel.closest('.opt-group');
+      if (!grp) return;
+      if (n <= max) {
+        grp.style.display = '';
+      } else {
+        grp.style.display = 'none';
+        sel.selectedIndex = 0; // reseta para "Nenhum"
+      }
+    });
+
+    // Atualiza hint
+    const next = max < 5 ? (max === 1 ? '25 un → 2 sabores' : max === 2 ? '50 un → 3 sabores' : '100 un → 5 sabores') : '';
+    hint.innerHTML = `🍬 Até <b>${max}</b> sabor${max > 1 ? 'es' : ''} para esta quantidade${next ? ` &nbsp;·&nbsp; <span style="opacity:.7">${next}</span>` : ''}`;
+  }
+
+  _apply(parseInt(qtyInput.value) || 1);
+  qtyInput.addEventListener('input', () => _apply(parseInt(qtyInput.value) || 1));
 }
 
 /* Injeta card de resumo visual do kit selecionado */
