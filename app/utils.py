@@ -120,19 +120,6 @@ def build_client_link(order, base_url: str = None, secret: str = None) -> str:
         if getattr(order, "topo_photo_data", None):
             parts.append(f"🎨 *Ref. topo:* {base_url}/api/orders/{order.id}/photo/topo")
 
-    # Ações rápidas para o admin (links aparecem na mensagem que o admin recebe)
-    if base_url and secret:
-        tk = make_order_token(order.id, secret)
-        parts += [
-            "",
-            _DIV,
-            "⚡ *AÇÕES RÁPIDAS (admin):*",
-            f"  ✅ Confirmar → {base_url}/pedido/{order.id}/confirmar/{tk}",
-            f"  🔧 Em produção → {base_url}/pedido/{order.id}/producao/{tk}",
-            f"  🎁 Pronto → {base_url}/pedido/{order.id}/pronto/{tk}",
-            f"  ❌ Cancelar → {base_url}/pedido/{order.id}/cancelar/{tk}",
-        ]
-
     parts += [
         _DIV,
         f"_Enviado pelo site — aguardo confirmação! 😊_",
@@ -141,7 +128,7 @@ def build_client_link(order, base_url: str = None, secret: str = None) -> str:
     return f"https://wa.me/{SHOP_WHATSAPP}?text={quote(chr(10).join(parts))}"
 
 
-def build_admin_link(order) -> str:
+def build_admin_link(order, base_url: str = None, secret: str = None) -> str:
     """Link para o admin contatar o cliente com resumo do pedido."""
     phone = _normalize_phone(order.customer_whatsapp)
 
@@ -184,6 +171,20 @@ def build_admin_link(order) -> str:
         _DIV,
         f"Em breve confirmamos disponibilidade e valor. Obrigada pela preferência! 🎂",
     ]
+
+    # Ações rápidas — visíveis apenas para o admin neste link
+    if base_url and secret:
+        tk = make_order_token(order.id, secret)
+        parts += [
+            "",
+            _DIV,
+            "⚡ *AÇÕES RÁPIDAS:*",
+            f"  ✅ Confirmar → {base_url}/pedido/{order.id}/confirmar/{tk}",
+            f"  🔧 Em produção → {base_url}/pedido/{order.id}/producao/{tk}",
+            f"  🎁 Pronto → {base_url}/pedido/{order.id}/pronto/{tk}",
+            f"  ❌ Cancelar → {base_url}/pedido/{order.id}/cancelar/{tk}",
+            _DIV,
+        ]
 
     return f"https://wa.me/{phone}?text={quote(chr(10).join(parts))}"
 

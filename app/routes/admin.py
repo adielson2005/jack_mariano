@@ -102,7 +102,7 @@ def whatsapp_links(order_id):
     secret   = current_app.config.get("SECRET_KEY", "")
     return jsonify({
         "client_link": build_client_link(order, base_url, secret),
-        "admin_link":  build_admin_link(order),
+        "admin_link":  build_admin_link(order, base_url, secret),
         "help_link":   build_help_link(),
         "shop_number": "+55 94984239253",
     })
